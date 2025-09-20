@@ -1911,13 +1911,18 @@ function bossFight(){
         laser.x = -1000;
         blocks[0].x = -1000;
 
-    }
-    if(bossTimer > 10000){
+        let sneakAttackActivate = false;
         if(player.collides(boss)){
-            speech.speak("Got ya.");
-            health = 0;
+            sneakAttackActivate = true;
         }
+        if(sneakAttackActivate == true){
+            let sneakAttackTimer = 0;
+            sneakAttackTimer++;
+            speech.speak("Got ya.")
+            if(sneakAttackTimer > 50) health = 0;
+        } 
     }
+    
     if(bossTimer > 10100 && bossTimer < 10150) speech.speak("You're going down with me.");
     if(bossTimer > 10100){
         finalAttackSprite.visible = true;
