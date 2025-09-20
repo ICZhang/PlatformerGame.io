@@ -1920,7 +1920,7 @@ function bossFight(){
             text(sneakAttackTimer, 100, 100);
             sneakAttackTimer++;
             speech.speak("Got ya.")
-            if(sneakAttackTimer > 500) health = 0;
+            if(sneakAttackTimer > 100) health = 0;
         } 
     }
     
