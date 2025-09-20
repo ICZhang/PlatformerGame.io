@@ -124,6 +124,15 @@ function setup(){
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
+    window.speechSynthesis.onvoiceschanged = () => {
+        if (speech.voices && speech.voices.length > 0) {
+          console.log("Voices changed / loaded:");
+          speech.voices.forEach((v, i) => {
+            console.log(i, v.name, v.lang);
+          });
+        }
+      };
+
     position = createVector( width * 0.75, 20 );
     velocity = createVector();
     spriteStuff();
@@ -177,7 +186,6 @@ function draw() {
     //text(arrowListDown[0].x, 200,200);
     background("lightblue");
     fill("green");
-    text(speech.voices, 100, 100);
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
     if(kb.presses("r") && stage != 9){
