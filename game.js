@@ -1650,18 +1650,23 @@ function message(m){
 }
 
 function bossFight(){
-  
-    if(bossTimer < 4500){
+    //1000 2500
+    if(bossTimer < 1000){
         boss.image = gs("boss2C.png");
         boss.x = bossMovement + boss.x;
         if(boss.x > 800) bossMovement *= -1;
 
-
         if(boss.x < 400) bossMovement *= -1;
     }
-    if(bossTimer > 4500 && bossTimer < 5500 ){
-        boss.image = gs("boss2C.png");
-        
+    if(bossTimer > 1000 && bossTimer < 2500){
+        boss.x = 600;
+    }
+    if(bossTimer > 2500 && bossTimer < 4500){
+        boss.x = bossMovement + boss.x;
+        if(boss.x > 800) bossMovement *= -1;
+        if(boss.x < 400) bossMovement *= -1;
+    }
+    if(bossTimer > 4500 && bossTimer < 5500 ){        
         boss.x = bossMovement + boss.x;
         if(boss.x > 1100) bossMovement *= -1;
 
@@ -1680,8 +1685,8 @@ function bossFight(){
 
     }
     
-    bossTimer ++;
-    //text(bossTimer, 300,300);
+    bossTimer += 10;
+    text(bossTimer, 300,300);
 
     if(bossTimer < 1000){
         let pos = Math.random() * 2;
