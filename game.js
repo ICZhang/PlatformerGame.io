@@ -1912,8 +1912,8 @@ function bossFight(){
         blocks[0].x = -1000;
 
         if(player.collides(boss)){
+            speech.speak("Got you.");
             health = 0;
-            speech.speak("Got you.")
         }
 
     }
@@ -1931,7 +1931,7 @@ function bossFight(){
         }
         text(finalAttackSprite.y, 400, 400);   //Testing Purposes
         if(finalAttackSprite.y > 800) health = 1;
-        if(health <= 1){
+        if(health == 1){
             boss.x = -200;
             portal.x = 600;
             portal.y = 650;
