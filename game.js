@@ -92,7 +92,7 @@ function setup() {
 function draw() {
     background(220);
     text("Hello World!", 150, 200);
-    dirt = loadImage(gs("ground.png"));
+    //dirt = loadImage(gs("ground.png"));
 }
 
 /*
