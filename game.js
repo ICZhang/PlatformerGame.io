@@ -82,7 +82,7 @@ let finalAttackSprite;
 var finalAttack = 0;
 
 function gs(fileName){
-    return "GameSprites/" + fileName;
+    return "/GameSprites/" + fileName;
 }
 
 function preload(){
