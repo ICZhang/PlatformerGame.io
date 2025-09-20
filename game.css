@@ -1,8 +1,11 @@
 body{
-    display:flex;
-    justify-content: center;
-  
+   display:flex;
+   justify-content: center;
+}
+ 
+ 
+canvas {
+   width: 600px;
+   height: 450px;
  }
- 
- 
  
