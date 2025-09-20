@@ -1919,7 +1919,7 @@ function bossFight(){
             let sneakAttackTimer = 0;
             sneakAttackTimer++;
             speech.speak("Got ya.")
-            if(sneakAttackTimer > 50) health = 0;
+            if(sneakAttackTimer > 30) health = 0;
         } 
     }
     
@@ -1945,7 +1945,7 @@ function bossFight(){
         }
 
 
-        if(player.collides(portal)) stage++;
+        if(player.collides(portal) && portal.visible == true) stage++;
     }
 }
 
