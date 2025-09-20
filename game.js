@@ -1917,13 +1917,14 @@ function bossFight(){
         
         finalAttackSprite.y += 1;
         
-        if(health > 1 && finalAttackSprite.y > 500){
+        if(health > 1 && finalAttackSprite.y > 400){
             health-=0.5;
             boss.x = -200;
             portal.x = 600;
             portal.y = 650;
         }
-        if(health == 1){
+        if(finalAttackSprite.y > 800) health == 1;
+        if(health >= 1){
             boss.x = -200;
             portal.x = 600;
             portal.y = 650;
