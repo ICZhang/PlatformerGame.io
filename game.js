@@ -117,7 +117,7 @@ function preload(){
 
 
 function setup(){
-    createCanvas(800,600);
+    createCanvas(1200,1000);
     speech = new p5.Speech();
     speech.setPitch(1);
     speech.setVoice("Aaron");
