@@ -53,7 +53,7 @@ var shotL = false;
 var BallDirection = true;
 var downPos = false;
 var open = false;
-var health = 12000;
+var health = 12000;  ////Testing Purpose
 var stamina = 100;
 var mana = 100;
 var bossTimer = 0;
@@ -1685,8 +1685,8 @@ function bossFight(){
 
     }
     
-    bossTimer += 10;
-    text(bossTimer, 300,300);
+    bossTimer += 10;       //Testing Purpose
+    text(bossTimer, 300,300);  //Testing Purpose
 
     if(bossTimer < 1000){
         let pos = Math.random() * 2;
@@ -1928,8 +1928,9 @@ function bossFight(){
             portal.x = 600;
             portal.y = 650;
         }
+        text(finalAttackSprite.y, 400, 400);
         if(finalAttackSprite.y > 800) health == 1;
-        if(health >= 1){
+        if(health <= 1){
             boss.x = -200;
             portal.x = 600;
             portal.y = 650;
