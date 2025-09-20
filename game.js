@@ -85,6 +85,17 @@ function gs(fileName){
     return "/GameSprites/" + fileName;
 }
 
+function setup() {
+    createCanvas(400, 400);
+  }
+  
+function draw() {
+    background(220);
+    text("Hello World!", 150, 200);
+    dirt = loadImage(gs("ground.png"));
+}
+
+/*
 function preload(){
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -1936,3 +1947,4 @@ function bossFight(){
 
 
 
+*/
