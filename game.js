@@ -1911,11 +1911,12 @@ function bossFight(){
         laser.x = -1000;
         blocks[0].x = -1000;
 
+    }
+    if(bossTimer > 10000){
         if(player.collides(boss)){
-            speech.speak("Got you.");
+            speech.speak("Got ya.");
             health = 0;
         }
-
     }
     if(bossTimer > 10100 && bossTimer < 10150) speech.speak("You're going down with me.");
     if(bossTimer > 10100){
