@@ -1684,8 +1684,9 @@ function bossFight(){
 
 
     }
-    
-    bossTimer += 10;       //Testing Purpose
+    //Testing Purpose
+    if(bossTimer < 10000) bossTimer += 10;
+    else bossTimer ++;
     text(bossTimer, 300,300);  //Testing Purpose
 
     if(bossTimer < 1000){
