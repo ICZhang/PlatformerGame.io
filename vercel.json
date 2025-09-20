@@ -4,7 +4,9 @@
     { "src": "index.html", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg))", "dest": "/$1" },
+    { "src": "/GameSprites/(.*)", "dest": "/public/GameSprites/$1" },
+    { "src": "/(.*\\.js)", "dest": "/public/$1" },
+    { "src": "/(.*\\.css)", "dest": "/public/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
