@@ -730,7 +730,7 @@ function basicMovement(){
             
             
             counterSR+=0.1;
-            player.image = gs("Dash" + Math.round(counterSR) + ".png");
+            player.image = gs("dash" + Math.round(counterSR) + ".png");
 
 
             if(counterSR > 2){
@@ -756,7 +756,7 @@ function basicMovement(){
 
 
             counterSL+=0.1;
-            player.image = gs("Dash" + Math.round(counterSL) + ".png");
+            player.image = gs("dash" + Math.round(counterSL) + ".png");
 
 
             if(counterSL > 4){
@@ -1381,7 +1381,7 @@ function slimeMove(i){
     if(enemiesS[i].x < player.x && d < 200 && enemiesS[i].visible == true){
         enemiesS[i].x += 2.5;
         counterSlimeRight+=0.1;
-        enemiesS[i].image = "Ls" + Math.round(counterSlimeRight) + ".png";
+        enemiesS[i].image = gs("Ls" + Math.round(counterSlimeRight) + ".png");
 
         if(counterSlimeRight > 3){
             counterSlimeRight = 1;
@@ -1391,7 +1391,7 @@ function slimeMove(i){
     if(enemiesS[i].x > player.x && d < 200 && enemiesS[i].visible == true){
         enemiesS[i].x -= 2.5;
         counterSlimeLeft+=0.1;
-        enemiesS[i].image = "Rs" + Math.round(counterSlimeLeft) + ".png";
+        enemiesS[i].image = gs("Rs" + Math.round(counterSlimeLeft) + ".png");
 
         if(counterSlimeLeft > 3){
             counterSlimeLeft = 1;
@@ -1436,7 +1436,7 @@ function slimeMove(i){
     }
     if(enemyState[i] == true){
         counterSlimeDeath+=0.1;
-        enemiesS[i].image = "SD" + Math.round(counterSlimeDeath) + ".png";
+        enemiesS[i].image = gs("SD" + Math.round(counterSlimeDeath) + ".png");
 
         if(counterSlimeDeath > 4){
             enemiesS[i].visible = false;
@@ -1453,7 +1453,7 @@ function slimeMove(i){
 function respawnSlime(i){
     enemyState[i] = false;
     enemiesS[i].visible = true;
-    enemiesS[i].image = "Ls1.png";
+    enemiesS[i].image = gs("Ls1.png");
     enemiesS[i].vel.x = 0;
     enemiesS[i].vel.y = 0;
 }
