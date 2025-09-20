@@ -53,7 +53,7 @@ var shotL = false;
 var BallDirection = true;
 var downPos = false;
 var open = false;
-var health = 120;
+var health = 12000;
 var stamina = 100;
 var mana = 100;
 var bossTimer = 0;
@@ -531,6 +531,7 @@ function draw() {
             if(deathMessage == true){  
                 speech.speak("You died. This is the end of your journey.");
                 deathMessage = false;
+                speech.stop();
             }
             text("You died. This is the end of your journey.", 500,500);
             bossSword.visible = false;
