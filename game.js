@@ -121,7 +121,6 @@ function preload(){
 function setup(){
     createCanvas(1200,1000);
     speech = new p5.Speech();
-    console.log(speech.voices);
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
@@ -178,7 +177,7 @@ function draw() {
     //text(arrowListDown[0].x, 200,200);
     background("lightblue");
     fill("green");
-
+    text(speech.voices, 100, 100);
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
     if(kb.presses("r") && stage != 9){
