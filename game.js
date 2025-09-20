@@ -81,16 +81,10 @@ let position, velocity, origin, ropeLength;
 let finalAttackSprite;
 var finalAttack = 0;
 
-function setup() {
-    createCanvas(400, 400);
-  }
-  
-function draw() {
-    background(220);
-    text("Hello World!", 150, 200);
+function gs(fileName){
+    return "/GameSprites/" + fileName;  
 }
 
-/*
 function preload(){
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -1940,6 +1934,3 @@ function bossFight(){
     }
 }
 
-
-
-*/
