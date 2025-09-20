@@ -81,37 +81,38 @@ let position, velocity, origin, ropeLength;
 let finalAttackSprite;
 var finalAttack = 0;
 
+function gs(fileName){
+    return "GameSprites/" + fileName;
+}
+
 function preload(){
-    dirt = loadImage("ground.png");
-    idle = loadImage("walk1.png");
-    dirt2 = loadImage("dirt2.jpeg");
-    arrow = loadImage("arrow.png");
+    dirt = loadImage(gs("ground.png"));
+    idle = loadImage(gs("walk1.png"));
+    dirt2 = loadImage(gs("dirt2.jpeg"));
+    arrow = loadImage(gs("arrow.png"));
 
-    arrowR = loadImage("arrowR.png");
-    arrowL = loadImage("arrowL.png");
-    arrowD = loadImage("arrowD.png");
+    arrowR = loadImage(gs("arrowR.png"));
+    arrowL = loadImage(gs("arrowL.png"));
+    arrowD = loadImage(gs("arrowD.png"));
 
-    laserImage = loadImage("laser.png");
-    Fireball = loadImage("b1.png");
-    Fireball2 = loadImage("a1.png");
-    portal2 = loadImage("portal.png");
-    lavaImage = loadImage("lava.png");
-    gear = loadImage("gear.png");
-    hpUp = loadImage("healthUp.png");
-    boxImage = loadImage("box.png");
-    slime = loadImage("Ls1.png");
-    leverImage = loadImage("lever.png");
-    door = loadImage("door.png");
-    audioName = loadSound("bells.mp3");
+    laserImage = loadImage(gs("laser.png"));
+    Fireball = loadImage(gs("b1.png"));
+    Fireball2 = loadImage(gs("a1.png"));
+    portal2 = loadImage(gs("portal.png"));
+    lavaImage = loadImage(gs("lava.png"));
+    gear = loadImage(gs("gear.png"));
+    hpUp = loadImage(gs("healthUp.png"));
+    boxImage = loadImage(gs("box.png"));
+    slime = loadImage(gs("Ls1.png"));
+    leverImage = loadImage(gs("lever.png"));
+    door = loadImage(gs("door.png"));
 
+    throneroom = loadImage(gs("throneroom.png"));
 
-    throneroom = loadImage("throneroom.png");
-
-
-    bossImage = loadImage("boss1L.png");
-    swordImage = loadImage("sword.png");
-    swordImageShadow = loadImage("dsword.png");
-    shadowBox = loadImage("BBox.png");
+    bossImage = loadImage(gs("boss1L.png"));
+    swordImage = loadImage(gs("sword.png"));
+    swordImageShadow = loadImage(gs("dsword.png"));
+    shadowBox = loadImage(gs("BBox.png"));
 }
 
 
@@ -121,13 +122,9 @@ function setup(){
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
-
-
-
     position = createVector( width * 0.75, 20 );
     velocity = createVector();
     spriteStuff();
-    
     
     for(let i = 0; i < blocks.length; i++){
         blocks[i] = new Sprite(dirt2, -100, 600, 50,50);
@@ -138,7 +135,6 @@ function setup(){
         blocks[i].height = 50;
         blocks[i].collider = "static";
 
-
         enemiesS[i] = new Sprite(slime,-1000,600,50,50);
         enemiesS[i].debug = false;
         enemiesS[i].scale.x = 0.2;
@@ -148,19 +144,16 @@ function setup(){
         enemiesS[i].collider = "dynamic";
     }
 
-
     for(let i = 0; i < 6; i++){
         arrowListDown[i] = new Sprite(arrowD, -100,100,20,275);
         arrowListDown[i].debug = false;
         arrowListDown[i].collider = "static";
         arrowListDown[i].visible = false;
 
-
         arrowListRight[i] = new Sprite(arrowR, 1200,100,275,20);
         arrowListRight[i].debug = false;
         arrowListRight[i].collider = "dynamic";
         arrowListRight[i].visible = false;
-
 
         arrowListLeft[i] = new Sprite(arrowL, 1200,100,275,20);
         arrowListLeft[i].debug = false;
@@ -183,12 +176,9 @@ function draw() {
     background("lightblue");
     fill("green");
 
-
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
-
     if(kb.presses("r") && stage != 9){
-
 
         dead = false;
         health = normalHealth;
@@ -207,7 +197,7 @@ function draw() {
         }
         prevX = player.x;
         prevY = player.y;
-        player.image = "stand1.png";
+        player.image = gs("stand1.png");
         stage--;
         stage++;
         if(stage == 2){
@@ -232,26 +222,26 @@ function draw() {
             for(let i = 0; i < enemyState.length; i++){
                 enemyState[i] = false;
                 enemiesS[i].visible = true;
-                enemiesS[i].image = "Ls1.png";
+                enemiesS[i].image = gs("Ls1.png");
                 enemiesS[i].y = 600;
             }
         }
         else if(stage == 5){
-            lever.image = "lever.png";
+            lever.image = gs("lever.png");
             box.x = 200;
             box.y = 150;
             
             for(let i = 0; i < enemyState.length; i++){
                 enemyState[i] = false;
                 enemiesS[i].visible = true;
-                enemiesS[i].image = "Ls1.png";
+                enemiesS[i].image = gs("Ls1.png");
                 enemiesS[i].y = 100;
             }
             
         }
         else if(stage == 6){
             open = false;
-            lever.image = "lever.png";
+            lever.image = gs("lever.png");
             enemiesS[0].x = 600;
             enemiesS[1].x = 200;
             enemiesS[2].x = 300;
@@ -259,10 +249,9 @@ function draw() {
                 enemiesS[i].vel.y = 0;
                 enemyState[i] = false;
                 enemiesS[i].visible = true;
-                enemiesS[i].image = "Ls1.png";
+                enemiesS[i].image = gs("Ls1.png");
                 enemiesS[i].y = 600;
             }
-
 
             enemiesS[3].x = 800;
             enemiesS[4].x = 1000;
@@ -271,7 +260,7 @@ function draw() {
                 enemiesS[i].vel.y = 0;
                 enemyState[i] = false;
                 enemiesS[i].visible = true;
-                enemiesS[i].image = "Ls1.png";
+                enemiesS[i].image = gs("Ls1.png");
                 enemiesS[i].y = 100;
                 
             }
@@ -453,13 +442,13 @@ function draw() {
             for(let i = 0; i < 3; i++){
                 enemyState[i] = false;
                 enemiesS[i].visible = true;
-                enemiesS[i].image = "Ls1.png";
+                enemiesS[i].image = gs("Ls1.png");
                 enemiesS[i].y = 600;
             }
             for(let j = 3; j < 6; j++){
                 enemyState[j] = false;
                 enemiesS[j].visible = true;
-                enemiesS[j].image = "Ls1.png";
+                enemiesS[j].image = gs("Ls1.png");
                 enemiesS[j].y = 100;
             }
         }
@@ -699,7 +688,7 @@ function basicMovement(){
         player.x = player.x + 10;
         
         counter+=0.1;
-        player.image = "walk" + Math.round(counter) + ".png";
+        player.image = gs("walk" + Math.round(counter) + ".png");
 
 
         if(counter > 6){
@@ -708,7 +697,7 @@ function basicMovement(){
         direction = true;
     }
     else if(direction == true && player.vel.y == 0){
-        player.image = "stand1.png";
+        player.image = gs("stand1.png");
         
     } 
     
@@ -716,7 +705,7 @@ function basicMovement(){
         player.x = player.x - 10;
         
         counterL+=0.1;
-        player.image = "Lwalk" + Math.round(counterL) + ".png";
+        player.image = gs("Lwalk" + Math.round(counterL) + ".png");
 
 
         if(counterL > 6){
@@ -725,26 +714,23 @@ function basicMovement(){
         direction = false;
     }
     else if(direction == false && player.vel.y == 0){
-        player.image = "stand2.png";
+        player.image = gs("stand2.png");
         
     }
 
-
-
-
     if(kb.pressing("ArrowDown") && direction == true){
-        player.image = "crouch1.png";
+        player.image = gs("crouch1.png");
         player.height = 240;
         //text(player.y, 200,200);
         
         if(kb.pressing("ArrowRight")){
-            player.image = "dash1.png";
+            player.image = gs("dash1.png");
             player.x = player.x + 10;
             player.height = 200;
             
             
             counterSR+=0.1;
-            player.image = "Dash" + Math.round(counterSR) + ".png";
+            player.image = gs("Dash" + Math.round(counterSR) + ".png");
 
 
             if(counterSR > 2){
@@ -760,17 +746,17 @@ function basicMovement(){
 
     if(kb.pressing("ArrowDown") && direction == false){
         
-        player.image = "crouch2.png";
+        player.image = gs("crouch2.png");
         player.height = 240;
         
         if(kb.pressing("ArrowLeft")){
-            player.image = "dash3.png";
+            player.image = gs("dash3.png");
             player.x = player.x - 10;
             player.height = 200;
 
 
             counterSL+=0.1;
-            player.image = "Dash" + Math.round(counterSL) + ".png";
+            player.image = gs("Dash" + Math.round(counterSL) + ".png");
 
 
             if(counterSL > 4){
@@ -819,13 +805,11 @@ function basicMovement(){
         open = !open;
     }
     if(open == true){
-        lever.image = "lever2.png";
+        lever.image = gs("lever2.png");
     }
     if(open == false){
-        lever.image = "lever.png";
+        lever.image = gs("lever.png");
     }
-
-
 }
 
 
@@ -867,8 +851,6 @@ function pjump(){
         player.vel.y = -20;
         stamina -= 20;
         jumpAni();
-        
-        
     }
     for(let i = 0; i < blocks.length; i++){
         if(player.collides(blocks[i])){
@@ -881,15 +863,13 @@ function pjump(){
         }
         
     }
-
-
 }
 
 
 
 
 function resizeThings(){
-        ground.scale.x = 2.5;
+    ground.scale.x = 2.5;
     ground.scale.y = 2.5;
     ground.height = 60;
 
@@ -950,7 +930,6 @@ function moveShadow(){
     fill("blue");
     circle(prevX, prevY, 30);
 
-
     if(kb.presses("d") && mana > 50){
         player.x = prevX;
         player.y = prevY;
@@ -969,14 +948,14 @@ function swordThingR(){
     if(swingR == true){
         swordHitBox.collider = "static";
         counterRA += 0.1;
-        player.image = Math.round(counterRA) + "f" + ".png";
+        player.image = gs(Math.round(counterRA) + "f" + ".png");
 
 
         if(counterRA > 4){
             swordHitBox.collider = "none";
             counterRA = 1;
             swingR = false;
-            player.image = "stand1.png";
+            player.image = gs("stand1.png");
         }
     }
 
@@ -988,14 +967,14 @@ function swordThingR(){
     if(swingL == true){
         swordHitBox.collider = "static";
         counterLA += 0.1;
-        player.image = "l" + Math.round(counterLA) + ".png";
+        player.image = gs("l" + Math.round(counterLA) + ".png");
 
 
         if(counterLA > 4){
             swordHitBox.collider = "none";
             counterLA = 1;
             swingL = false;
-            player.image = "stand2.png";
+            player.image = gs("stand2.png");
         }
     }
     
@@ -1018,7 +997,7 @@ function normalStageStuff(){
     prevX = player.x;
     prevY = player.y;
     stage++;
-    player.image = "stand1.png";
+    player.image = gs("stand1.png");
     normalHealth = maxHealth;
     health = maxHealth;
 }
@@ -1060,7 +1039,7 @@ function hookShot(){
 function jumpAni(){
     if(direction == true){
         counterJumpRight+=0.1;
-        player.image = "JumpR" + Math.round(counterJumpRight) + ".png";
+        player.image = gs("JumpR" + Math.round(counterJumpRight) + ".png");
         
         if(counterJumpRight > 2){
             counterJumpRight = 1;
@@ -1068,7 +1047,7 @@ function jumpAni(){
     }
     if(direction == false){
         counterJumpLeft+=0.1;
-        player.image = "JumpL" + Math.round(counterJumpLeft) + ".png";
+        player.image = gs("JumpL" + Math.round(counterJumpLeft) + ".png");
         
         if(counterJumpLeft > 2){
             counterJumpLeft = 1;
@@ -1080,7 +1059,7 @@ function jumpAni(){
 function deathAnimation(){
     if(counterDeath < 11){
         counterDeath+=0.25;
-        player.image = "d" + Math.round(counterDeath) + ".png";
+        player.image = gs("d" + Math.round(counterDeath) + ".png");
     }   
 }
 
@@ -1091,7 +1070,6 @@ function fireBallAttack(){
     if(fireball.collides(dummy)){
         health-=5;
     }
-
 
     if(kb.presses("q") && direction == true && FcoolDown == false && mana >= 50){
         mana -= 50;
@@ -1112,13 +1090,13 @@ function fireBallAttack(){
     if(counterBall > 3){
         counterBall = 0.9;
     }
-    fireball.image = "b" + Math.round(counterBall) + ".png";
+    fireball.image = gs("b" + Math.round(counterBall) + ".png");
     if(shot){
         counterShoot += 0.2;
-        player.image = "c" + Math.round(counterShoot) + ".png";
+        player.image = gs("c" + Math.round(counterShoot) + ".png");
         if(counterShoot > 5.4){
             shot = false;
-            player.image = "stand1.png";
+            player.image = gs("stand1.png");
         }
         
     }
@@ -1149,13 +1127,13 @@ function fireBallAttack(){
     if(counterBallL > 3){
         counterBallL = 0.9;
     }
-    fireball2.image = "a" + Math.round(counterBallL) + ".png";
+    fireball2.image = gs("a" + Math.round(counterBallL) + ".png");
     if(shotL){
         counterShootL += 0.2;
-        player.image = "z" + Math.round(counterShootL) + ".png";
+        player.image = gs("z" + Math.round(counterShootL) + ".png");
         if(counterShootL > 5.4){
             shotL = false;
-            player.image = "stand2.png";
+            player.image = gs("stand2.png");
         }
         
     }
@@ -1225,68 +1203,43 @@ function keyReleased() {
 function rope(){
   
     if(true){
-    velocity.y += g;
+        velocity.y += g;
         position.add( velocity );
-    
         velocity.mult( 0.999 );
 
-
         if ( position.y > height - ballRadius ) {
-
-
             position.y = height - ballRadius;
             velocity.y *= - friction;
-
-
         }
         if ( position.x < ballRadius ){
+            position.x = ballRadius;
+            velocity.x *= - friction;
         
-        position.x = ballRadius;
-        velocity.x *= - friction;
-        
-    } else if ( position.x > width - ballRadius ) {
-        
+        } else if ( position.x > width - ballRadius ) { 
         position.x = width - ballRadius;
         velocity.x *= - friction;
-        
-    }
-    
+        }
         if ( origin ) {
-
-
             line( origin.x, origin.y, position.x, position.y );
 
-
             if ( origin.dist( position ) > ropeLength ) {
-            
-            let positionOnEndOfRope = p5.Vector.sub( position, origin );
+                let positionOnEndOfRope = p5.Vector.sub( position, origin );
                 positionOnEndOfRope.setMag( ropeLength );
                 positionOnEndOfRope.add( origin );
 
-
-                let difference = p5.Vector.sub( position, positionOnEndOfRope );
-
-
-            
-                velocity.sub( difference );
+                velocity.sub(p5.Vector.sub( position, positionOnEndOfRope));
                 position = positionOnEndOfRope;
-
-
             }
-
-
-    }
-    isHooked = true;
-    player.x = position.x;
-    player.y = position.y;
+        }
+        isHooked = true;
+        player.x = position.x;
+        player.y = position.y;
     
         circle( position.x, position.y, ballRadius * 2 );
     }
     else{
-    velocity.y = 0;
+        velocity.y = 0;
     }
-
-
 }
 
 
@@ -1380,7 +1333,6 @@ function level3(){
         gotten = true;
     }
 
-
     text("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 300,600);
 }
 
@@ -1393,9 +1345,7 @@ function level4(){
     sprite.x = -500;
     healthUp.x = -500;
 
-
     text("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 800, 300);
-
 
     blocks[1].x = 400;
     blocks[1].y = 600;
@@ -1404,7 +1354,6 @@ function level4(){
     resize(3);
     blocks[2].x = 400;
     blocks[2].y = 400;
-
 
     blocks[3].x = 400;
     blocks[3].y = 200;
@@ -1422,7 +1371,6 @@ function away(){
     blocks[1].x = -300;
     blocks[2].x = -300;
     blocks[3].x = -300;
-  
 }
 
 
@@ -1434,7 +1382,6 @@ function slimeMove(i){
         enemiesS[i].x += 2.5;
         counterSlimeRight+=0.1;
         enemiesS[i].image = "Ls" + Math.round(counterSlimeRight) + ".png";
-
 
         if(counterSlimeRight > 3){
             counterSlimeRight = 1;
@@ -1515,27 +1462,24 @@ function respawnSlime(i){
 function level5(){
     text("Try hitting the slimes with your fireball or sword.", 500, 500);
 
-
     away();
     blocks[4].x = -300;
     slimeMove(0);
     slimeMove(1);
     slimeMove(2);
     
-    
     blocks[0].x = 500;
     blocks[0].y = 700;
-
 
     blocks[0].scale.x = 0.25;
     blocks[0].scale.y = 0.20;
     blocks[0].height = 525;
     blocks[0].width = 150;
     
-    }
+}
 
 
-    function level6(){
+function level6(){
     if(open == true){
         Ldoor.x = -100;
     }
@@ -1543,10 +1487,8 @@ function level5(){
         Ldoor.x = 100;
     }
 
-
     blocks[0].x = 500;
     blocks[0].y = 700;
-
 
     sprite.x = 250;
     sprite.y = 500;
@@ -1556,9 +1498,6 @@ function level5(){
         position.y = player.y;
         isHooked = false;
     }
-
-
-
 
     lava.x = 450;
     lava.y = 800;
@@ -1575,7 +1514,6 @@ function level5(){
     resize(3);
     resize(5);
 
-
     blocks[1].x = 150;
     blocks[1].y = 300;
     blocks[2].x = 450;
@@ -1585,7 +1523,6 @@ function level5(){
     blocks[5].x = 100;
     blocks[5].y = 0;
 
-
     blocks[4].height = 500;
     blocks[4].y -= 5;
     if(blocks[4].y < 0){
@@ -1593,17 +1530,12 @@ function level5(){
     }
     slimeMove(2);
 
-
     if(player.collides(healthUp)){
         healthUp.x = -100;
         health += 10;
         gotten = true;
     }
 }
-
-
-
-
 
 
 function level7(){
@@ -1616,29 +1548,23 @@ function level7(){
         Ldoor.x = 1000;
     }
 
-
     resize(7);
     resize(8);
     resize(9);
     resize(10);
 
-
     blocks[1].y = 200;
     blocks[2].y = 230;
     blocks[3].y = 240;
 
-
     blocks[7].x = 20;
     blocks[7].y = 550;
-
 
     blocks[8].x = 450;
     blocks[8].y = 495;
 
-
     blocks[9].x = 750;
     blocks[9].y = 500;
-
 
     blocks[10].x = 1050;
     blocks[10].y = 500;
@@ -1649,7 +1575,6 @@ function level7(){
     slimeMove(3);
     slimeMove(4);
     slimeMove(5);
-
 
     //audioName.playMode("untilDone");
     //audioName.loop();
@@ -1723,11 +1648,10 @@ function message(m){
 
 }
 
-
 function bossFight(){
   
     if(bossTimer < 4500){
-        boss.image = "boss2C.png";
+        boss.image = gs("boss2C.png");
         boss.x = bossMovement + boss.x;
         if(boss.x > 800) bossMovement *= -1;
 
@@ -1735,20 +1659,17 @@ function bossFight(){
         if(boss.x < 400) bossMovement *= -1;
     }
     if(bossTimer > 4500 && bossTimer < 5500 ){
-        boss.image = "boss2C.png";
+        boss.image = gs("boss2C.png");
         
         boss.x = bossMovement + boss.x;
         if(boss.x > 1100) bossMovement *= -1;
 
-
         if(boss.x < 100) bossMovement *= -1;
-
-
     }
     
     if(bossTimer > 8000 && bossTimer < 10000){
         
-        boss.image = "boss1.1C.png";
+        boss.image = gs("boss1.1C.png");
         boss.x = bossMovement + boss.x;
         if(boss.x > 1100) bossMovement *= -1;
 
@@ -1760,7 +1681,6 @@ function bossFight(){
     
     bossTimer ++;
     //text(bossTimer, 300,300);
-
 
     if(bossTimer < 1000){
         let pos = Math.random() * 2;
@@ -1872,7 +1792,7 @@ function bossFight(){
 
     if(bossTimer > 5500 && bossTimer < 5550){
         boss.x = 600;
-        boss.image = "boss1.1C.png";
+        boss.image = gs("boss1.1C.png");
         speech.speak("I'm just getting started.");
         laser.visible = false;
         laser.x = -200;
@@ -1885,7 +1805,7 @@ function bossFight(){
     if(bossTimer > 5550 && bossTimer < 6500){
         let pos = Math.random() * 2;
         bossSword.visible = true;
-        bossSword.image = "sword2.png";
+        bossSword.image = gs("sword2.png");
         bossSword.y += 20;
         if(bossSword.y > 600){
             let pos = Math.round(Math.random() * 2);
@@ -1915,9 +1835,7 @@ function bossFight(){
             else{
                 bossSwordShadow.y = player.y+20;
             }
-            
         }
-
 
         gearTimer = 0;
         if(bossSwordShadow.collides(player)){
@@ -1937,7 +1855,7 @@ function bossFight(){
 
         if(swordHitBox.collides(darkbox)){
             gearTimer = 0;
-            darkbox.image = "BBox.png";
+            darkbox.image = gs("BBox.png");
         }
 
 
@@ -1947,12 +1865,12 @@ function bossFight(){
             
         }
         if(gearTimer == 120){
-            darkbox.image = "BCircle.png";
+            darkbox.image = gs("BCircle.png");
             health -= 30;
         }
         if(gearTimer > 140){
             gearTimer = 0;
-            darkbox.image = "BBox.png";
+            darkbox.image = gs("BBox.png");
         }
         enemiesS[0].x = 100;
         enemiesS[1].x = 1100;
@@ -1966,11 +1884,9 @@ function bossFight(){
         slimeMove(0);
         slimeMove(1);
 
-
         laser.visible = true;
         laser.x = boss.x;
         laser.y = boss.y + 400;
-
 
         resize(0);
         blocks[0].x = 600;
@@ -1988,12 +1904,10 @@ function bossFight(){
         laser.x = -1000;
         blocks[0].x = -1000;
 
-
         if(player.collides(boss)){
             health = 0;
             speech.speak("Got you.")
         }
-
 
     }
     if(bossTimer > 10100 && bossTimer < 10150) speech.speak("You're going down with me.");
