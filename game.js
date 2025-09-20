@@ -1634,6 +1634,7 @@ function castle(){
     if(player.x > 600){
         dead = true;
         let temp = Math.round(Math.random() * 2);
+        speech.stop();
         if(temp == 0) speech.speak("Step no further, mortal.");
         if(temp == 1) speech.speak("Do not approach me.");
         if(temp == 2) speech.speak("Stand back, you don't know what you're dealing with.");
