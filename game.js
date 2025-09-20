@@ -527,6 +527,7 @@ function draw() {
             deathAnimation();
         }
         if(health <= 0){
+            finalAttackSprite.visible = false;
             boss.visible = false;
             ground.visible = false;
             background("black");
@@ -1920,7 +1921,7 @@ function bossFight(){
             text(sneakAttackTimer, 100, 100);
             sneakAttackTimer++;
             speech.speak("Got ya.")
-            if(sneakAttackTimer > 100) health = 0;
+            if(sneakAttackTimer > 50) health = 0;
         } 
     }
     
