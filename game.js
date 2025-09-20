@@ -80,6 +80,7 @@ const ballRadius = 10;
 let position, velocity, origin, ropeLength;
 let finalAttackSprite;
 var finalAttack = 0;
+let sneakAttackActivate = false;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -1911,7 +1912,6 @@ function bossFight(){
         laser.x = -1000;
         blocks[0].x = -1000;
 
-        let sneakAttackActivate = false;
         if(player.collides(boss)){
             sneakAttackActivate = true;
         }
