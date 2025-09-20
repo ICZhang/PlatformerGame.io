@@ -117,6 +117,7 @@ function preload(){
     shadowBox = loadImage(gs("BBox.png"));
 }
 
+let voiceList = createDiv("Loading voices...");
 
 function setup(){
     createCanvas(1200,1000);
@@ -124,14 +125,20 @@ function setup(){
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
-    window.speechSynthesis.onvoiceschanged = () => {
-        if (speech.voices && speech.voices.length > 0) {
-          console.log("Voices changed / loaded:");
-          speech.voices.forEach((v, i) => {
-            console.log(i, v.name, v.lang);
-          });
-        }
-      };
+
+  // Wait 1 second to ensure voices are loaded
+  setTimeout(() => {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      let text = "<strong>Available Voices:</strong><br>";
+      voices.forEach((v, i) => {
+        text += `${i}: ${v.name} (${v.lang})<br>`;
+      });
+      voiceList.html(text);
+    } else {
+      voiceList.html("No voices detected. Try clicking the page or refreshing.");
+    }
+  }, 1000);
 
     position = createVector( width * 0.75, 20 );
     velocity = createVector();
@@ -187,7 +194,7 @@ function draw() {
     background("lightblue");
     fill("green");
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
-
+text(voiceList, 200, 200);
     if(kb.presses("r") && stage != 9){
 
         dead = false;
