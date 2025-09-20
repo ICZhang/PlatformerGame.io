@@ -81,6 +81,7 @@ let position, velocity, origin, ropeLength;
 let finalAttackSprite;
 var finalAttack = 0;
 let sneakAttackActivate = false;
+let sneakAttackTimer = 0;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -1916,7 +1917,6 @@ function bossFight(){
             sneakAttackActivate = true;
         }
         if(sneakAttackActivate == true){
-            let sneakAttackTimer = 0;
             sneakAttackTimer++;
             speech.speak("Got ya.")
             if(sneakAttackTimer > 30) health = 0;
