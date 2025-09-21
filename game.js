@@ -117,7 +117,7 @@ function preload(){
     shadowBox = loadImage(gs("BBox.png"));
 }
 
-let voiceList;
+let voices = [];
 
 function setup(){
     createCanvas(1200,1000);
@@ -125,7 +125,9 @@ function setup(){
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
-    voiceList = window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => {
+        voices = window.speechSynthesis.getVoices(); // now voices are ready!
+      };
 
     position = createVector( width * 0.75, 20 );
     velocity = createVector();
@@ -181,7 +183,7 @@ function draw() {
     background("lightblue");
     fill("green");
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
-text(voiceList, 200, 200);
+text("Please actually load: " + voices, 200, 200);
     if(kb.presses("r") && stage != 9){
 
         dead = false;
