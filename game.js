@@ -117,7 +117,7 @@ function preload(){
     shadowBox = loadImage(gs("BBox.png"));
 }
 
-let voiceList = createDiv("Loading voices...");
+let voiceList;
 
 function setup(){
     createCanvas(1200,1000);
@@ -125,20 +125,7 @@ function setup(){
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
-
-  // Wait 1 second to ensure voices are loaded
-  setTimeout(() => {
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      let text = "<strong>Available Voices:</strong><br>";
-      voices.forEach((v, i) => {
-        text += `${i}: ${v.name} (${v.lang})<br>`;
-      });
-      voiceList.html(text);
-    } else {
-      voiceList.html("No voices detected. Try clicking the page or refreshing.");
-    }
-  }, 1000);
+    voiceList = window.speechSynthesis.getVoices();
 
     position = createVector( width * 0.75, 20 );
     velocity = createVector();
