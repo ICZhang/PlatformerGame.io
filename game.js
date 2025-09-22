@@ -101,7 +101,7 @@ function preload(){
     LstandFrame = loadImage(gs("stand2.png"));
     crouchFrame = loadImage(gs("crouch1"));
     LcrouchFrame = loadImage(gs("crouch2"));
-    for(let i = 1; i <= 4; i++) swingFrames[i] = loadImage(gs("" + i + "f.png"));
+    for(let i = 1; i <= 4; i++) swingFrames[i] = loadImage(gs(i + "f.png"));
     for(let i = 1; i <= 4; i++) LswingFrames[i] = loadImage(gs("l" + i + ".png"));
     
     dirt = loadImage(gs("ground.png"));
@@ -872,10 +872,8 @@ function resizeThings(){
     ground.scale.y = 2.5;
     ground.height = 60;
 
-
     player.height = 310;
     player.width = 180;
-
 
     arrow1.width = 200;
     arrow1.height = 5;
@@ -885,10 +883,8 @@ function resizeThings(){
     fireball.scale.x = 0.3;
     fireball.scale.y = 0.3;
 
-
     fireball2.scale.x = 0.3;
     fireball2.scale.y = 0.3;
-
 
     arrow1.x = -100;
     dummy.x = -100;
