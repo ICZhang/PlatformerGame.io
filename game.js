@@ -111,7 +111,6 @@ function preload(){
     for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
 
-    sky = loadImage(gs("sky.png"));
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
     
@@ -146,6 +145,18 @@ function preload(){
 
 function setup(){
     createCanvas(1200,1000);
+
+    staticCloudSprite = new Sprite(staticCloud, 0, 300, 50, 50);
+    staticCloudSprite.collider = "none";
+    staticCloudSprite.scale.x = 5;
+    staticCloudSprite.scale.y = 3;
+
+    dynamicCloudSprite = new Sprite(dynamicCloud, 0, 300, 50, 50);
+    dynamicCloudSprite.collider = "none";
+    dynamicCloudSprite.scale.x = 5;
+    dynamicCloudSprite.scale.y = 3;
+
+    dynamicCloudSprite
     speech = new p5.Speech();
     speech.setPitch(1);
     speech.setVoice("Aaron");
