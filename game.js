@@ -147,8 +147,8 @@ function preload(){
 function setup(){
     createCanvas(1200,1000);
     skySprite = new Sprite(sky, -100,-100,1400,1400);
-    skySprite.scale.x = 4;
-    skySprite.scale.y = 4;
+    skySprite.scale.x = 7;
+    skySprite.scale.y = 7;
     skySprite.collider = "none";
     speech = new p5.Speech();
     speech.setPitch(1);
