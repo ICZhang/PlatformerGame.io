@@ -84,6 +84,9 @@ let sneakAttackActivate = false;
 let sneakAttackTimer = 0;
 
 let walkFrames = [];
+let LwalkFrames = []
+let standFrame;
+let LstandFrame;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -91,6 +94,9 @@ function gs(fileName){
 
 function preload(){
     for(let i = 1; i <= 6; i++) walkFrames[i] = loadImage(gs("walk" + i + ".png"));
+    for(let i = 1; i <= 6; i++) LwalkFrames[i] = loadImage(gs("Lwalk" + i + ".png"));
+    standFrame = loadImage(gs("stand1.png"));
+    LstandFrame = loadImage(gs("stand2.png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -691,38 +697,24 @@ function basicMovement(){
     
     if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false){
         player.x = player.x + 10;
-        
         counter+=0.1;
         player.image = walkFrames[Math.round(counter)];
-
-
-        if(counter > 6){
-            counter = 1;
-        }
         direction = true;
+
+        if(counter > 6) counter = 1;
     }
-    else if(direction == true && player.vel.y == 0){
-        player.image = gs("stand1.png");
-        
-    } 
+    else if(direction == true && player.vel.y == 0) player.image = standFrame;
     
     if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false){
         player.x = player.x - 10;
-        
         counterL+=0.1;
-        player.image = gs("Lwalk" + Math.round(counterL) + ".png");
-
-
-        if(counterL > 6){
-            counterL = 1;
-        }
+        player.image = LwalkFrames[Math.round(counter)];
         direction = false;
-    }
-    else if(direction == false && player.vel.y == 0){
-        player.image = gs("stand2.png");
-        
-    }
 
+        if(counterL > 6) counterL = 1;
+    }
+    else if(direction == false && player.vel.y == 0) player.image = LstandFrame;
+        
     if(kb.pressing("ArrowDown") && direction == true){
         player.image = gs("crouch1.png");
         player.height = 240;
