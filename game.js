@@ -146,7 +146,8 @@ function preload(){
 
 function setup(){
     createCanvas(1200,1000);
-    skySprite = new Sprite(sky, 100,100,500,500);
+    skySprite = new Sprite(sky, -100,-100,1400,1400);
+    skySprite.collider = "none";
     speech = new p5.Speech();
     speech.setPitch(1);
     speech.setVoice("Aaron");
