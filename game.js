@@ -258,6 +258,7 @@ function draw() {
             }
         }
         else if(stage == 5){
+            open = false;
             lever.image = gs("lever.png");
             box.x = 200;
             box.y = 150;
