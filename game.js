@@ -86,8 +86,7 @@ let sneakAttackTimer = 0;
 let walkFrames = [];
 let LwalkFrames = [];
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
-let swingFrames = [];
-let LswingFrames = [];
+let [swingFrames, LswingFrames, dashFrames, LdashFrames] = [[], [], [], []];
 
 
 function gs(fileName){
@@ -103,6 +102,8 @@ function preload(){
     LcrouchFrame = loadImage(gs("crouch2.png"));
     for(let i = 1; i <= 4; i++) swingFrames[i] = loadImage(gs(i + "f.png"));
     for(let i = 1; i <= 4; i++) LswingFrames[i] = loadImage(gs("l" + i + ".png"));
+    for(let i = 1; i <= 2; i++) dashFrames[i] = loadImage(gs("dash" + i + ".png"));
+    for(let i = 3; i <= 4; i++) LdashFrames[i] = loadImage(gs("dash" + i + ".png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -691,9 +692,8 @@ function spriteStuff(){
 
 
 function basicMovement(){
-    if(player.collides(laser)){
-        health-=15;
-    }
+    if(player.collides(laser)) health-=15;
+    
     if(health <= 0){
         dead = true;
         gotten = false;
@@ -726,46 +726,32 @@ function basicMovement(){
         player.height = 240;
         
         if(kb.pressing("ArrowRight")){
-            player.image = gs("dash1.png");
+            player.image = dashFrames[1];
             player.x = player.x + 10;
             player.height = 200;
-            
             counterSR+=0.1;
-            player.image = gs("dash" + Math.round(counterSR) + ".png");
+            player.image = dashFrames[Math.round(counterSR)];
 
-
-            if(counterSR > 2){
-                counterSR = 1;
-            }
+            if(counterSR > 2) counterSR = 1;
         }
     }
-    else if(direction == true && kb.pressing("ArrowDown") == false){
-        player.height = 310;
-        
-    }
+    else if(direction == true && kb.pressing("ArrowDown") == false) player.height = 310;
 
     if(kb.pressing("ArrowDown") && direction == false){
         player.image = LcrouchFrame;
         player.height = 240;
         
         if(kb.pressing("ArrowLeft")){
-            player.image = gs("dash3.png");
+            player.image = LdashFrames[1];
             player.x = player.x - 10;
             player.height = 200;
-
-
             counterSL+=0.1;
-            player.image = gs("dash" + Math.round(counterSL) + ".png");
+            player.image = LdashFrames[Math.round(counterSL)];
 
-
-            if(counterSL > 4){
-                counterSL = 3;
-            }
+            if(counterSL > 4) counterSL = 3;
         }
     }
-    else if(direction == false && kb.pressing("ArrowDown") == false){
-        player.height = 310;
-    }
+    else if(direction == false && kb.pressing("ArrowDown") == false) player.height = 310;
     
     player.vel.x = 0;
     fill("black");
@@ -773,44 +759,28 @@ function basicMovement(){
     fill("red");
     rect(150, 915, health * 2, 25);
 
-
     fill("black");
     text("Mana: " + mana, 430,930);
     fill("Blue");
     rect(530, 915, mana * 2, 25);
 
-
-    if(mana < 100){
-        mana += 1;
-    }
-
-
+    if(mana < 100) mana += 1;
+    
     fill("black");
     text("Stamina: " + stamina, 830,930);
     fill("Yellow");
     rect(930, 915, stamina * 2, 25);
 
-
-    if(stamina < 100){
-        stamina += 1;
-    }
-
-
+    if(stamina < 100) stamina += 1;
+    
     let d = Math.sqrt(Math.pow(player.x - lever.x, 2) + Math.pow(player.y - lever.y, 2));
 
-
-    if(kb.presses("e") && d < 50){
-        
-        open = !open;
-    }
-    if(open == true){
-        lever.image = gs("lever2.png");
-    }
-    if(open == false){
-        lever.image = gs("lever.png");
-    }
+    if(kb.presses("e") && d < 50) open = !open;
+    
+    if(open == true) lever.image = gs("lever2.png");
+    
+    if(open == false) lever.image = gs("lever.png");
 }
-
 
 function resistance(){
     if(stage != 8){
