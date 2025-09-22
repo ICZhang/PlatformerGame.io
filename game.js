@@ -1023,7 +1023,7 @@ function jumpAni(){
 
 
 function deathAnimation(){
-    if(counterDeath < 10.5){
+    if(counterDeath < 10.1){
         counterDeath+=0.25;
         player.image = deathFrames[Math.round(counterDeath)]; 
     }   
