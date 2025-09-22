@@ -786,7 +786,7 @@ function basicMovement(){
     fill("Yellow");
     rect(930, 915, stamina * 2, 25);
 
-    text("Level: " + stage, 830,1030);
+    text("Level: " + stage, 830,980);
 
     if(stamina < 100) stamina += 1;
     
