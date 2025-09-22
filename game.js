@@ -107,7 +107,7 @@ function preload(){
     }
     for(let i = 1; i <= 5; i++) fireFrames[i] = loadImage(gs("c" + i + ".png"));
     for(let i = 1; i <= 5; i++) LfireFrames[i] = loadImage(gs("z" + i + ".png"));
-    for(let i = 1; i <= 10; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
+    for(let i = 1; i <= 9; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
     for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
 
@@ -1218,9 +1218,8 @@ function level1(){
     blocks[0].scale.y = 0.20;
     blocks[0].width = 150;
     blocks[0].height = 550;
-    camera.off();
+
     text("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 300,500);
-    camera.on();
 }
 
 
