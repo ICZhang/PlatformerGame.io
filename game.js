@@ -1027,6 +1027,7 @@ function deathAnimation(){
         counterDeath+=0.25;
         player.image = deathFrames[Math.round(counterDeath)]; 
     }   
+    player.vel.y = 0;
 }
 
 function fireBallAttack(){
