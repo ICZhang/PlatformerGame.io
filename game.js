@@ -83,13 +83,8 @@ var finalAttack = 0;
 let sneakAttackActivate = false;
 let sneakAttackTimer = 0;
 
-let walkFrames = [];
-let LwalkFrames = [];
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
-let swingFrames = [];
-let LswingFrames = [];
-let dashFrames = [];
-let LdashFrames = [];
+let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -104,8 +99,17 @@ function preload(){
     LcrouchFrame = loadImage(gs("crouch2.png"));
     for(let i = 1; i <= 4; i++) swingFrames[i] = loadImage(gs(i + "f.png"));
     for(let i = 1; i <= 4; i++) LswingFrames[i] = loadImage(gs("l" + i + ".png"));
-    for(let i = 1; i <= 2; i++) dashFrames[i] = loadImage(gs("dash" + i + ".png"));
-    for(let i = 3; i <= 4; i++) LdashFrames[i] = loadImage(gs("dash" + i + ".png"));
+    for(let i = 1; i <= 2; i++) {
+        dashFrames[i] = loadImage(gs("dash" + (i) + ".png"));
+        LdashFrames[i] = loadImage(gs("dash" + (i+2) + ".png"));
+        jumpFrames[i] = loadImage(gs("JumpR" + i + ".png"));
+        LjumpFrames[i] = loadImage(gs("JumpL" + i + ".png"));
+    }
+    for(let i = 1; i <= 5; i++) fireFrames[i] = loadImage(gs("c" + i + ".png"));
+    for(let i = 1; i <= 5; i++) LfireFrames[i] = loadImage(gs("z" + i + ".png"));
+    for(let i = 1; i <= 10; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
+    for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
+    for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -803,12 +807,8 @@ function resistance(){
    }
 }
 
-
-
-
 function pjump(){
     player.rotation = 0;
-
 
     if(player.collides(ground)){
         player.vel.y = 0;
@@ -865,8 +865,6 @@ function resizeThings(){
 
 
 function summonArrow(){
-
-
    if(kb.presses("s")){
        arrowRS = true;
    }
@@ -1003,19 +1001,15 @@ function hookShot(){
 function jumpAni(){
     if(direction == true){
         counterJumpRight+=0.1;
-        player.image = gs("JumpR" + Math.round(counterJumpRight) + ".png");
+        player.image = jumpFrames[Math.round(counterJumpRight)]; 
         
-        if(counterJumpRight > 2){
-            counterJumpRight = 1;
-        }
+        if(counterJumpRight > 2) counterJumpRight = 1;
     }
     if(direction == false){
         counterJumpLeft+=0.1;
-        player.image = gs("JumpL" + Math.round(counterJumpLeft) + ".png");
-        
-        if(counterJumpLeft > 2){
-            counterJumpLeft = 1;
-        }
+        player.image = LjumpFrames[Math.round(counterJumpLeft)];
+
+        if(counterJumpLeft > 2) counterJumpLeft = 1;
     }
 }
 
@@ -1023,10 +1017,9 @@ function jumpAni(){
 function deathAnimation(){
     if(counterDeath < 11){
         counterDeath+=0.25;
-        player.image = gs("d" + Math.round(counterDeath) + ".png");
+        player.image = deathFrames[Math.round(counterDeath)]; 
     }   
 }
-
 
 function fireBallAttack(){
     fireball.rotation = 0;
@@ -1054,23 +1047,19 @@ function fireBallAttack(){
     if(counterBall > 3){
         counterBall = 0.9;
     }
-    fireball.image = gs("b" + Math.round(counterBall) + ".png");
+    fireball.image = fireballFrames[Math.round(counterBall)];
     if(shot){
         counterShoot += 0.2;
-        player.image = gs("c" + Math.round(counterShoot) + ".png");
+        player.image = fireFrames[Math.round(counterShoot)];
         if(counterShoot > 5.4){
             shot = false;
-            player.image = gs("stand1.png");
+            player.image = standFrame;
         }
-        
     }
-
-
       
     if(fireball2.collides(dummy)){
         health-=5;
     }
-
 
     if(kb.presses("q") && direction == false && FcoolDown2 == false && mana >= 50){
         mana -= 50;
@@ -1091,15 +1080,14 @@ function fireBallAttack(){
     if(counterBallL > 3){
         counterBallL = 0.9;
     }
-    fireball2.image = gs("a" + Math.round(counterBallL) + ".png");
+    fireball2.image = LfireballFrames[Math.round(counterBallL)];
     if(shotL){
         counterShootL += 0.2;
-        player.image = gs("z" + Math.round(counterShootL) + ".png");
+        player.image = LfireFrames[Math.round(counterShootL)]; 
         if(counterShootL > 5.4){
             shotL = false;
-            player.image = gs("stand2.png");
+            player.image = LstandFrame;
         }
-        
     }
     if(fireball.x > 1200){
         FcoolDown = false;
