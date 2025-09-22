@@ -447,7 +447,7 @@ function draw() {
             blocks[4].x = -1000;
             blocks[5].x = -1000;
             lever.x = -1000;
-            
+            open = false;
             Ldoor.x = 1000
             Ldoor.y = 675
             Ldoor.height = 300;
