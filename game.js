@@ -110,6 +110,10 @@ function preload(){
     for(let i = 1; i <= 10; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
     for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
+
+    sky = loadImage(gs("sky.png"));
+    staticCloud = loadImage(gs("staticCloud.png"));
+    dynamicCloud = loadImage(gs("dynamicCloud.png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -142,6 +146,7 @@ function preload(){
 
 function setup(){
     createCanvas(1200,1000);
+    skySprite = new Sprite(sky, 100,100,500,500);
     speech = new p5.Speech();
     speech.setPitch(1);
     speech.setVoice("Aaron");
@@ -197,7 +202,7 @@ function setup(){
 function draw() {
     clear();
     //text(arrowListDown[0].x, 200,200);
-    background("lightblue");
+    //background("lightblue");
     fill("green");
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
