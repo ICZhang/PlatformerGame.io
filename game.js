@@ -86,8 +86,10 @@ let sneakAttackTimer = 0;
 let walkFrames = [];
 let LwalkFrames = [];
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
-let [swingFrames, LswingFrames, dashFrames, LdashFrames] = [[], [], [], []];
-
+let swingFrames = [];
+let LswingFrames = [];
+let dashFrames = [];
+let LdashFrames = [];
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
