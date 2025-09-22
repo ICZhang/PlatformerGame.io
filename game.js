@@ -786,6 +786,8 @@ function basicMovement(){
     fill("Yellow");
     rect(930, 915, stamina * 2, 25);
 
+    text("Level: " + stage, 830,1030);
+
     if(stamina < 100) stamina += 1;
     
     let d = Math.sqrt(Math.pow(player.x - lever.x, 2) + Math.pow(player.y - lever.y, 2));
@@ -971,6 +973,7 @@ function normalStageStuff(){
     player.image = gs("stand1.png");
     normalHealth = maxHealth;
     health = maxHealth;
+    open = false;
 }
 
 
