@@ -202,6 +202,7 @@ function draw() {
     clear();
     background(138, 176, 226);
     fill("green");
+
     dynamicCloudSprite.x+=1;
     dynamicCloudSprite2.x+=1;
     if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
@@ -570,6 +571,9 @@ function draw() {
             bossSword.visible = false;
             lava.visible = false;
             blocks[0].visible = false;
+            staticCloudSprite.visible = false;
+            dynamicCloudSprite.visible = false;
+            dynamicCloudSprite2.visible = false;
             
         }
     }
@@ -580,6 +584,9 @@ function draw() {
         player.visible = false;
         portal.visible = false;
         finalAttackSprite.visible = false;
+        staticCloudSprite.visible = false;
+        dynamicCloudSprite.visible = false;
+        dynamicCloudSprite2.visible = false;
         
         text("Congratulations! You win!.", 500,500);
     }
@@ -1882,6 +1889,7 @@ function bossFight(){
         if(sneakAttackActivate == true){
             text(sneakAttackTimer, 100, 100);
             sneakAttackTimer++;
+            speech.stop();
             speech.speak("Got ya.")
             if(sneakAttackTimer > 50) health = 0;
         } 
