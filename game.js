@@ -107,7 +107,7 @@ function preload(){
     }
     for(let i = 1; i <= 5; i++) fireFrames[i] = loadImage(gs("c" + i + ".png"));
     for(let i = 1; i <= 5; i++) LfireFrames[i] = loadImage(gs("z" + i + ".png"));
-    for(let i = 1; i <= 9; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
+    for(let i = 1; i <= 10; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
     for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
 
@@ -1023,7 +1023,7 @@ function jumpAni(){
 
 
 function deathAnimation(){
-    if(counterDeath < 11){
+    if(counterDeath < 10.5){
         counterDeath+=0.25;
         player.image = deathFrames[Math.round(counterDeath)]; 
     }   
