@@ -99,8 +99,8 @@ function preload(){
     for(let i = 1; i <= 6; i++) LwalkFrames[i] = loadImage(gs("Lwalk" + i + ".png"));
     standFrame = loadImage(gs("stand1.png"));
     LstandFrame = loadImage(gs("stand2.png"));
-    crouchFrame = loadImage(gs("crouch1"));
-    LcrouchFrame = loadImage(gs("crouch2"));
+    crouchFrame = loadImage(gs("crouch1.png"));
+    LcrouchFrame = loadImage(gs("crouch2.png"));
     for(let i = 1; i <= 4; i++) swingFrames[i] = loadImage(gs(i + "f.png"));
     for(let i = 1; i <= 4; i++) LswingFrames[i] = loadImage(gs("l" + i + ".png"));
     
