@@ -214,6 +214,8 @@ function draw() {
     //text(arrowListDown[0].x, 200,200);
     background(138, 176, 226);
     fill("green");
+    dynamicCloudSprite.x+=5;
+    if(dynamicCloudSprite.x > 1200) dynamicCloudSprite.x = 0;
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
     if(kb.presses("r") && stage != 9){
