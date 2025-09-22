@@ -25,7 +25,7 @@ var counterJumpLeft = 1;
 var counterRA = 1;
 var counterLA = 1;
 var counterSR = 1;
-var counterSL = 3;
+var counterSL = 1;
 var counterShadow = 0;
 var counterDeath = 1;
 var counterBall = 1;
@@ -754,7 +754,7 @@ function basicMovement(){
             counterSL+=0.1;
             player.image = LdashFrames[Math.round(counterSL)];
 
-            if(counterSL > 4) counterSL = 3;
+            if(counterSL > 2) counterSL = 1;
         }
     }
     else if(direction == false && kb.pressing("ArrowDown") == false) player.height = 310;
