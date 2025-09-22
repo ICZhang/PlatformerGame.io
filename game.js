@@ -1918,14 +1918,14 @@ function cloudSetUp(){
     staticCloudSprite.scale.x = 5;
     staticCloudSprite.scale.y = 3;
 
-    dynamicCloudSprite = new Sprite(dynamicCloud, 600, 520, 50, 50);
+    dynamicCloudSprite = new Sprite(dynamicCloud, 600, 450, 50, 50);
     dynamicCloudSprite.collider = "none";
     dynamicCloudSprite.width = 400;
     dynamicCloudSprite.scale.x = 3;
     dynamicCloudSprite.scale.y = 1.5;
     dynamicCloudSprite.debug = true;
 
-    dynamicCloudSprite2 = new Sprite(dynamicCloud, -900, 520, 50, 50);
+    dynamicCloudSprite2 = new Sprite(dynamicCloud, -900, 450, 50, 50);
     dynamicCloudSprite2.collider = "none";
     dynamicCloudSprite2.width = 400;
     dynamicCloudSprite2.scale.x = 3;
