@@ -708,7 +708,7 @@ function basicMovement(){
     if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false){
         player.x = player.x - 10;
         counterL+=0.1;
-        player.image = LwalkFrames[Math.round(counter)];
+        player.image = LwalkFrames[Math.round(counterL)];
         direction = false;
 
         if(counterL > 6) counterL = 1;
