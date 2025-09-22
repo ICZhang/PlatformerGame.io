@@ -203,14 +203,13 @@ function draw() {
     //text(arrowListDown[0].x, 200,200);
     background(138, 176, 226);
     fill("green");
-    dynamicCloudSprite.x+=5;
-    dynamicCloudSprite2.x+=5;
+    dynamicCloudSprite.x+=1;
+    dynamicCloudSprite2.x+=1;
     if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
     if(dynamicCloudSprite2.x > 2100) dynamicCloudSprite2.x = -900;
 
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
-    world.step();
     camera.off();
 
     if(kb.presses("r") && stage != 9){
