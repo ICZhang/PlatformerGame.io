@@ -83,11 +83,15 @@ var finalAttack = 0;
 let sneakAttackActivate = false;
 let sneakAttackTimer = 0;
 
+let walkFrames = [];
+
 function gs(fileName){
     return "/GameSprites/" + fileName;  
 }
 
 function preload(){
+    for(let i = 1; i <= 6; i++) walkFrames[i] = loadImage(gs("walk" + i + ".png"));
+    
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
     dirt2 = loadImage(gs("dirt2.jpeg"));
@@ -685,12 +689,11 @@ function basicMovement(){
     player.scale.x = 0.2;
     player.scale.y = 0.2;
     
-    text(counter, 200, 200);
     if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false){
         player.x = player.x + 10;
         
         counter+=0.1;
-        player.image = gs("walk" + Math.round(counter) + ".png");
+        player.image = walkFrames[Math.round(counter)];
 
 
         if(counter > 6){
