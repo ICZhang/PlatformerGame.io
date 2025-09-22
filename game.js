@@ -203,9 +203,9 @@ function draw() {
     //text(arrowListDown[0].x, 200,200);
     background(138, 176, 226);
     fill("green");
-    dynamicCloudSprite.x+=5;
+    dynamicCloudSprite.x+=2;
     //dynamicCloudSprite2.x+=5;
-    if(dynamicCloudSprite.x > 2200) dynamicCloudSprite.x = -800;
+    if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
     //if(dynamicCloudSprite2.x > 1500) dynamicCloudSprite2 = 0;
     text("C: " + dynamicCloudSprite.x, 100, 100);
     text("W: " + dynamicCloudSprite.width, 200, 100);
