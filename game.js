@@ -201,6 +201,7 @@ function setup(){
 function draw() {
     clear();
     //text(arrowListDown[0].x, 200,200);
+    drawSprites();
     background(138, 176, 226);
     fill("green");
     dynamicCloudSprite.x+=5;
@@ -1915,13 +1916,13 @@ function cloudSetUp(){
     staticCloudSprite.scale.x = 5;
     staticCloudSprite.scale.y = 3;
 
-    dynamicCloudSprite = new Sprite(dynamicCloud, 600, 300, 50, 50); //485
+    dynamicCloudSprite = new Sprite(dynamicCloud, 600, 485, 50, 50); //485
     dynamicCloudSprite.collider = "none";
     dynamicCloudSprite.width = 400;
     dynamicCloudSprite.scale.x = 2.7;
     dynamicCloudSprite.scale.y = 1.5;
 
-    dynamicCloudSprite2 = new Sprite(dynamicCloud, -900, 300, 50, 50); //485
+    dynamicCloudSprite2 = new Sprite(dynamicCloud, -900, 485, 50, 50); //485
     dynamicCloudSprite2.collider = "none";
     dynamicCloudSprite2.width = 400;
     dynamicCloudSprite2.scale.x = 2.7;
