@@ -1890,9 +1890,8 @@ function bossFight(){
     if(sneakAttackActivate == true){
         text(sneakAttackTimer, 100, 100);
         sneakAttackTimer++;
-        speech.stop();
         speech.speak("Got ya.")
-        if(sneakAttackTimer > 100) health = 0;
+        if(sneakAttackTimer > 1000) health = 0;
     } 
     
     if(bossTimer > 10100 && bossTimer < 10150) speech.speak("You're going down with me.");
