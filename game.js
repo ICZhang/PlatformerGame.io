@@ -200,7 +200,6 @@ function setup(){
 
 function draw() {
     clear();
-    //text(arrowListDown[0].x, 200,200);
     background(138, 176, 226);
     fill("green");
     dynamicCloudSprite.x+=1;
@@ -209,8 +208,6 @@ function draw() {
     if(dynamicCloudSprite2.x > 2100) dynamicCloudSprite2.x = -900;
 
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
-
-    camera.off();
 
     if(kb.presses("r") && stage != 9){
 
@@ -1221,8 +1218,9 @@ function level1(){
     blocks[0].scale.y = 0.20;
     blocks[0].width = 150;
     blocks[0].height = 550;
-    
+    camera.off();
     text("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 300,500);
+    camera.on();
 }
 
 
