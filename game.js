@@ -1923,6 +1923,8 @@ function cloudSetUp(){
     dynamicCloudSprite.width = 1200;
     dynamicCloudSprite.scale.x = 3;
     dynamicCloudSprite.scale.y = 1.5;
+    dynamicCloudSprite.debug = true;
+    
     dynamicCloudSprite2 = new Sprite(dynamicCloud, -1200, 520, 50, 50);
     dynamicCloudSprite2.collider = "none";
     dynamicCloudSprite2.scale.x = 3;
