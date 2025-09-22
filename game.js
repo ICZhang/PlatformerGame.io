@@ -145,18 +145,7 @@ function preload(){
 
 function setup(){
     createCanvas(1200,1000);
-
-    staticCloudSprite = new Sprite(staticCloud, 0, 300, 50, 50);
-    staticCloudSprite.collider = "none";
-    staticCloudSprite.scale.x = 5;
-    staticCloudSprite.scale.y = 3;
-
-    dynamicCloudSprite = new Sprite(dynamicCloud, 0, 250, 50, 50);
-    dynamicCloudSprite.collider = "none";
-    dynamicCloudSprite.scale.x = 3;
-    dynamicCloudSprite.scale.y = 1.5;
-
-    dynamicCloudSprite
+    cloudSetUp();
     speech = new p5.Speech();
     speech.setPitch(1);
     speech.setVoice("Aaron");
@@ -215,7 +204,9 @@ function draw() {
     background(138, 176, 226);
     fill("green");
     dynamicCloudSprite.x+=5;
-    if(dynamicCloudSprite.x > 2000) dynamicCloudSprite.x = 400;
+    dynamicCloudSprite2.x+=5;
+    if(dynamicCloudSprite.x > 2000) dynamicCloudSprite.x = 800;
+    if(dynamicCloudSprite2.x > 2000) dynamicCloudSprite2 = 800;
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
     if(kb.presses("r") && stage != 9){
@@ -1917,3 +1908,18 @@ function bossFight(){
     }
 }
 
+function cloudSetUp(){
+    staticCloudSprite = new Sprite(staticCloud, 0, 300, 50, 50);
+    staticCloudSprite.collider = "none";
+    staticCloudSprite.scale.x = 5;
+    staticCloudSprite.scale.y = 3;
+
+    dynamicCloudSprite = new Sprite(dynamicCloud, 0, 350, 50, 50);
+    dynamicCloudSprite.collider = "none";
+    dynamicCloudSprite.scale.x = 3;
+    dynamicCloudSprite.scale.y = 1.5;
+    dynamicCloudSprite2 = new Sprite(dynamicCloud, -1200, 350, 50, 50);
+    dynamicCloudSprite2.collider = "none";
+    dynamicCloudSprite2.scale.x = 3;
+    dynamicCloudSprite2.scale.y = 1.5;
+}
