@@ -205,7 +205,7 @@ function draw() {
     fill("green");
     dynamicCloudSprite.x+=5;
     //dynamicCloudSprite2.x+=5;
-    if(dynamicCloudSprite.x > 1200) dynamicCloudSprite.x = -400;
+    if(dynamicCloudSprite.x > 1400) dynamicCloudSprite.x = -400;
     //if(dynamicCloudSprite2.x > 1500) dynamicCloudSprite2 = 0;
     text("C: " + dynamicCloudSprite.x, 100, 100);
     text("W: " + dynamicCloudSprite.width, 200, 100);
@@ -1920,11 +1920,11 @@ function cloudSetUp(){
 
     dynamicCloudSprite = new Sprite(dynamicCloud, 600, 520, 50, 50);
     dynamicCloudSprite.collider = "none";
-    dynamicCloudSprite.width = 1200;
+    dynamicCloudSprite.width = 400;
     dynamicCloudSprite.scale.x = 3;
     dynamicCloudSprite.scale.y = 1.5;
     dynamicCloudSprite.debug = true;
-    
+
     dynamicCloudSprite2 = new Sprite(dynamicCloud, -1200, 520, 50, 50);
     dynamicCloudSprite2.collider = "none";
     dynamicCloudSprite2.scale.x = 3;
