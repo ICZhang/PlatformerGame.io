@@ -685,7 +685,7 @@ function basicMovement(){
     player.scale.x = 0.2;
     player.scale.y = 0.2;
     
-    
+    text(counter, 200, 200);
     if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false){
         player.x = player.x + 10;
         
