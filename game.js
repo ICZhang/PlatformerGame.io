@@ -207,6 +207,9 @@ function draw() {
     dynamicCloudSprite2.x+=5;
     if(dynamicCloudSprite.x > 2000) dynamicCloudSprite.x = 800;
     if(dynamicCloudSprite2.x > 2000) dynamicCloudSprite2 = 800;
+    text("C: " + dynamicCloudSprite.x, 100, 100);
+    text("C2: " + dynamicCloudSprite2.x, 100, 200);
+
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
     if(kb.presses("r") && stage != 9){
@@ -1914,11 +1917,11 @@ function cloudSetUp(){
     staticCloudSprite.scale.x = 5;
     staticCloudSprite.scale.y = 3;
 
-    dynamicCloudSprite = new Sprite(dynamicCloud, 0, 350, 50, 50);
+    dynamicCloudSprite = new Sprite(dynamicCloud, 0, 450, 50, 50);
     dynamicCloudSprite.collider = "none";
     dynamicCloudSprite.scale.x = 3;
     dynamicCloudSprite.scale.y = 1.5;
-    dynamicCloudSprite2 = new Sprite(dynamicCloud, -1200, 350, 50, 50);
+    dynamicCloudSprite2 = new Sprite(dynamicCloud, -1200, 450, 50, 50);
     dynamicCloudSprite2.collider = "none";
     dynamicCloudSprite2.scale.x = 3;
     dynamicCloudSprite2.scale.y = 1.5;
