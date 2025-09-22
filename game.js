@@ -146,10 +146,6 @@ function preload(){
 
 function setup(){
     createCanvas(1200,1000);
-    skySprite = new Sprite(sky, -100,-100,1400,1400);
-    skySprite.scale.x = 7;
-    skySprite.scale.y = 7;
-    skySprite.collider = "none";
     speech = new p5.Speech();
     speech.setPitch(1);
     speech.setVoice("Aaron");
@@ -205,7 +201,7 @@ function setup(){
 function draw() {
     clear();
     //text(arrowListDown[0].x, 200,200);
-    //background("lightblue");
+    background(138, 176, 226);
     fill("green");
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
