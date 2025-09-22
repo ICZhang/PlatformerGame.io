@@ -84,9 +84,11 @@ let sneakAttackActivate = false;
 let sneakAttackTimer = 0;
 
 let walkFrames = [];
-let LwalkFrames = []
-let standFrame;
-let LstandFrame;
+let LwalkFrames = [];
+let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
+let swingFrames = [];
+let LswingFrames = [];
+
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -97,6 +99,10 @@ function preload(){
     for(let i = 1; i <= 6; i++) LwalkFrames[i] = loadImage(gs("Lwalk" + i + ".png"));
     standFrame = loadImage(gs("stand1.png"));
     LstandFrame = loadImage(gs("stand2.png"));
+    crouchFrame = loadImage(gs("crouch1"));
+    LcrouchFrame = loadImage(gs("crouch2"));
+    for(let i = 1; i <= 4; i++) swingFrames[i] = loadImage(gs("" + i + "f.png"));
+    for(let i = 1; i <= 4; i++) LswingFrames[i] = loadImage(gs("l" + i + ".png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -716,15 +722,13 @@ function basicMovement(){
     else if(direction == false && player.vel.y == 0) player.image = LstandFrame;
         
     if(kb.pressing("ArrowDown") && direction == true){
-        player.image = gs("crouch1.png");
+        player.image = crouchFrame;
         player.height = 240;
-        //text(player.y, 200,200);
         
         if(kb.pressing("ArrowRight")){
             player.image = gs("dash1.png");
             player.x = player.x + 10;
             player.height = 200;
-            
             
             counterSR+=0.1;
             player.image = gs("dash" + Math.round(counterSR) + ".png");
@@ -740,10 +744,8 @@ function basicMovement(){
         
     }
 
-
     if(kb.pressing("ArrowDown") && direction == false){
-        
-        player.image = gs("crouch2.png");
+        player.image = LcrouchFrame;
         player.height = 240;
         
         if(kb.pressing("ArrowLeft")){
@@ -945,17 +947,15 @@ function swordThingR(){
     if(swingR == true){
         swordHitBox.collider = "static";
         counterRA += 0.1;
-        player.image = gs(Math.round(counterRA) + "f" + ".png");
-
+        player.image = swingFrames[Math.round(counterRA)];
 
         if(counterRA > 4){
             swordHitBox.collider = "none";
             counterRA = 1;
             swingR = false;
-            player.image = gs("stand1.png");
+            player.image = standFrame;
         }
     }
-
 
     if(kb.presses("a") && direction == false && stamina >= 20){
         swingL = true;
@@ -964,14 +964,13 @@ function swordThingR(){
     if(swingL == true){
         swordHitBox.collider = "static";
         counterLA += 0.1;
-        player.image = gs("l" + Math.round(counterLA) + ".png");
-
+        player.image = LswingFrames[Math.round(counterLA)];
 
         if(counterLA > 4){
             swordHitBox.collider = "none";
             counterLA = 1;
             swingL = false;
-            player.image = gs("stand2.png");
+            player.image = LstandFrame;
         }
     }
     
