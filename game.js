@@ -1882,18 +1882,18 @@ function bossFight(){
         if(boss.y < 650) boss.y += 10;
         laser.x = -1000;
         blocks[0].x = -1000;
-
-        if(player.collides(boss)){
-            sneakAttackActivate = true;
-        }
-        if(sneakAttackActivate == true){
-            text(sneakAttackTimer, 100, 100);
-            sneakAttackTimer++;
-            speech.stop();
-            speech.speak("Got ya.")
-            if(sneakAttackTimer > 100) health = 0;
-        } 
     }
+
+    if(player.collides(boss) && bossTimer > 10000){
+        sneakAttackActivate = true;
+    }
+    if(sneakAttackActivate == true){
+        text(sneakAttackTimer, 100, 100);
+        sneakAttackTimer++;
+        speech.stop();
+        speech.speak("Got ya.")
+        if(sneakAttackTimer > 100) health = 0;
+    } 
     
     if(bossTimer > 10100 && bossTimer < 10150) speech.speak("You're going down with me.");
     if(bossTimer > 10100){
