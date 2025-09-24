@@ -202,11 +202,17 @@ function draw() {
     clear();
     background(138, 176, 226);
     fill("green");
-
-    dynamicCloudSprite.x+=1;
-    dynamicCloudSprite2.x+=1;
-    if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
-    if(dynamicCloudSprite2.x > 2100) dynamicCloudSprite2.x = -900;
+    if(stage < 8){
+        dynamicCloudSprite.x+=1;
+        dynamicCloudSprite2.x+=1;
+        if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
+        if(dynamicCloudSprite2.x > 2100) dynamicCloudSprite2.x = -900;
+    }
+    else{
+        staticCloudSprite.visible = false;
+        dynamicCloudSprite.visible = false;
+        dynamicCloudSprite2.visible = false;
+    }
 
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
@@ -540,6 +546,8 @@ function draw() {
         else{
             deathAnimation();
         }
+        text("Press x to continue with the dialogue.", 475,200 );
+        text("Press j to skip dialogue.", 500, 175);
     }
     else if(stage == 9){
         createCanvas(1200,1000);
@@ -587,6 +595,7 @@ function draw() {
         staticCloudSprite.visible = false;
         dynamicCloudSprite.visible = false;
         dynamicCloudSprite2.visible = false;
+        speech.stop();
         
         text("Congratulations! You win!.", 500,500);
     }
@@ -1120,10 +1129,6 @@ function fireBallAttack(){
 
     if(fireball.visible == true && fireball.collides(box) || fireball2.visible == true && fireball2.collides(box)){
         box.x = -200;
-    }
-    if(stage == 8){
-        text("Press x to continue with the dialogue.", 475,200 );
-        text("Press j to skip dialogue.", 500, 175);
     }
     
     for(let i = 0; i < blocks.length; i++){
@@ -1891,7 +1896,7 @@ function bossFight(){
         text(sneakAttackTimer, 100, 100);
         sneakAttackTimer++;
         speech.speak("Got ya.")
-        if(sneakAttackTimer > 1000) health = 0;
+        if(sneakAttackTimer > 100) health = 0;
     } 
     
     if(bossTimer > 10100 && bossTimer < 10150) speech.speak("You're going down with me.");
