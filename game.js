@@ -1947,22 +1947,27 @@ function cloudSetUp(){
     dynamicCloudSprite2.scale.x = 2.7;
     dynamicCloudSprite2.scale.y = 1.5;
 
-    skyBossSprite = new Sprite(skyBoss, 200, 300, 50, 50);
+    skyBossSprite = new Sprite(skyBoss, 200, 250, 50, 50);
     skyBossSprite.collider = "none";
     skyBossSprite.scale.x = 4;
     skyBossSprite.scale.y = 3.5;
 
-    dynamicCloudSprite = new Sprite(dynamicCloud, 600, 485, 50, 50); //485
-    dynamicCloudSprite.collider = "none";
-    dynamicCloudSprite.width = 400;
-    dynamicCloudSprite.scale.x = 2.7;
-    dynamicCloudSprite.scale.y = 1.5;
+    staticCloudBossSprite = new Sprite(staticCloudBoss, 0, 300, 50, 50);
+    staticCloudBossSprite.collider = "none";
+    staticCloudBossSprite.scale.x = 5;
+    staticCloudBossSprite.scale.y = 3;
 
-    dynamicCloudSprite2 = new Sprite(dynamicCloud, -900, 485, 50, 50); //485
-    dynamicCloudSprite2.collider = "none";
-    dynamicCloudSprite2.width = 400;
-    dynamicCloudSprite2.scale.x = 2.7;
-    dynamicCloudSprite2.scale.y = 1.5;
+    dynamicCloudBossSprite = new Sprite(dynamicCloudBoss, 600, 485, 50, 50); //485
+    dynamicCloudBossSprite.collider = "none";
+    dynamicCloudBossSprite.width = 400;
+    dynamicCloudBossSprite.scale.x = 2.7;
+    dynamicCloudBossSprite.scale.y = 1.5;
+
+    dynamicCloudBossSprite2 = new Sprite(dynamicCloudBoss, -900, 485, 50, 50); //485
+    dynamicCloudBossSprite2.collider = "none";
+    dynamicCloudBossSprite2.width = 400;
+    dynamicCloudBossSprite2.scale.x = 2.7;
+    dynamicCloudBossSprite2.scale.y = 1.5;
 
 
 }
