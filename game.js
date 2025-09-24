@@ -114,9 +114,9 @@ function preload(){
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
 
-    skyBoss = loadImage(gs("skyBoss"));
-    staticCloudBoss = loadImage(gs("staticCloudBoss"));
-    dynamicCloudBoss = loadImage(gs("dynamicCloudBoss"));
+    skyBoss = loadImage(gs("skyBoss.png"));
+    staticCloudBoss = loadImage(gs("staticCloudBoss.png"));
+    dynamicCloudBoss = loadImage(gs("dynamicCloudBoss.png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
