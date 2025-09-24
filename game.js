@@ -1947,10 +1947,10 @@ function cloudSetUp(){
     dynamicCloudSprite2.scale.x = 2.7;
     dynamicCloudSprite2.scale.y = 1.5;
 
-    skyBossSprite = new Sprite(skyBoss, 200, 200, 50, 50);
+    skyBossSprite = new Sprite(skyBoss, 200, 300, 50, 50);
     skyBossSprite.collider = "none";
     skyBossSprite.scale.x = 4;
-    skyBossSprite.scale.y = 4;
+    skyBossSprite.scale.y = 3.5;
 
     dynamicCloudSprite = new Sprite(dynamicCloud, 600, 485, 50, 50); //485
     dynamicCloudSprite.collider = "none";
