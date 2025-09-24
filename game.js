@@ -561,9 +561,6 @@ function draw() {
             deathAnimation();
         }
         if(health <= 0){
-            finalAttackSprite.visible = false;
-            boss.visible = false;
-            ground.visible = false;
             background("black");
             if(deathMessage == true){  
                 speech.speak("You died. This is the end of your journey.");
@@ -571,28 +568,13 @@ function draw() {
                 speech.stop();
             }
             text("You died. This is the end of your journey.", 500,500);
-            bossSword.visible = false;
-            lava.visible = false;
-            blocks[0].visible = false;
-            staticCloudSprite.visible = false;
-            dynamicCloudSprite.visible = false;
-            dynamicCloudSprite2.visible = false;
-            
+            hideEverything();
         }
     }
     else if(stage == 10){
         background("Yellow");
-        boss.visible = false;
-        ground.visible = false;
-        player.visible = false;
-        portal.visible = false;
-        finalAttackSprite.visible = false;
-        staticCloudSprite.visible = false;
-        dynamicCloudSprite.visible = false;
-        dynamicCloudSprite2.visible = false;
-        speech.stop();
-        
         text("Congratulations! You win!.", 500,500);
+        hideEverything();
     }
 }
 
@@ -602,16 +584,13 @@ function spriteStuff(){
     castleImage.collider = "none";
     castleImage.visible = false;
 
-
     sprite = new Sprite(gear,550,300,50,50); 
     sprite.debug = false;
     sprite.scale.x = 0.3;
     sprite.scale.y = 0.3;
 
-
     swordHitBox = new Sprite(300,300, 30,50);
     swordHitBox.debug = true;
-
 
     dummy = new Sprite(750,700, 30,50);
     dummy.debug = false;
@@ -621,9 +600,7 @@ function spriteStuff(){
     fireball2 = new Sprite(Fireball2,-150,-150,70,50);
     fireball2.debug = false;
 
-
     player = new Sprite(idle, 100,200,50,50);
-
 
     boss = new Sprite(bossImage, 100,100,20,20);
     boss.scale.x = 0.2;
@@ -631,9 +608,7 @@ function spriteStuff(){
     boss.visible = false;
     boss.collider = "static";
 
-
     ground = new Sprite(dirt, 600,800,1200,100);
-
 
     arrow1 = new Sprite(arrow, 200,200,50,50);
     arrow1.debug = false;
@@ -646,11 +621,9 @@ function spriteStuff(){
     portal.scale.y = 0.3;
     portal.collider = "static";
 
-
     lava = new Sprite(lavaImage, 200,-200,120,120);
     lava.debug = false;
     lava.collider = "static";
-
 
     healthUp = new Sprite(hpUp, 200,200,750,750);
     healthUp.scale.x = 0.03;
@@ -659,7 +632,6 @@ function spriteStuff(){
     healthUp.collider = "static";
     healthUp.x = -100;
 
-
     box = new Sprite(boxImage, 200,200,250,150);
     box.scale.x = 0.5;
     box.scale.y = 0.5;
@@ -667,14 +639,12 @@ function spriteStuff(){
     box.collider = "static";
     box.x = -100;
 
-
     Ldoor = new Sprite(door, 200,600,200,200);
     Ldoor.scale.x = 0.5;
     Ldoor.scale.y = 0.5;
     Ldoor.debug = false;
     Ldoor.collider = "static";
     Ldoor.x = -300;
-
 
     lever = new Sprite(leverImage, -1100,700,400,400);
     lever.scale.x = 0.1;
@@ -687,12 +657,10 @@ function spriteStuff(){
     bossSword.collider = "static";
     bossSword.visible = false;
 
-
     bossSwordShadow = new Sprite(swordImageShadow, -1200,200,300,50);
     bossSwordShadow.debug = false;
     bossSwordShadow.collider = "dynamic";
     bossSwordShadow.visible = false;
-
 
     laser = new Sprite(laserImage, -200,200,140,475);
     laser.scale.y = 1.3;
@@ -700,14 +668,12 @@ function spriteStuff(){
     laser.debug = false;
     laser.visible = false;
 
-
     darkbox = new Sprite(shadowBox,-200,200,250,250);
     darkbox.scale.x = 0.2;
     darkbox.scale.y = 0.2;
     darkbox.visible = false;
     darkbox.debug = false;
     darkbox.collider = "dynamic";
-
 
     finalAttackSprite = new Sprite(shadowBox,200,200,2500,750);
     finalAttackSprite.scale.x = 8;
@@ -1974,11 +1940,12 @@ function moveClouds(){
         dynamicCloudBossSprite2.visible = false;
         skyBossSprite.visible = false;
     }
-    else{
+    else if(stage == 8){
         staticCloudSprite.visible = false;
         dynamicCloudSprite.visible = false;
         dynamicCloudSprite2.visible = false;
-
+    }
+    else{
         staticCloudBossSprite.visible = true;
         dynamicCloudBossSprite.visible = true;
         dynamicCloudBossSprite2.visible = true;
@@ -1989,4 +1956,23 @@ function moveClouds(){
         if(dynamicCloudBossSprite.x > 2100) dynamicCloudBossSprite.x = -900;
         if(dynamicCloudBossSprite2.x > 2100) dynamicCloudBossSprite2.x = -900;
     }
+}
+
+function hideEverything(){
+    finalAttackSprite.visible = false;
+    boss.visible = false;
+    ground.visible = false;
+    bossSword.visible = false;
+    lava.visible = false;
+    blocks[0].visible = false;
+    staticCloudSprite.visible = false;
+    dynamicCloudSprite.visible = false;
+    dynamicCloudSprite2.visible = false;
+    staticCloudBossSprite.visible = false;
+    dynamicCloudBossSprite.visible = false;
+    dynamicCloudBossSprite2.visible = false;
+    skyBoss.visible = false;
+    player.visible = false;
+    portal.visible = false;
+    speech.stop();
 }
