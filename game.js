@@ -1972,6 +1972,7 @@ function moveClouds(){
         staticCloudBossSprite.visible = false;
         dynamicCloudBossSprite.visible = false;
         dynamicCloudBossSprite2.visible = false;
+        skyBossSprite.visible = false;
     }
     else{
         staticCloudSprite.visible = false;
@@ -1981,6 +1982,7 @@ function moveClouds(){
         staticCloudBossSprite.visible = true;
         dynamicCloudBossSprite.visible = true;
         dynamicCloudBossSprite2.visible = true;
+        skyBossSprite.visible = true;
 
         dynamicCloudBossSprite.x+=2;
         dynamicCloudBossSprite2.x+=2;
