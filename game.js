@@ -206,17 +206,8 @@ function draw() {
     clear();
     background(138, 176, 226);
     fill("green");
-    if(stage < 8){
-        dynamicCloudSprite.x+=1;
-        dynamicCloudSprite2.x+=1;
-        if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
-        if(dynamicCloudSprite2.x > 2100) dynamicCloudSprite2.x = -900;
-    }
-    else{
-        staticCloudSprite.visible = false;
-        dynamicCloudSprite.visible = false;
-        dynamicCloudSprite2.visible = false;
-    }
+
+    moveClouds();
 
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
 
@@ -1970,4 +1961,30 @@ function cloudSetUp(){
     dynamicCloudBossSprite2.scale.y = 1.5;
 
 
+}
+
+function moveClouds(){
+    if(stage < 8){
+        dynamicCloudSprite.x+=1;
+        dynamicCloudSprite2.x+=1;
+        if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
+        if(dynamicCloudSprite2.x > 2100) dynamicCloudSprite2.x = -900;
+        staticCloudBossSprite.visible = false;
+        dynamicCloudBossSprite.visible = false;
+        dynamicCloudBossSprite2.visible = false;
+    }
+    else{
+        staticCloudSprite.visible = false;
+        dynamicCloudSprite.visible = false;
+        dynamicCloudSprite2.visible = false;
+
+        staticCloudBossSprite.visible = true;
+        dynamicCloudBossSprite.visible = true;
+        dynamicCloudBossSprite2.visible = true;
+
+        dynamicCloudBossSprite.x+=2;
+        dynamicCloudBossSprite2.x+=2;
+        if(dynamicCloudBossSprite.x > 2100) dynamicCloudBossSprite.x = -900;
+        if(dynamicCloudBossSprite2.x > 2100) dynamicCloudBossSprite2.x = -900;
+    }
 }
