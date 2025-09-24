@@ -1971,7 +1971,7 @@ function hideEverything(){
     staticCloudBossSprite.visible = false;
     dynamicCloudBossSprite.visible = false;
     dynamicCloudBossSprite2.visible = false;
-    skyBoss.visible = false;
+    skyBossSprite.visible = false;
     player.visible = false;
     portal.visible = false;
     speech.stop();
