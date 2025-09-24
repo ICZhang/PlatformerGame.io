@@ -113,6 +113,10 @@ function preload(){
 
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
+
+    skyBoss = loadImage(gs("skyBoss"));
+    staticCloudBoss = loadImage(gs("staticCloudBoss"));
+    dynamicCloudBoss = loadImage(gs("dynamicCloudBoss"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -1942,4 +1946,23 @@ function cloudSetUp(){
     dynamicCloudSprite2.width = 400;
     dynamicCloudSprite2.scale.x = 2.7;
     dynamicCloudSprite2.scale.y = 1.5;
+
+    skyBossSprite = new Sprite(skyBoss, 0, 0, 50, 50);
+    skyBossSprite.collider = "none";
+    skyBossSprite.scale.x = 6;
+    skyBossSprite.scale.y = 6;
+
+    dynamicCloudSprite = new Sprite(dynamicCloud, 600, 485, 50, 50); //485
+    dynamicCloudSprite.collider = "none";
+    dynamicCloudSprite.width = 400;
+    dynamicCloudSprite.scale.x = 2.7;
+    dynamicCloudSprite.scale.y = 1.5;
+
+    dynamicCloudSprite2 = new Sprite(dynamicCloud, -900, 485, 50, 50); //485
+    dynamicCloudSprite2.collider = "none";
+    dynamicCloudSprite2.width = 400;
+    dynamicCloudSprite2.scale.x = 2.7;
+    dynamicCloudSprite2.scale.y = 1.5;
+
+
 }
