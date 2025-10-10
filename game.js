@@ -86,7 +86,7 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
-let mainCanvas, textCanvas;
+let mainCanvas;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -154,7 +154,7 @@ function setup(){
     mainCanvas.parent(document.body);
     mainCanvas.position(0, 0);
     mainCanvas.style('z-index', '1');
-    
+
     cloudSetUp();
     speech = new p5.Speech();
     speech.setPitch(1);
@@ -203,11 +203,6 @@ function setup(){
     sprite.collider = "static";
     player.collider = "dynamic";
     swordHitBox.collider = "none";
-
-    textCanvas = createCanvas(1200,1000);
-    textCanvas.parent(document.body);
-    textCanvas.position(0, 0);
-    textCanvas.style('z-index', '10');
 }
 
 
@@ -501,10 +496,6 @@ function draw() {
         hideEverything();
     }
 
-    textCanvas.clear();
-    textCanvas.fill();
-    textCanvas.textSize();
-    textCanvas.text("jaslhd;lkjsahdaklsda", 300, 300);
 }
 
 
