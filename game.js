@@ -87,7 +87,6 @@ let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
 let uiCanvas, uiCtx;
-const mainPos = mainCanvas.canvas.getBoundingClientRect();
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -202,6 +201,7 @@ function setup(){
     player.collider = "dynamic";
     swordHitBox.collider = "none";
 
+    const mainPos = mainCanvas.canvas.getBoundingClientRect();
     uiCanvas = document.createElement("canvas");
     uiCanvas.style.position = "absolute";
     uiCanvas.style.left = mainPos.left + "px";
