@@ -151,7 +151,26 @@ function preload(){
 
 function setup(){
     mainCanvas = createCanvas(1200,1000);
+    mainCanvas.style('z-index', '1');
 
+    const mainPos = mainCanvas.elt.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    uiCanvas = document.createElement("canvas");
+    uiCanvas.width = width * dpr;   // match p5 width * devicePixelRatio
+    uiCanvas.height = height * dpr; // match p5 height * devicePixelRatio
+    uiCanvas.style.position = "absolute";
+    uiCanvas.style.left = mainPos.left + "px";
+    uiCanvas.style.top = mainPos.top + "px";
+    uiCanvas.style.zIndex = "10";
+    uiCanvas.style.pointerEvents = "none"; // overlay doesn't block mouse
+    document.body.appendChild(uiCanvas);
+
+    uiCtx = uiCanvas.getContext("2d");
+    uiCtx.scale(dpr, dpr); // scale drawing to match device pixels
+    uiCtx.imageSmoothingEnabled = false;
+
+    
     cloudSetUp();
     speech = new p5.Speech();
     speech.setPitch(1);
@@ -200,18 +219,6 @@ function setup(){
     sprite.collider = "static";
     player.collider = "dynamic";
     swordHitBox.collider = "none";
-
-    const mainPos = mainCanvas.canvas.getBoundingClientRect();
-    uiCanvas = document.createElement("canvas");
-    uiCanvas.style.position = "absolute";
-    uiCanvas.style.left = mainPos.left + "px";
-    uiCanvas.style.top = mainPos.top + "px";
-    uiCanvas.width = mainCanvas.width;
-    uiCanvas.height = mainCanvas.height;
-    uiCanvas.style.zIndex = "10";
-    document.body.appendChild(uiCanvas);
-
-    uiCtx = uiCanvas.getContext("2d");
 }
 
 
@@ -507,6 +514,7 @@ function draw() {
     uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
     uiCtx.fillStyle = "red";
     uiCtx.font = "49px Arial";
+    uiCtx.textAlign = "left";
     uiCtx.fillText("Score: 100", 600, 500);
     
 }
