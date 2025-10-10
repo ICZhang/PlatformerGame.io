@@ -223,7 +223,7 @@ function draw() {
 
     moveClouds();
 
-    //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
+    text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
         resetStage();
@@ -506,7 +506,7 @@ function draw() {
     uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
   uiCtx.fillStyle = "red";
   uiCtx.font = "49px Arial";
-  uiCtx.fillText("Score: 100", 300, 300);
+  uiCtx.fillText("Score: 100", 600, 500);
     
 }
 
