@@ -68,7 +68,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 6;//6 to test boss easier, 9 total
+var stage = 0;//6 to test boss easier, 9 total
 var dStage = 0;
 var FcoolDown = false;
 var FcoolDown2 = false;
@@ -967,26 +967,6 @@ function dummyAct(){
 }
 
 
-function hookShot(){
-    let d = Math.sqrt(Math.pow(player.x - sprite.x, 2) + Math.pow(player.y - sprite.y, 2));
-    
-    if(kb.pressing("Space") && d < 250){
-        player.vel.y = 0;
-        isHooked = true;
-        line(player.x, player.y, sprite.x, sprite.y);
-        
-
-
-        if(player.y > sprite.y + 40){
-            player.y -= 5;
-        }
-    }
-    else{
-        isHooked = false;
-    }
-}
-
-
 function jumpAni(){
     if(direction == true){
         counterJumpRight+=0.1;
@@ -1117,7 +1097,6 @@ function normalStuff(){
 
     swordThingR();
     //dummyAct();
-    hookShot();
     fireBallAttack();
 }
 
