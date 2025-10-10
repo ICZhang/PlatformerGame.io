@@ -86,7 +86,7 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
-let uiCanvas, uiCtx;
+let mainCanvas, uiCanvas, uiCtx;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -150,7 +150,7 @@ function preload(){
 }
 
 function setup(){
-    createCanvas(1200,1000);
+    mainCanvas = createCanvas(1200,1000);
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -454,7 +454,7 @@ function draw() {
     }
     else if(stage == 8){
         castleImage.visible = true;
-        createCanvas(1100,800);
+        resizeCanvas(1100,800);
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
@@ -471,7 +471,7 @@ function draw() {
         text("Press j to skip dialogue.", 500, 175);
     }
     else if(stage == 9){
-        createCanvas(1200,1000);
+        resizeCanvas(1200,1000);
         castleImage.visible = false;
         background("lightblue");
         downPos = true;
