@@ -1115,10 +1115,9 @@ function normalStuff(){
     summonArrow();
     moveShadow();
 
-
     swordThingR();
     //dummyAct();
-    //hookShot();
+    hookShot();
     fireBallAttack();
 }
 
@@ -1174,9 +1173,6 @@ function rope(){
         player.y = position.y;
     
         circle( position.x, position.y, ballRadius * 2 );
-    }
-    else{
-        velocity.y = 0;
     }
 }
 
@@ -1305,10 +1301,10 @@ function level4(){
 
 
 function away(){
-    blocks[0].x = -300;
-    blocks[1].x = -300;
-    blocks[2].x = -300;
-    blocks[3].x = -300;
+    blocks[0].x = -500;
+    blocks[1].x = -500;
+    blocks[2].x = -500;
+    blocks[3].x = -500;
 }
 
 
@@ -1513,14 +1509,6 @@ function level7(){
     slimeMove(3);
     slimeMove(4);
     slimeMove(5);
-
-    //audioName.playMode("untilDone");
-    //audioName.loop();
-
-
-    //camera.on();
-    //camera.x = player.x;
-    //camera.y = player.y;
   
 }
 
