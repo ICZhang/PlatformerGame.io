@@ -197,6 +197,9 @@ function setup(){
     sprite.collider = "static";
     player.collider = "dynamic";
     swordHitBox.collider = "none";
+
+    uiLayer = createGraphics();
+    uiLayer.clear();
 }
 
 
@@ -210,98 +213,9 @@ function draw() {
     moveClouds();
 
     //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
-
+    //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
-
-        dead = false;
-        health = normalHealth;
-        counterDeath = 1;
-        if(downPos == false && stage != 6){
-            player.x = 100;
-            player.y = 300;
-        }
-        else if(stage == 6){
-            player.x = 100;
-            player.y = 100;
-        }
-        else if(downPos == true){
-            player.x = 100;
-            player.y = 600;
-        }
-        prevX = player.x;
-        prevY = player.y;
-        player.image = gs("stand1.png");
-        stage--;
-        stage++;
-        if(stage == 2){
-            healthUp.x = 60;
-            healthUp.y = 675;
-        }
-        if(stage == 3){
-            box.x = 950;
-            box.y = 675;
-        }
-        if(stage == 4){
-            enemiesS[0].x = 600;
-            enemiesS[1].x = 825;
-            enemiesS[2].x = 300;
-
-
-            enemiesS[3].x = -600;
-            enemiesS[4].x = -825;
-            enemiesS[5].x = -300;
-
-
-            for(let i = 0; i < enemyState.length; i++){
-                enemyState[i] = false;
-                enemiesS[i].visible = true;
-                enemiesS[i].image = gs("Ls1.png");
-                enemiesS[i].y = 600;
-            }
-        }
-        else if(stage == 5){
-            open = false;
-            lever.image = gs("lever.png");
-            box.x = 200;
-            box.y = 150;
-            
-            for(let i = 0; i < enemyState.length; i++){
-                enemyState[i] = false;
-                enemiesS[i].visible = true;
-                enemiesS[i].image = gs("Ls1.png");
-                enemiesS[i].y = 100;
-            }
-            
-        }
-        else if(stage == 6){
-            open = false;
-            lever.image = gs("lever.png");
-            enemiesS[0].x = 600;
-            enemiesS[1].x = 200;
-            enemiesS[2].x = 300;
-            for(let i = 0; i < 3; i++){
-                enemiesS[i].vel.y = 0;
-                enemyState[i] = false;
-                enemiesS[i].visible = true;
-                enemiesS[i].image = gs("Ls1.png");
-                enemiesS[i].y = 600;
-            }
-
-            enemiesS[3].x = 800;
-            enemiesS[4].x = 1000;
-            enemiesS[5].x = 1100;
-            for(let i = 3; i < 6; i++){
-                enemiesS[i].vel.y = 0;
-                enemyState[i] = false;
-                enemiesS[i].visible = true;
-                enemiesS[i].image = gs("Ls1.png");
-                enemiesS[i].y = 100;
-                
-            }
-            
-        }
-        
-        else if(stage == 8) dStage = 0;
+        resetStage();
     }
     if(stage == 0){
         portal.x = 1150;
@@ -1942,4 +1856,96 @@ function hideEverything(){
     player.visible = false;
     portal.visible = false;
     speech.stop();
+}
+
+function resetStage(){
+    dead = false;
+    health = normalHealth;
+    counterDeath = 1;
+    if(downPos == false && stage != 6){
+        player.x = 100;
+        player.y = 300;
+    }
+    else if(stage == 6){
+        player.x = 100;
+        player.y = 100;
+    }
+    else if(downPos == true){
+        player.x = 100;
+        player.y = 600;
+    }
+    prevX = player.x;
+    prevY = player.y;
+    player.image = gs("stand1.png");
+    stage--;
+    stage++;
+    if(stage == 2){
+        healthUp.x = 60;
+        healthUp.y = 675;
+    }
+    if(stage == 3){
+        box.x = 950;
+        box.y = 675;
+    }
+    if(stage == 4){
+        enemiesS[0].x = 600;
+        enemiesS[1].x = 825;
+        enemiesS[2].x = 300;
+
+
+        enemiesS[3].x = -600;
+        enemiesS[4].x = -825;
+        enemiesS[5].x = -300;
+
+
+        for(let i = 0; i < enemyState.length; i++){
+            enemyState[i] = false;
+            enemiesS[i].visible = true;
+            enemiesS[i].image = gs("Ls1.png");
+            enemiesS[i].y = 600;
+        }
+    }
+    else if(stage == 5){
+        open = false;
+        lever.image = gs("lever.png");
+        box.x = 200;
+        box.y = 150;
+        
+        for(let i = 0; i < enemyState.length; i++){
+            enemyState[i] = false;
+            enemiesS[i].visible = true;
+            enemiesS[i].image = gs("Ls1.png");
+            enemiesS[i].y = 100;
+        }
+        
+    }
+    else if(stage == 6){
+        open = false;
+        lever.image = gs("lever.png");
+        enemiesS[0].x = 600;
+        enemiesS[1].x = 200;
+        enemiesS[2].x = 300;
+        for(let i = 0; i < 3; i++){
+            enemiesS[i].vel.y = 0;
+            enemyState[i] = false;
+            enemiesS[i].visible = true;
+            enemiesS[i].image = gs("Ls1.png");
+            enemiesS[i].y = 600;
+        }
+
+        enemiesS[3].x = 800;
+        enemiesS[4].x = 1000;
+        enemiesS[5].x = 1100;
+        for(let i = 3; i < 6; i++){
+            enemiesS[i].vel.y = 0;
+            enemyState[i] = false;
+            enemiesS[i].visible = true;
+            enemiesS[i].image = gs("Ls1.png");
+            enemiesS[i].y = 100;
+            
+        }
+        
+    }
+    
+    else if(stage == 8) dStage = 0;
 }
