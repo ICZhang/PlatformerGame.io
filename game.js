@@ -490,6 +490,9 @@ function draw() {
         hideEverything();
     }
 
+
+
+    text("Please for the love of god appear.", 300, 300);
 }
 
 
