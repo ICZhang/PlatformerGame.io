@@ -68,7 +68,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 0;//6 to test boss easier, 9 total
+var stage = 6;//6 to test boss easier, 9 total
 var dStage = 0;
 var FcoolDown = false;
 var FcoolDown2 = false;
@@ -86,7 +86,6 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
-let mainCanvas;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -150,10 +149,7 @@ function preload(){
 }
 
 function setup(){
-    mainCanvas = createCanvas(1200,1000);
-    mainCanvas.parent(document.body);
-    mainCanvas.position(0, 0);
-    mainCanvas.style('z-index', '1');
+    createCanvas(1200,1000);
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -445,8 +441,7 @@ function draw() {
     }
     else if(stage == 8){
         castleImage.visible = true;
-        mainCanvas.resizeCanvas(1100, 800);
-        //createCanvas(1100,800);
+        createCanvas(1100,800);
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
@@ -463,8 +458,7 @@ function draw() {
         text("Press j to skip dialogue.", 500, 175);
     }
     else if(stage == 9){
-        mainCanvas.resizeCanvas(1200, 1000);
-        //createCanvas(1200,1000);
+        createCanvas(1200,1000);
         castleImage.visible = false;
         background("lightblue");
         downPos = true;
