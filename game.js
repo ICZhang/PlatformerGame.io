@@ -198,7 +198,10 @@ function setup(){
     player.collider = "dynamic";
     swordHitBox.collider = "none";
 
-    uiLayer = createGraphics();
+    textCanvas = newCanvas(1200,1000);
+    textCanvas.parent(document.body);
+    textCanvas.position(0, 0);
+    textCanvas.style('z-index', '10');
 }
 
 
@@ -490,13 +493,10 @@ function draw() {
         hideEverything();
     }
 
-
-    uiLayer.clear();
-  uiLayer.fill(0);
-  uiLayer.textSize(44);
-  uiLayer.textAlign(CENTER, CENTER);
-  uiLayer.text("Score: 10", width / 2, 30);
-  image(uiLayer, 0, 0);
+    textCanvas.clear();
+    textCanvas.fill();
+    textCanvas.textSize();
+    textCanvas.text("jaslhd;lkjsahdaklsda", 300, 300);
 }
 
 
