@@ -11,9 +11,7 @@ body {
 
 canvas {
    display: block;
-   height: calc(100vh - 10vh); 
-   width: calc(100vw - 10vw); 
-   max-width: 100vw;
-   max-height: 100vh;
-   margin: 0 auto;
+   width: 60%;  
+   height: auto; 
+   margin: 20px 0;
 }
