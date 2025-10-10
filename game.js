@@ -86,8 +86,6 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
-let mainCanvas, uiCanvas, uiCtx;
-
 function gs(fileName){
     return "/GameSprites/" + fileName;  
 }
@@ -150,27 +148,7 @@ function preload(){
 }
 
 function setup(){
-    mainCanvas = createCanvas(1200,1000);
-    mainCanvas.style('z-index', '1');
-
-    const mainPos = mainCanvas.elt.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-
-    uiCanvas = document.createElement("canvas");
-    uiCanvas.width = width * dpr;   // match p5 width * devicePixelRatio
-    uiCanvas.height = height * dpr; // match p5 height * devicePixelRatio
-    uiCanvas.style.position = "absolute";
-    uiCanvas.style.left = mainPos.left + "px";
-    uiCanvas.style.top = mainPos.top + "px";
-    uiCanvas.style.zIndex = "10";
-    uiCanvas.style.pointerEvents = "none"; // overlay doesn't block mouse
-    document.body.appendChild(uiCanvas);
-
-    uiCtx = uiCanvas.getContext("2d");
-    uiCtx.scale(dpr, dpr); // scale drawing to match device pixels
-    uiCtx.imageSmoothingEnabled = false;
-
-    
+    createCanvas(1200,1000);
     cloudSetUp();
     speech = new p5.Speech();
     speech.setPitch(1);
@@ -231,10 +209,99 @@ function draw() {
 
     moveClouds();
 
-    text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
-    //This is for resetting the stage
+    //text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
+
     if(kb.presses("r") && stage != 9){
-        resetStage();
+
+        dead = false;
+        health = normalHealth;
+        counterDeath = 1;
+        if(downPos == false && stage != 6){
+            player.x = 100;
+            player.y = 300;
+        }
+        else if(stage == 6){
+            player.x = 100;
+            player.y = 100;
+        }
+        else if(downPos == true){
+            player.x = 100;
+            player.y = 600;
+        }
+        prevX = player.x;
+        prevY = player.y;
+        player.image = gs("stand1.png");
+        stage--;
+        stage++;
+        if(stage == 2){
+            healthUp.x = 60;
+            healthUp.y = 675;
+        }
+        if(stage == 3){
+            box.x = 950;
+            box.y = 675;
+        }
+        if(stage == 4){
+            enemiesS[0].x = 600;
+            enemiesS[1].x = 825;
+            enemiesS[2].x = 300;
+
+
+            enemiesS[3].x = -600;
+            enemiesS[4].x = -825;
+            enemiesS[5].x = -300;
+
+
+            for(let i = 0; i < enemyState.length; i++){
+                enemyState[i] = false;
+                enemiesS[i].visible = true;
+                enemiesS[i].image = gs("Ls1.png");
+                enemiesS[i].y = 600;
+            }
+        }
+        else if(stage == 5){
+            open = false;
+            lever.image = gs("lever.png");
+            box.x = 200;
+            box.y = 150;
+            
+            for(let i = 0; i < enemyState.length; i++){
+                enemyState[i] = false;
+                enemiesS[i].visible = true;
+                enemiesS[i].image = gs("Ls1.png");
+                enemiesS[i].y = 100;
+            }
+            
+        }
+        else if(stage == 6){
+            open = false;
+            lever.image = gs("lever.png");
+            enemiesS[0].x = 600;
+            enemiesS[1].x = 200;
+            enemiesS[2].x = 300;
+            for(let i = 0; i < 3; i++){
+                enemiesS[i].vel.y = 0;
+                enemyState[i] = false;
+                enemiesS[i].visible = true;
+                enemiesS[i].image = gs("Ls1.png");
+                enemiesS[i].y = 600;
+            }
+
+            enemiesS[3].x = 800;
+            enemiesS[4].x = 1000;
+            enemiesS[5].x = 1100;
+            for(let i = 3; i < 6; i++){
+                enemiesS[i].vel.y = 0;
+                enemyState[i] = false;
+                enemiesS[i].visible = true;
+                enemiesS[i].image = gs("Ls1.png");
+                enemiesS[i].y = 100;
+                
+            }
+            
+        }
+        
+        else if(stage == 8) dStage = 0;
     }
     if(stage == 0){
         portal.x = 1150;
@@ -461,7 +528,7 @@ function draw() {
     }
     else if(stage == 8){
         castleImage.visible = true;
-        resizeCanvas(1100,800);
+        createCanvas(1100,800);
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
@@ -478,7 +545,7 @@ function draw() {
         text("Press j to skip dialogue.", 500, 175);
     }
     else if(stage == 9){
-        resizeCanvas(1200,1000);
+        createCanvas(1200,1000);
         castleImage.visible = false;
         background("lightblue");
         downPos = true;
@@ -509,14 +576,6 @@ function draw() {
         text("Congratulations! You win!.", 500,500);
         hideEverything();
     }
-
-
-    uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
-    uiCtx.fillStyle = "red";
-    uiCtx.font = "49px Arial";
-    uiCtx.textAlign = "left";
-    uiCtx.fillText("Score: 100", 600, 500);
-    
 }
 
 
@@ -908,6 +967,26 @@ function dummyAct(){
 }
 
 
+function hookShot(){
+    let d = Math.sqrt(Math.pow(player.x - sprite.x, 2) + Math.pow(player.y - sprite.y, 2));
+    
+    if(kb.pressing("Space") && d < 250){
+        player.vel.y = 0;
+        isHooked = true;
+        line(player.x, player.y, sprite.x, sprite.y);
+        
+
+
+        if(player.y > sprite.y + 40){
+            player.y -= 5;
+        }
+    }
+    else{
+        isHooked = false;
+    }
+}
+
+
 function jumpAni(){
     if(direction == true){
         counterJumpRight+=0.1;
@@ -1038,6 +1117,7 @@ function normalStuff(){
 
     swordThingR();
     //dummyAct();
+    hookShot();
     fireBallAttack();
 }
 
@@ -1883,96 +1963,4 @@ function hideEverything(){
     player.visible = false;
     portal.visible = false;
     speech.stop();
-}
-
-function resetStage(){
-    dead = false;
-    health = normalHealth;
-    counterDeath = 1;
-    if(downPos == false && stage != 6){
-        player.x = 100;
-        player.y = 300;
-    }
-    else if(stage == 6){
-        player.x = 100;
-        player.y = 100;
-    }
-    else if(downPos == true){
-        player.x = 100;
-        player.y = 600;
-    }
-    prevX = player.x;
-    prevY = player.y;
-    player.image = gs("stand1.png");
-    stage--;
-    stage++;
-    if(stage == 2){
-        healthUp.x = 60;
-        healthUp.y = 675;
-    }
-    if(stage == 3){
-        box.x = 950;
-        box.y = 675;
-    }
-    if(stage == 4){
-        enemiesS[0].x = 600;
-        enemiesS[1].x = 825;
-        enemiesS[2].x = 300;
-
-
-        enemiesS[3].x = -600;
-        enemiesS[4].x = -825;
-        enemiesS[5].x = -300;
-
-
-        for(let i = 0; i < enemyState.length; i++){
-            enemyState[i] = false;
-            enemiesS[i].visible = true;
-            enemiesS[i].image = gs("Ls1.png");
-            enemiesS[i].y = 600;
-        }
-    }
-    else if(stage == 5){
-        open = false;
-        lever.image = gs("lever.png");
-        box.x = 200;
-        box.y = 150;
-        
-        for(let i = 0; i < enemyState.length; i++){
-            enemyState[i] = false;
-            enemiesS[i].visible = true;
-            enemiesS[i].image = gs("Ls1.png");
-            enemiesS[i].y = 100;
-        }
-        
-    }
-    else if(stage == 6){
-        open = false;
-        lever.image = gs("lever.png");
-        enemiesS[0].x = 600;
-        enemiesS[1].x = 200;
-        enemiesS[2].x = 300;
-        for(let i = 0; i < 3; i++){
-            enemiesS[i].vel.y = 0;
-            enemyState[i] = false;
-            enemiesS[i].visible = true;
-            enemiesS[i].image = gs("Ls1.png");
-            enemiesS[i].y = 600;
-        }
-
-        enemiesS[3].x = 800;
-        enemiesS[4].x = 1000;
-        enemiesS[5].x = 1100;
-        for(let i = 3; i < 6; i++){
-            enemiesS[i].vel.y = 0;
-            enemyState[i] = false;
-            enemiesS[i].visible = true;
-            enemiesS[i].image = gs("Ls1.png");
-            enemiesS[i].y = 100;
-            
-        }
-        
-    }
-    
-    else if(stage == 8) dStage = 0;
 }
