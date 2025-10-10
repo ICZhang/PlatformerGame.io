@@ -157,9 +157,6 @@ function preload(){
 
 function setup(){
     mainCanvas = createCanvas(1200, 1000);
-    mainCanvas.style('position', 'absolute');
-    mainCanvas.style('left', '0px');
-    mainCanvas.style('top', '0px');
     mainCanvas.style('z-index', '1');
 
     // --- UI CANVAS ---
