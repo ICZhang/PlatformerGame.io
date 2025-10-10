@@ -87,6 +87,7 @@ let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
 let uiCanvas, uiCtx;
+const mainPos = mainCanvas.canvas.getBoundingClientRect();
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -202,15 +203,15 @@ function setup(){
     swordHitBox.collider = "none";
 
     uiCanvas = document.createElement("canvas");
-  uiCanvas.width = 1200;
-  uiCanvas.height = 1000;
-  uiCanvas.style.position = "absolute";
-  uiCanvas.style.top = "0px";
-  uiCanvas.style.left = "0px";
-  uiCanvas.style.zIndex = "10";
-  document.body.appendChild(uiCanvas);
+    uiCanvas.style.position = "absolute";
+    uiCanvas.style.left = mainPos.left + "px";
+    uiCanvas.style.top = mainPos.top + "px";
+    uiCanvas.width = mainCanvas.width;
+    uiCanvas.height = mainCanvas.height;
+    uiCanvas.style.zIndex = "10";
+    document.body.appendChild(uiCanvas);
 
-  uiCtx = uiCanvas.getContext("2d");
+    uiCtx = uiCanvas.getContext("2d");
 }
 
 
@@ -504,9 +505,9 @@ function draw() {
 
 
     uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
-  uiCtx.fillStyle = "red";
-  uiCtx.font = "49px Arial";
-  uiCtx.fillText("Score: 100", 600, 500);
+    uiCtx.fillStyle = "red";
+    uiCtx.font = "49px Arial";
+    uiCtx.fillText("Score: 100", 600, 500);
     
 }
 
