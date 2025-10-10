@@ -199,7 +199,6 @@ function setup(){
     swordHitBox.collider = "none";
 
     uiLayer = createGraphics();
-    uiLayer.clear();
 }
 
 
@@ -490,6 +489,14 @@ function draw() {
         text("Congratulations! You win!.", 500,500);
         hideEverything();
     }
+
+
+    uiLayer.clear();
+  uiLayer.fill(0);
+  uiLayer.textSize(44);
+  uiLayer.textAlign(CENTER, CENTER);
+  uiLayer.text("Score: 10", width / 2, 30);
+  image(uiLayer, 0, 0);
 }
 
 
