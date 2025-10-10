@@ -86,6 +86,7 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
+let uiCanvas, uiCtx;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -199,6 +200,17 @@ function setup(){
     sprite.collider = "static";
     player.collider = "dynamic";
     swordHitBox.collider = "none";
+
+    uiCanvas = document.createElement("canvas");
+  uiCanvas.width = 1200;
+  uiCanvas.height = 1000;
+  uiCanvas.style.position = "absolute";
+  uiCanvas.style.top = "0px";
+  uiCanvas.style.left = "0px";
+  uiCanvas.style.zIndex = "10";
+  document.body.appendChild(uiCanvas);
+
+  uiCtx = uiCanvas.getContext("2d");
 }
 
 
@@ -491,8 +503,11 @@ function draw() {
     }
 
 
-
-    text("Please for the love of god appear.", 300, 300);
+    uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
+  uiCtx.fillStyle = "red";
+  uiCtx.font = "49px Arial";
+  uiCtx.fillText("Score: 100", 300, 300);
+    
 }
 
 
