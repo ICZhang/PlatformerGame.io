@@ -1982,5 +1982,5 @@ function textSprite(message, x2, y2){
 function portalAnimation(){
     portal.image = portalFrames[Math.round(counterPortal)];
     counterPortal += 0.2;
-    if(counterPortal >= portalFrames.length) counterPortal = 1;
+    if(counterPortal > portalFrames.length) counterPortal = 0;
 }
