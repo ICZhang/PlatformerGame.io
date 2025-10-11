@@ -515,17 +515,11 @@ function draw() {
 
     uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
 
-    // Calculate scale factors
-    const rect = mainCanvas.elt.getBoundingClientRect();
-    const scaleX = rect.width / width;
-    const scaleY = rect.height / height;
-
     uiCtx.fillStyle = "red";
-    uiCtx.font = `${49 * scaleY}px Arial`; // scale font for vertical size
+    uiCtx.font = "49px Arial";
     uiCtx.textAlign = "left";
 
-    // Draw text at scaled coordinates
-    uiCtx.fillText("Score: 100", 600 * scaleX, 500 * scaleY);
+    uiCtx.fillText("Score: 100", 600, 500);
     
 }
 
