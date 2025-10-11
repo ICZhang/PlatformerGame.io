@@ -68,7 +68,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 0;//6 to test boss easier, 9 total
+var stage = 6;//6 to test boss easier, 9 total
 var dStage = 0;
 var FcoolDown = false;
 var FcoolDown2 = false;
@@ -424,7 +424,7 @@ function draw() {
             deathAnimation();
         }
         label2.text = "Press x to continue with the dialogue."; label2.x = 575; label2.y = 200;
-        textSprite("Press j to skip dialogue.", 550, 175);
+        textSprite("Press j to skip dialogue.", 570, 175);
     }
     else if(stage == 9){
         label.y = -100;
