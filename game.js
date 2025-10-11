@@ -156,27 +156,17 @@ function preload(){
 }
 
 function setup(){
-    const canvasWidth = 1200;
-    const canvasHeight = 1000;
-
-    // Calculate scale factor based on window size (adjust scale as needed)
-    const scale = Math.min(window.innerWidth / canvasWidth, window.innerHeight / canvasHeight, 0.7);
-
-    // Set the canvas size based on the calculated scale
-    mainCanvas = createCanvas(canvasWidth, canvasHeight);
+    mainCanvas = createCanvas(1200, 1000);
     mainCanvas.style('z-index', '1');
-    
-    // Apply scale and adjust translation dynamically
-    mainCanvas.style('transform', `scale(${scale}) translateY(${(1 - scale) * 50}px)`);
 
-    // --- UI CANVAS ---
     uiCanvas = document.createElement("canvas");
     uiCanvas.style.position = "absolute";
     uiCanvas.style.left = "0px";
     uiCanvas.style.top = "0px";
     uiCanvas.style.zIndex = "10";
-    uiCanvas.style.pointerEvents = "none";
-    uiCanvas.style.transform = `scale(${scale}) translateY(${(1 - scale) * 50}px)`;
+    uiCanvas.style.pointerEvents = "none"; 
+    uiCanvas.style.transform = "scale(0.7)";
+    uiCanvas.style.transformOrigin = "top center";
     document.body.appendChild(uiCanvas);
 
     uiCtx = uiCanvas.getContext("2d");
