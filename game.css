@@ -1,17 +1,16 @@
-body {
-   display: flex;
-   justify-content: center;   
-   align-items: center;       
-   min-height: 100vh;        
+html, body {
    margin: 0;
-   padding: 5vh 0;            
-   background-color: #fff;    
-   box-sizing: border-box;    
-}
-
-canvas {
+   padding: 0;
+   height: 100vh;
+   overflow: hidden; 
+   background: white;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+ 
+ canvas {
    display: block;
-   width: 60%;  
-   height: auto; 
-
-}
+   transform: scale(0.7);       
+   transform-origin: top center; 
+ }

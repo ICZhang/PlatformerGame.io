@@ -158,20 +158,22 @@ function preload(){
 function setup(){
     mainCanvas = createCanvas(1200, 1000);
     mainCanvas.style('z-index', '1');
+    mainCanvas.style('transform', 'scale(0.7)');
+    mainCanvas.style('transform-origin', 'top center');
 
-    // --- UI CANVAS ---
     uiCanvas = document.createElement("canvas");
     uiCanvas.style.position = "absolute";
     uiCanvas.style.left = "0px";
     uiCanvas.style.top = "0px";
     uiCanvas.style.zIndex = "10";
-    uiCanvas.style.pointerEvents = "none"; // don't block mouse
+    uiCanvas.style.pointerEvents = "none";
+    uiCanvas.style.transform = "scale(0.7)";
+    uiCanvas.style.transformOrigin = "top center";
     document.body.appendChild(uiCanvas);
 
     uiCtx = uiCanvas.getContext("2d");
     uiCtx.imageSmoothingEnabled = false;
 
-    // Call helper to match CSS-stretched size
     resizeUICanvas();
 
     
