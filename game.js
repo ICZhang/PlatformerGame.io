@@ -68,7 +68,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 6;//6 to test boss easier, 9 total
+var stage = 0;//6 to test boss easier, 9 total
 var dStage = 0;
 var FcoolDown = false;
 var FcoolDown2 = false;
@@ -1090,10 +1090,7 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
-    label.text ="Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot."
-    label.x = 300;
-    label.y = 500;
-    text("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 300,500);
+    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 300, 500);
 }
 
 
@@ -1957,3 +1954,8 @@ function resetStage(){
     else if(stage == 8) dStage = 0;
 }
 
+function textSprite(message, x2, y2){
+    label.text = message;
+    label.x = x2;
+    label.y = y2;
+}
