@@ -232,7 +232,7 @@ function draw() {
     fill("green");
 
     moveClouds();
-
+    drawSprites();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -512,19 +512,14 @@ function draw() {
         hideEverything();
     }
 
-    const zoomFactor = window.devicePixelRatio;
+    
     uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
 
-    const baseFontSize = 49;
-    const scaledFontSize = baseFontSize * zoomFactor;
     uiCtx.fillStyle = "red";
-    uiCtx.font = `${scaledFontSize}px Arial`;
+    uiCtx.font = "49px Arial";
     uiCtx.textAlign = "left";
 
-    // Scale the position coordinates with zoomFactor
-    const baseX = 600;
-    const baseY = 500;
-    uiCtx.fillText("Score: 100", baseX * zoomFactor, baseY * zoomFactor);
+    uiCtx.fillText("Score: 100", 600, 500);
     
 }
 
