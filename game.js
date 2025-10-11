@@ -232,7 +232,6 @@ function draw() {
     fill("green");
 
     moveClouds();
-    drawSprites();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -520,6 +519,12 @@ function draw() {
     uiCtx.textAlign = "left";
 
     uiCtx.fillText("Score: 100", 600, 500);
+
+    if (typeof drawSprites === "function") {
+        console.log("drawSprites is available!");
+      } else {
+        console.log("drawSprites is NOT available.");
+      }
     
 }
 
