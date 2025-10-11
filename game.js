@@ -86,7 +86,7 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
-let label;
+let label, label2;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -165,6 +165,10 @@ function setup(){
     label.collider = "none";
     label.textSize = 16;
     label.textColor = "Purple";
+    label2 = new Sprite(400, 300, 0, 0);
+    label2.collider = "none";
+    label2.textSize = 16;
+    label2.textColor = "Purple";
 
     
 }
@@ -419,10 +423,12 @@ function draw() {
         else{
             deathAnimation();
         }
-        textSprite("Press x to continue with the dialogue.", 625, 200);
-        textSprite("Press j to skip dialogue.", 650, 175);
+        label2.text = "Press x to continue with the dialogue."; label2.x = 575; label2.y = 200;
+        textSprite("Press j to skip dialogue.", 600, 175);
     }
     else if(stage == 9){
+        label.y = -100;
+        label2.y = -100;
         resizeCanvas(1200,1000);
         castleImage.visible = false;
         background("lightblue");
@@ -1091,7 +1097,7 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
-    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 450, 500);
+    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 550, 500);
 }
 
 
@@ -1164,7 +1170,7 @@ function level3(){
         gotten = true;
     }
 
-    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 450, 600);
+    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 550, 600);
 }
 
 
@@ -1311,6 +1317,7 @@ function level5(){
 
 
 function level6(){
+    label.y = -100;
     if(open == true){
         Ldoor.x = -100;
     }
