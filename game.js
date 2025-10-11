@@ -512,14 +512,19 @@ function draw() {
         hideEverything();
     }
 
-
+    const zoomFactor = window.devicePixelRatio;
     uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
 
+    const baseFontSize = 49;
+    const scaledFontSize = baseFontSize * zoomFactor;
     uiCtx.fillStyle = "red";
-    uiCtx.font = "49px Arial";
+    uiCtx.font = `${scaledFontSize}px Arial`;
     uiCtx.textAlign = "left";
 
-    uiCtx.fillText("Score: 100", 600, 500);
+    // Scale the position coordinates with zoomFactor
+    const baseX = 600;
+    const baseY = 500;
+    uiCtx.fillText("Score: 100", baseX * zoomFactor, baseY * zoomFactor);
     
 }
 
