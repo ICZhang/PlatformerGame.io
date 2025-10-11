@@ -86,6 +86,8 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
+let label;
+
 function gs(fileName){
     return "/GameSprites/" + fileName;  
 }
@@ -158,46 +160,13 @@ function setup(){
     position = createVector( width * 0.75, 20 );
     velocity = createVector();
     spriteStuff();
+
+    label = new Sprite(400, 300, 0, 0);
+    label.collider = "none";
+    label.textSize = 16;
+    label.textColor = "Purple";
+
     
-    for(let i = 0; i < blocks.length; i++){
-        blocks[i] = new Sprite(dirt2, -100, 600, 50,50);
-        blocks[i].debug = false;
-        blocks[i].scale.x = 0.1;
-        blocks[i].scale.y = 0.1;
-        blocks[i].width = 50;
-        blocks[i].height = 50;
-        blocks[i].collider = "static";
-
-        enemiesS[i] = new Sprite(slime,-1000,600,50,50);
-        enemiesS[i].debug = false;
-        enemiesS[i].scale.x = 0.2;
-        enemiesS[i].scale.y = 0.2;
-        enemiesS[i].width = 50;
-        enemiesS[i].height = 250;
-        enemiesS[i].collider = "dynamic";
-    }
-
-    for(let i = 0; i < 6; i++){
-        arrowListDown[i] = new Sprite(arrowD, -100,100,20,275);
-        arrowListDown[i].debug = false;
-        arrowListDown[i].collider = "static";
-        arrowListDown[i].visible = false;
-
-        arrowListRight[i] = new Sprite(arrowR, 1200,100,275,20);
-        arrowListRight[i].debug = false;
-        arrowListRight[i].collider = "dynamic";
-        arrowListRight[i].visible = false;
-
-        arrowListLeft[i] = new Sprite(arrowL, 1200,100,275,20);
-        arrowListLeft[i].debug = false;
-        arrowListLeft[i].collider = "dynamic";
-        arrowListLeft[i].visible = false;
-    }
-    
-    ground.collider = "static";
-    sprite.collider = "static";
-    player.collider = "dynamic";
-    swordHitBox.collider = "none";
 }
 
 
@@ -351,7 +320,7 @@ function draw() {
             player.x = 100;
             player.y = 0;
             normalStageStuff();
-            sprite.x = -1000;
+            gearSprite.x = -1000;
             lava.x = -1000;
             healthUp.x = -1000;
             blocks[0].x = -1000;
@@ -494,13 +463,15 @@ function spriteStuff(){
     castleImage.collider = "none";
     castleImage.visible = false;
 
-    sprite = new Sprite(gear,550,300,50,50); 
-    sprite.debug = false;
-    sprite.scale.x = 0.3;
-    sprite.scale.y = 0.3;
+    gearSprite = new Sprite(gear,550,300,50,50); 
+    gearSprite.debug = false;
+    gearSprite.scale.x = 0.3;
+    gearSprite.scale.y = 0.3;
+    gearSprite.collider = "static";
 
     swordHitBox = new Sprite(300,300, 30,50);
     swordHitBox.debug = true;
+    swordHitBox.collider = "none";
 
     dummy = new Sprite(750,700, 30,50);
     dummy.debug = false;
@@ -511,6 +482,7 @@ function spriteStuff(){
     fireball2.debug = false;
 
     player = new Sprite(idle, 100,200,50,50);
+    player.collider = "dynamic";
 
     boss = new Sprite(bossImage, 100,100,20,20);
     boss.scale.x = 0.2;
@@ -519,6 +491,7 @@ function spriteStuff(){
     boss.collider = "static";
 
     ground = new Sprite(dirt, 600,800,1200,100);
+    ground.collider = "static";
 
     arrow1 = new Sprite(arrow, 200,200,50,50);
     arrow1.debug = false;
@@ -590,6 +563,41 @@ function spriteStuff(){
     finalAttackSprite.scale.y = 2;
     finalAttackSprite.collider = "none";
     finalAttackSprite.visible = false;
+
+    for(let i = 0; i < blocks.length; i++){
+        blocks[i] = new Sprite(dirt2, -100, 600, 50,50);
+        blocks[i].debug = false;
+        blocks[i].scale.x = 0.1;
+        blocks[i].scale.y = 0.1;
+        blocks[i].width = 50;
+        blocks[i].height = 50;
+        blocks[i].collider = "static";
+
+        enemiesS[i] = new Sprite(slime,-1000,600,50,50);
+        enemiesS[i].debug = false;
+        enemiesS[i].scale.x = 0.2;
+        enemiesS[i].scale.y = 0.2;
+        enemiesS[i].width = 50;
+        enemiesS[i].height = 250;
+        enemiesS[i].collider = "dynamic";
+    }
+
+    for(let i = 0; i < 6; i++){
+        arrowListDown[i] = new Sprite(arrowD, -100,100,20,275);
+        arrowListDown[i].debug = false;
+        arrowListDown[i].collider = "static";
+        arrowListDown[i].visible = false;
+
+        arrowListRight[i] = new Sprite(arrowR, 1200,100,275,20);
+        arrowListRight[i].debug = false;
+        arrowListRight[i].collider = "dynamic";
+        arrowListRight[i].visible = false;
+
+        arrowListLeft[i] = new Sprite(arrowL, 1200,100,275,20);
+        arrowListLeft[i].debug = false;
+        arrowListLeft[i].collider = "dynamic";
+        arrowListLeft[i].visible = false;
+    }
 }
 
 
@@ -716,7 +724,7 @@ function pjump(){
         player.vel.y = player.vel.y+2;
     }
     
-    if((kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(sprite)) || player.collides(lava)) && stamina >= 20){
+    if((kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite)) || player.collides(lava)) && stamina >= 20){
         player.vel.y = -20;
         stamina -= 20;
         jumpAni();
@@ -758,7 +766,7 @@ function resizeThings(){
 
     arrow1.x = -100;
     dummy.x = -100;
-    sprite.x = -100;
+    gearSprite.x = -100;
 }
 
 
@@ -1013,8 +1021,8 @@ function normalStuff(){
 
 function keyPressed() {
     if(keyCode == 32){
-        origin = createVector( sprite.x, sprite.y );
-        ropeLength = dist( position.x, position.y, sprite.x, sprite.y );
+        origin = createVector(gearSprite.x, gearSprite.y);
+        ropeLength = dist(position.x, position.y, gearSprite.x, gearSprite.y);
     }
 }
 
@@ -1082,6 +1090,9 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
+    label.text ="Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot."
+    label.x = 300;
+    label.y = 500;
     text("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 300,500);
 }
 
@@ -1141,9 +1152,9 @@ function level3(){
     if(player.collides(lava)){
         dead = true;
     }
-    sprite.x = 500;
-    sprite.y = 50;
-    if(kb.pressing("space") && dist(player.x, player.y, sprite.x, sprite.y) < 300) {rope();}
+    gearSprite.x = 500;
+    gearSprite.y = 50;
+    if(kb.pressing("space") && dist(player.x, player.y, gearSprite.x, gearSprite.y) < 300) {rope();}
     else {
         position.x = player.x;
         position.y = player.y;
@@ -1165,7 +1176,7 @@ function level4(){
     blocks[0].x = 1050;
     blocks[0].y = 525;
     
-    sprite.x = -500;
+    gearSprite.x = -500;
     healthUp.x = -500;
 
     text("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 800, 300);
@@ -1313,9 +1324,9 @@ function level6(){
     blocks[0].x = 500;
     blocks[0].y = 700;
 
-    sprite.x = 250;
-    sprite.y = 500;
-    if(kb.pressing("space") && dist(player.x, player.y, sprite.x, sprite.y) < 300) {rope();}
+    gearSprite.x = 250;
+    gearSprite.y = 500;
+    if(kb.pressing("space") && dist(player.x, player.y, gearSprite.x, gearSprite.y) < 300) {rope();}
     else {
         position.x = player.x;
         position.y = player.y;
