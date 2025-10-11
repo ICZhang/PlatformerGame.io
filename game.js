@@ -424,7 +424,7 @@ function draw() {
             deathAnimation();
         }
         label2.text = "Press x to continue with the dialogue."; label2.x = 575; label2.y = 200;
-        textSprite("Press j to skip dialogue.", 600, 175);
+        textSprite("Press j to skip dialogue.", 550, 175);
     }
     else if(stage == 9){
         label.y = -100;
@@ -1097,7 +1097,7 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
-    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 550, 500);
+    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 600, 500);
 }
 
 
@@ -1170,7 +1170,7 @@ function level3(){
         gotten = true;
     }
 
-    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 550, 600);
+    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 600, 600);
 }
 
 
