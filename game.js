@@ -86,16 +86,8 @@ let sneakAttackTimer = 0;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 
-let mainCanvas, uiCanvas, uiCtx;
-
 function gs(fileName){
     return "/GameSprites/" + fileName;  
-}
-
-function resizeUICanvas() {
-    const rect = mainCanvas.elt.getBoundingClientRect();
-    uiCanvas.width = rect.width;
-    uiCanvas.height = rect.height;
 }
 
 function preload(){
@@ -156,25 +148,8 @@ function preload(){
 }
 
 function setup(){
-    mainCanvas = createCanvas(1200, 1000);
-    mainCanvas.style('z-index', '1');
+    createCanvas(1200, 1000);
 
-    uiCanvas = document.createElement("canvas");
-    uiCanvas.style.position = "absolute";
-    uiCanvas.style.left = "0px";
-    uiCanvas.style.top = "0px";
-    uiCanvas.style.zIndex = "10";
-    uiCanvas.style.pointerEvents = "none"; 
-    uiCanvas.style.transform = "scale(0.7)";
-    uiCanvas.style.transformOrigin = "top center";
-    document.body.appendChild(uiCanvas);
-
-    uiCtx = uiCanvas.getContext("2d");
-    uiCtx.imageSmoothingEnabled = false;
-
-    resizeUICanvas();
-
-    
     cloudSetUp();
     speech = new p5.Speech();
     speech.setPitch(1);
@@ -510,21 +485,6 @@ function draw() {
         text("Congratulations! You win!.", 500,500);
         hideEverything();
     }
-
-    
-    uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
-
-    uiCtx.fillStyle = "red";
-    uiCtx.font = "49px Arial";
-    uiCtx.textAlign = "left";
-
-    uiCtx.fillText("Score: 100", 600, 500);
-
-    if (typeof drawSprites === "function") {
-        console.log("drawSprites is available!");
-      } else {
-        console.log("drawSprites is NOT available.");
-      }
     
 }
 
