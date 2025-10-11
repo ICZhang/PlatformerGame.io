@@ -163,7 +163,7 @@ function setup(){
     const scale = Math.min(window.innerWidth / canvasWidth, window.innerHeight / canvasHeight, 0.7);
 
     // Set the canvas size based on the calculated scale
-    createCanvas(canvasWidth, canvasHeight);
+    mainCanvas = createCanvas(canvasWidth, canvasHeight);
     mainCanvas.style('z-index', '1');
     
     // Apply scale and adjust translation dynamically
