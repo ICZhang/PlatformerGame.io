@@ -11,7 +11,5 @@ html, body {
 
 canvas {
    display: block;
-   transform: scale(0.7) translateY(40px);
    transform-origin: top center;
-   margin-top: 20px;
 }
