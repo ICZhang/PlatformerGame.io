@@ -181,7 +181,7 @@ function setup(){
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
-            frames.push(portalSheet.get(c * w, r * h, w, h));
+            portalFrames.push(portalSheet.get(c * w, r * h, w, h));
         }
     }
 }
