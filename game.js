@@ -419,8 +419,8 @@ function draw() {
         else{
             deathAnimation();
         }
-        text("Press x to continue with the dialogue.", 475,200 );
-        text("Press j to skip dialogue.", 500, 175);
+        textSprite("Press x to continue with the dialogue.", 625, 200);
+        textSprite("Press j to skip dialogue.", 650, 175);
     }
     else if(stage == 9){
         resizeCanvas(1200,1000);
@@ -445,6 +445,7 @@ function draw() {
                 deathMessage = false;
                 speech.stop();
             }
+            
             text("You died. This is the end of your journey.", 500,500);
             hideEverything();
         }
@@ -1090,7 +1091,7 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
-    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 300, 500);
+    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 450, 500);
 }
 
 
@@ -1118,8 +1119,7 @@ function level2(){
     blocks[3].height = 550;
     blocks[3].width = 70;
 
-    text("Hold down arrow and/or right or left to slide. A to swing your sword.", 450,400);
-
+    textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400);
 }
 
 
@@ -1164,7 +1164,7 @@ function level3(){
         gotten = true;
     }
 
-    text("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 300,600);
+    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 450, 600);
 }
 
 
@@ -1176,7 +1176,7 @@ function level4(){
     gearSprite.x = -500;
     healthUp.x = -500;
 
-    text("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 800, 300);
+    textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 950, 300);
 
     blocks[1].x = 400;
     blocks[1].y = 600;
@@ -1291,7 +1291,7 @@ function respawnSlime(i){
 
 
 function level5(){
-    text("Try hitting the slimes with your fireball or sword.", 500, 500);
+    textSprite("Try hitting the slimes with your fireball or sword.", 650, 500);
 
     away();
     blocks[4].x = -300;
