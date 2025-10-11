@@ -115,7 +115,7 @@ function preload(){
     for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
 
-    portalSheet = loadImage("portalsheet.png");
+    portalSheet = loadImage(gs("portalsheet.png"));
 
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
