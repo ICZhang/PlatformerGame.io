@@ -35,6 +35,7 @@ var counterShootL = 1;
 var counterSlimeRight = 1;
 var counterSlimeLeft = 1;
 var counterSlimeDeath = 1;
+var counterPortal = 1;
 var bossMovement = 10;
 var direction = true;
 var jCoolDown = false;
@@ -68,7 +69,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 6;//6 to test boss easier, 9 total
+var stage = 0;//6 to test boss easier, 9 total
 var dStage = 0;
 var FcoolDown = false;
 var FcoolDown2 = false;
@@ -85,7 +86,8 @@ let sneakAttackTimer = 0;
 
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
-
+let portalSheet;
+let portalFrames = [];
 let label, label2;
 
 function gs(fileName){
@@ -112,6 +114,8 @@ function preload(){
     for(let i = 1; i <= 10; i++) deathFrames[i] = loadImage(gs("d" + i + ".png"));
     for(let i = 1; i <= 3; i++) fireballFrames[i] = loadImage(gs("b" + i + ".png"));
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
+
+    portalSheet = loadImage("portalsheet.png");
 
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
@@ -170,7 +174,16 @@ function setup(){
     label2.textSize = 16;
     label2.textColor = "Purple";
 
-    
+    let cols = 6;
+    let rows = 6;
+    let w = portalSheet.width / cols;
+    let h = portalSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            frames.push(portalSheet.get(c * w, r * h, w, h));
+        }
+    }
 }
 
 
@@ -178,8 +191,9 @@ function draw() {
     clear();
     background(138, 176, 226);
     fill("green");
-
+    
     moveClouds();
+    portalAnimation();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -1903,11 +1917,9 @@ function resetStage(){
         enemiesS[1].x = 825;
         enemiesS[2].x = 300;
 
-
         enemiesS[3].x = -600;
         enemiesS[4].x = -825;
         enemiesS[5].x = -300;
-
 
         for(let i = 0; i < enemyState.length; i++){
             enemyState[i] = false;
@@ -1965,4 +1977,10 @@ function textSprite(message, x2, y2){
     label.text = message;
     label.x = x2;
     label.y = y2;
+}
+
+function portalAnimation(){
+    portal.image = portalFrames[counterPortal];
+    counterPortal += 0.2;
+    if(counterPortal >= portalFrames.length) counterPortal = 1;
 }
