@@ -498,11 +498,12 @@ function spriteStuff(){
     fireball2.debug = false;
 
     tp = new Sprite(Fireball, 100,200,50,50);
-    tp.scale.x = 0.05;
-    tp.scale.y = 0.05;
+    tp.scale.x = 0.15;
+    tp.scale.y = 0.15;
     tp.collider = "none";
 
     player = new Sprite(idle, 100,200,50,50);
+    player.debug = true; 
     player.collider = "dynamic";
 
     boss = new Sprite(bossImage, 100,100,20,20);
