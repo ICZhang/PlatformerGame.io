@@ -18,6 +18,7 @@ let bossSwordShadow;
 let castleImage;
 let laser;
 let darkbox;
+let tp;
 var counter = 1;
 var counterL = 1;
 var counterJumpRight = 1;
@@ -36,6 +37,7 @@ var counterSlimeRight = 1;
 var counterSlimeLeft = 1;
 var counterSlimeDeath = 1;
 var counterPortal = 1;
+var counterTp = 1;
 var bossMovement = 10;
 var direction = true;
 var jCoolDown = false;
@@ -86,8 +88,8 @@ let sneakAttackTimer = 0;
 
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
-let portalSheet;
-let portalFrames = [];
+let portalSheet, tpSheet;
+let [portalFrames, tpFrames] = [[], []];
 let label, label2;
 
 function gs(fileName){
@@ -116,6 +118,7 @@ function preload(){
     for(let i = 1; i <= 3; i++) LfireballFrames[i] = loadImage(gs("a" + i + ".png"));
 
     portalSheet = loadImage(gs("portalsheet.png"));
+    tpSheet = loadImage(gs("starSheet.png"));
 
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
@@ -174,16 +177,7 @@ function setup(){
     label2.textSize = 16;
     label2.textColor = "Purple";
 
-    let cols = 6;
-    let rows = 6;
-    let w = portalSheet.width / cols;
-    let h = portalSheet.height / rows;
-
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            portalFrames.push(portalSheet.get(c * w, r * h, w, h));
-        }
-    }
+    spriteSheetSetup();
 }
 
 
@@ -194,6 +188,7 @@ function draw() {
     
     moveClouds();
     portalAnimation();
+    tpAnimation();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -501,6 +496,9 @@ function spriteStuff(){
     fireball.debug = false;
     fireball2 = new Sprite(Fireball2,-150,-150,70,50);
     fireball2.debug = false;
+
+    tp = new Sprite(100,200,50,50);
+    tp.collider = "none";
 
     player = new Sprite(idle, 100,200,50,50);
     player.collider = "dynamic";
@@ -820,7 +818,8 @@ function moveShadow(){
         counterShadow = 0;
     }
     fill("blue");
-    circle(prevX, prevY, 30);
+    tp.x = prevX;
+    tp.y = prevY;
 
     if(kb.presses("d") && mana > 50){
         player.x = prevX;
@@ -1983,4 +1982,35 @@ function portalAnimation(){
     portal.image = portalFrames[Math.round(counterPortal)];
     counterPortal += 0.2;
     if(counterPortal > 35) counterPortal = 0;
+}
+
+function tpAnimation(){
+    tp.image = tpFrames[Math.round(counterTp)];
+    counterTp += 0.1;
+    if(counterTp > 15) counterTp = 0;
+}
+
+function spriteSheetSetup(){
+    let cols = 6;
+    let rows = 6;
+    let w = portalSheet.width / cols;
+    let h = portalSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            portalFrames.push(portalSheet.get(c * w, r * h, w, h));
+        }
+    }
+
+    cols = 4;
+    rows = 4;
+    w = tpSheet.width / cols;
+    h = tpSheet.height = rows;
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            tpFrames.push(tpSheet.get(c * w, r * h, w, h));
+        }
+    }
+
 }
