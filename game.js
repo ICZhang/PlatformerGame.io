@@ -1183,7 +1183,7 @@ function level3(){
         gotten = true;
     }
 
-    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisibile once you respawn.", 600, 600);
+    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600);
 }
 
 
@@ -2005,7 +2005,7 @@ function spriteSheetSetup(){
     cols = 4;
     rows = 4;
     w = tpSheet.width / cols;
-    h = tpSheet.height = rows;
+    h = tpSheet.height / rows;
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
