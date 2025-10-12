@@ -497,7 +497,7 @@ function spriteStuff(){
     fireball2 = new Sprite(Fireball2,-150,-150,70,50);
     fireball2.debug = false;
 
-    tp = new Sprite(100,200,50,50);
+    tp = new Sprite(Fireball, 100,200,50,50);
     tp.collider = "none";
 
     player = new Sprite(idle, 100,200,50,50);
