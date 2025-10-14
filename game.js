@@ -486,6 +486,13 @@ function spriteStuff(){
     bgBoard.scale.y = 0.95;
     bgBoard.collider = "none";
 
+    healthBar = new Sprite(150, 915, 50, 25);
+    healthBar.colour = "red";
+    manaBar = new Sprite(530, 915, 50, 25);
+    manaBar.colour = "blue";
+    staminaBar = new Sprite(930, 915, 50, 25);
+    staminaBar.colour = "yellow";
+
     gearSprite = new Sprite(gear,550,300,50,50); 
     gearSprite.debug = false;
     gearSprite.scale.x = 0.3;
@@ -692,24 +699,7 @@ function basicMovement(){
     else if(direction == false && kb.pressing("ArrowDown") == false) player.height = 310;
     
     player.vel.x = 0;
-    fill("black");
-    text("Hp: " + health, 50,930);
-    fill("red");
-    rect(150, 915, health * 2, 25);
-
-    fill("black");
-    text("Mana: " + mana, 430,930);
-    fill("Blue");
-    rect(530, 915, mana * 2, 25);
-
-    if(mana < 100) mana += 1;
-    
-    fill("black");
-    text("Stamina: " + stamina, 830,930);
-    fill("Yellow");
-    rect(930, 915, stamina * 2, 25);
-
-    text("Level: " + stage, 830,980);
+    barMovement();
 
     if(stamina < 100) stamina += 1;
     
@@ -2022,4 +2012,38 @@ function spriteSheetSetup(){
         }
     }
 
+}
+
+function barMovement(){
+    let maxWidth = 200;
+    let healthRatio = health / maxHealth;
+    healthBar.width = maxWidth * healthRatio;
+    healthBar.x = 150 + healthBar.width / 2;
+
+    let manaRatio = mana / 100;
+    manaBar.width = maxWidth * manaRatio;
+    manaBar.x = 150 + manaBar.width / 2;
+
+    let staminaRatio = stamina / 100;
+    staminaBar.width = maxWidth * staminaRatio;
+    staminaBar.x = 150 + staminaBar.width / 2;
+
+    fill("black");
+    text("Hp: " + health, 50,930);
+    fill("red");
+    rect(150, 915, health * 2, 25);
+
+    fill("black");
+    text("Mana: " + mana, 430,930);
+    fill("Blue");
+    rect(530, 915, mana * 2, 25);
+
+    if(mana < 100) mana += 1;
+    
+    fill("black");
+    text("Stamina: " + stamina, 830,930);
+    fill("Yellow");
+    rect(930, 915, stamina * 2, 25);
+
+    text("Level: " + stage, 830,980);
 }
