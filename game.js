@@ -56,7 +56,7 @@ var shotL = false;
 var BallDirection = true;
 var downPos = false;
 var open = false;
-var health = 12000;  ////Testing Purpose
+var health = 120;  ////Testing Purpose
 var stamina = 100;
 var mana = 100;
 var bossTimer = 0;
@@ -91,6 +91,7 @@ let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames
 let portalSheet, tpSheet;
 let [portalFrames, tpFrames] = [[], []];
 let label, label2;
+let backBoard, healthBar, manaBar, staminaBar;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -126,6 +127,7 @@ function preload(){
     skyBoss = loadImage(gs("skyBoss.png"));
     staticCloudBoss = loadImage(gs("staticCloudBoss.png"));
     dynamicCloudBoss = loadImage(gs("dynamicCloudBoss.png"));
+    backgroundBoard = loadImage(gs("backgroundBoard.png"));
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
@@ -478,6 +480,9 @@ function spriteStuff(){
     castleImage = new Sprite(throneroom, 600,520,10,10);
     castleImage.collider = "none";
     castleImage.visible = false;
+
+    bgBoard = new Sprite(backgroundBoard, 0, 615, 200, 800);
+    bgBoard.collider = "none";
 
     gearSprite = new Sprite(gear,550,300,50,50); 
     gearSprite.debug = false;
