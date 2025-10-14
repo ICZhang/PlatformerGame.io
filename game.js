@@ -2026,9 +2026,9 @@ function barMovement(){
     staminaBar.x = 900 + staminaBar.width / 2;
     if(stamina < 100) stamina += 1;
 
-    textSprite("Hp: " + health, 60, 950, healthLabel);
-    textSprite("Mana: " + mana, 440, 950, manaLabel);
-    textSprite("Stamina: " + stamina, 840, 950, staminaLabel);
+    textSprite("Hp: " + health, 70, 945, healthLabel);
+    textSprite("Mana: " + mana, 450, 945, manaLabel);
+    textSprite("Stamina: " + stamina, 840, 945, staminaLabel);
 
 }
 
