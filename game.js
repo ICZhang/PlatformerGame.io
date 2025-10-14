@@ -926,7 +926,7 @@ function deathAnimation(){
 
 function reverseDeathAnimation(){
     for(let rCounter = 10; rCounter > 0.9; rCounter -= 0.25){
-        player.image = deathFrames[Math.round(rCounterDeath)]; 
+        player.image = deathFrames[Math.round(rCounter)]; 
     }
 }
 
