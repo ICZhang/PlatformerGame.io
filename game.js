@@ -200,7 +200,7 @@ function draw() {
     if(respawned == true){
         reverseDeathAnimation();
         if(rCounterDeath < 0.9) {
-            player.image = gs("stand1.png");
+            player.image = standFrame;
             respawned = false;
         }
     }
@@ -665,7 +665,7 @@ function basicMovement(){
 
         if(counter > 6) counter = 1;
     }
-    else if(direction == true && player.vel.y == 0) player.image = standFrame;
+    else if(direction == true && player.vel.y == 0 && respawned == false) player.image = standFrame;
     
     if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false){
         player.x = player.x - 10;
@@ -675,7 +675,7 @@ function basicMovement(){
 
         if(counterL > 6) counterL = 1;
     }
-    else if(direction == false && player.vel.y == 0) player.image = LstandFrame;
+    else if(direction == false && player.vel.y == 0 && respawned == false) player.image = LstandFrame;
         
     if(kb.pressing("ArrowDown") && direction == true){
         player.image = crouchFrame;
@@ -893,7 +893,7 @@ function normalStageStuff(){
     prevX = player.x;
     prevY = player.y;
     stage++;
-    player.image = gs("stand1.png");
+    player.image = standFrame;
     normalHealth = maxHealth;
     health = maxHealth;
     open = false;
