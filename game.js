@@ -90,7 +90,7 @@ let standFrame, LstandFrame, crouchFrame, LcrouchFrame;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 let portalSheet, tpSheet;
 let [portalFrames, tpFrames] = [[], []];
-let label, label2;
+let label, label2, healthLabel, manaLabel, staminaLabel;
 let backBoard, healthBar, manaBar, staminaBar;
 
 function gs(fileName){
@@ -170,14 +170,7 @@ function setup(){
     velocity = createVector();
     spriteStuff();
 
-    label = new Sprite(400, 300, 0, 0);
-    label.collider = "none";
-    label.textSize = 16;
-    label.textColor = "Purple";
-    label2 = new Sprite(400, 300, 0, 0);
-    label2.collider = "none";
-    label2.textSize = 16;
-    label2.textColor = "Purple";
+    textSetup();
 
     spriteSheetSetup();
 }
@@ -434,8 +427,8 @@ function draw() {
         else{
             deathAnimation();
         }
-        label2.text = "Press x to continue with the dialogue."; label2.x = 575; label2.y = 200;
-        textSprite("Press j to skip dialogue.", 570, 175);
+        textSprite("Press x to continue with the dialogue.", 575, 200, label2);
+        textSprite("Press j to skip dialogue.", 570, 175, label);
     }
     else if(stage == 9){
         label.y = -100;
@@ -488,10 +481,13 @@ function spriteStuff(){
 
     healthBar = new Sprite(150, 915, 50, 25);
     healthBar.colour = "red";
+    healthBar.collider = "none";
     manaBar = new Sprite(530, 915, 50, 25);
     manaBar.colour = "blue";
+    manaBar.collider = "none";
     staminaBar = new Sprite(930, 915, 50, 25);
     staminaBar.colour = "yellow";
+    staminaBar.collider = "none";
 
     gearSprite = new Sprite(gear,550,300,50,50); 
     gearSprite.debug = false;
@@ -1109,7 +1105,7 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
-    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500);
+    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
 }
 
 
@@ -1137,7 +1133,7 @@ function level2(){
     blocks[3].height = 550;
     blocks[3].width = 70;
 
-    textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400);
+    textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400, label);
 }
 
 
@@ -1182,7 +1178,7 @@ function level3(){
         gotten = true;
     }
 
-    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600);
+    textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600, label);
 }
 
 
@@ -1194,7 +1190,7 @@ function level4(){
     gearSprite.x = -500;
     healthUp.x = -500;
 
-    textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 950, 300);
+    textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 950, 300, label);
 
     blocks[1].x = 400;
     blocks[1].y = 600;
@@ -1309,7 +1305,7 @@ function respawnSlime(i){
 
 
 function level5(){
-    textSprite("Try hitting the slimes with your fireball or sword.", 650, 500);
+    textSprite("Try hitting the slimes with your fireball or sword.", 650, 500, label);
 
     away();
     blocks[4].x = -300;
@@ -1971,10 +1967,10 @@ function resetStage(){
     else if(stage == 8) dStage = 0;
 }
 
-function textSprite(message, x2, y2){
-    label.text = message;
-    label.x = x2;
-    label.y = y2;
+function textSprite(message, x2, y2, labelName){
+    labelName.text = message;
+    labelName.x = x2;
+    labelName.y = y2;
 }
 
 function portalAnimation(){
@@ -2015,35 +2011,30 @@ function spriteSheetSetup(){
 }
 
 function barMovement(){
-    let maxWidth = 200;
+    let maxWidth = 300;
     let healthRatio = health / maxHealth;
     healthBar.width = maxWidth * healthRatio;
     healthBar.x = 150 + healthBar.width / 2;
 
     let manaRatio = mana / 100;
     manaBar.width = maxWidth * manaRatio;
-    manaBar.x = 150 + manaBar.width / 2;
+    manaBar.x = 530 + manaBar.width / 2;
 
     let staminaRatio = stamina / 100;
     staminaBar.width = maxWidth * staminaRatio;
-    staminaBar.x = 150 + staminaBar.width / 2;
+    staminaBar.x = 930 + staminaBar.width / 2;
 
-    fill("black");
-    text("Hp: " + health, 50,930);
-    fill("red");
-    rect(150, 915, health * 2, 25);
+    textSprite("Hp: " + health, 50, 930, healthLabel);
+    textSprite("Mana: " + mana, 430, 930, manaLabel);
+    textSprite("Stamina: " + stamina, 830, 930, staminaLabel);
 
-    fill("black");
-    text("Mana: " + mana, 430,930);
-    fill("Blue");
-    rect(530, 915, mana * 2, 25);
+}
 
-    if(mana < 100) mana += 1;
-    
-    fill("black");
-    text("Stamina: " + stamina, 830,930);
-    fill("Yellow");
-    rect(930, 915, stamina * 2, 25);
+function textSetup(){
+    label = new Sprite(400, 300, 0, 0); label.collider = "none"; label.textSize = 16; label.textColor = "Purple";
+    label2 = new Sprite(400, 300, 0, 0); label2.collider = "none"; label2.textSize = 16; label2.textColor = "Purple";
+    healthLabel = new Sprite(400, 300, 0, 0); healthLabel.collider = "none"; healthLabel.textSize = 16; healthLabel.textColor = "Red";
+    manaLabel = new Sprite(400, 300, 0, 0); manaLabel.collider = "none"; manaLabel.textSize = 16; manaLabel.textColor = "Blue";
+    staminaLabel = new Sprite(400, 300, 0, 0); staminaLabel.collider = "none"; staminaLabel.textSize = 16; staminaLabel.textColor = "Yellow";
 
-    text("Level: " + stage, 830,980);
 }
