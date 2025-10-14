@@ -188,7 +188,6 @@ function draw() {
     portalAnimation();
     tpAnimation();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
-    text("Reverse Death Counter: " + rCounterDeath, 400, 200);
 
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -202,6 +201,7 @@ function draw() {
         if(rCounterDeath < 0.9) {
             player.image = standFrame;
             respawned = false;
+            direction = true;
         }
     }
     if(stage == 0){
@@ -1042,7 +1042,7 @@ function fireBallAttack(){
 
 function normalStuff(){
     pjump();
-    basicMovement();
+    if(respawned == false) basicMovement();
     resistance();
             
     summonArrow();
