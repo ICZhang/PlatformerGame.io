@@ -198,7 +198,7 @@ function draw() {
     }
     if(respawned == true){
         reverseDeathAnimation();
-        if(player.image == "d1") {
+        if(rCounterDeath < 0.9) {
             player.image = gs("stand1.png");
             respawned = false;
         }
