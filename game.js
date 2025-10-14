@@ -195,6 +195,7 @@ function draw() {
         resetStage();
         rCounterDeath = 10;
         respawned = true;
+        player.image = gs("d10.png");
     }
     if(respawned == true){
         reverseDeathAnimation();
@@ -938,7 +939,7 @@ function deathAnimation(){
 
 function reverseDeathAnimation(){
     if(rCounterDeath > 0.9){
-        rCounterDeath-=0.10;
+        rCounterDeath-=0.25;
         player.image = deathFrames[Math.round(rCounterDeath)]; 
     }
 }
@@ -1917,7 +1918,7 @@ function resetStage(){
     }
     prevX = player.x;
     prevY = player.y;
-    player.image = gs("stand1.png");
+    
     stage--;
     stage++;
     if(stage == 2){
