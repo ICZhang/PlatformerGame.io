@@ -187,6 +187,8 @@ function draw() {
     portalAnimation();
     tpAnimation();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
+    text("Reverse Death Counter: " + rCounterDeath, 400, 200);
+
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
         resetStage();
