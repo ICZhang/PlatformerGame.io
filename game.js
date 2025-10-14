@@ -29,6 +29,7 @@ var counterSR = 1;
 var counterSL = 1;
 var counterShadow = 0;
 var counterDeath = 1;
+var rCounterDeath = 10;
 var counterBall = 1;
 var counterShoot = 1;
 var counterBallL = 1;
@@ -921,6 +922,13 @@ function deathAnimation(){
         player.image = deathFrames[Math.round(counterDeath)]; 
     }   
     player.vel.y = 0;
+}
+
+function reverseDeathAnimation(){
+    if(rCounterDeath > 0.9){
+        rCounterDeath-=0.25;
+        player.image = deathFrames[Math.round(rCounterDeath)]; 
+    }
 }
 
 function fireBallAttack(){
@@ -1882,6 +1890,8 @@ function resetStage(){
     mana = 100;
     stamina = 100;
     counterDeath = 1;
+    rCounterDeath = 10;
+    reverseDeathAnimation();
     if(downPos == false && stage != 6){
         player.x = 100;
         player.y = 300;
@@ -1896,7 +1906,7 @@ function resetStage(){
     }
     prevX = player.x;
     prevY = player.y;
-    player.image = gs("stand1.png");
+    if(rCounterDeath < 1) player.image = gs("stand1.png");
     stage--;
     stage++;
     if(stage == 2){
