@@ -160,6 +160,7 @@ function preload(){
 
 function setup(){
     createCanvas(1200, 1000);
+    textStyle(BOLD);
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -2027,7 +2028,7 @@ function barMovement(){
     if(stamina < 100) stamina += 1;
 
     textSprite("Hp: " + health, 70, 945, healthLabel);
-    textSprite("Mana: " + mana, 450, 945, manaLabel);
+    textSprite("Mana: " + mana, 445, 945, manaLabel);
     textSprite("Stamina: " + stamina, 840, 945, staminaLabel);
 
 }
