@@ -481,7 +481,7 @@ function spriteStuff(){
     castleImage.collider = "none";
     castleImage.visible = false;
 
-    bgBoard = new Sprite(backgroundBoard, 0, 615, 200, 800);
+    bgBoard = new Sprite(backgroundBoard, 300, 850, 200, 800);
     bgBoard.collider = "none";
 
     gearSprite = new Sprite(gear,550,300,50,50); 
