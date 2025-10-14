@@ -938,7 +938,7 @@ function deathAnimation(){
 
 function reverseDeathAnimation(){
     if(rCounterDeath > 0.9){
-        rCounterDeath-=0.25;
+        rCounterDeath-=0.15;
         player.image = deathFrames[Math.round(rCounterDeath)]; 
     }
 }
