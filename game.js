@@ -187,7 +187,12 @@ function draw() {
     moveClouds();
     portalAnimation();
     tpAnimation();
+
+    //Testing
+    textSize(18);
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
+    text("X-velocity: " + player.vel.x, 400, 250);
+    text("Y-velocity: " + player.vel.y, 400, 300);
 
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -763,6 +768,7 @@ function pjump(){
                 jumpAni();
                 stamina -= 20;
             }
+            else player.vel.y = 0;
             
         }
         
