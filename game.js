@@ -29,7 +29,6 @@ var counterSR = 1;
 var counterSL = 1;
 var counterShadow = 0;
 var counterDeath = 1;
-var rCounterDeath = 10;
 var counterBall = 1;
 var counterShoot = 1;
 var counterBallL = 1;
@@ -187,7 +186,6 @@ function draw() {
     portalAnimation();
     tpAnimation();
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
-    text("Reverse Death Counter: " + rCounterDeath, 400, 200);
 
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
@@ -927,8 +925,7 @@ function deathAnimation(){
 }
 
 function reverseDeathAnimation(){
-    if(rCounterDeath > 0.9){
-        rCounterDeath-=0.25;
+    for(let rCounter = 10; rCounter > 0.9; rCounter -= 0.25){
         player.image = deathFrames[Math.round(rCounterDeath)]; 
     }
 }
@@ -1892,7 +1889,6 @@ function resetStage(){
     mana = 100;
     stamina = 100;
     counterDeath = 1;
-    rCounterDeath = 10;
     reverseDeathAnimation();
     if(downPos == false && stage != 6){
         player.x = 100;
@@ -1908,7 +1904,8 @@ function resetStage(){
     }
     prevX = player.x;
     prevY = player.y;
-    if(rCounterDeath < 1) player.image = gs("stand1.png");
+    
+    //player.image = gs("stand1.png");  //*** 
     stage--;
     stage++;
     if(stage == 2){
