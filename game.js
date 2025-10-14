@@ -191,8 +191,8 @@ function draw() {
     //Testing
     textSize(18);
     text(Math.round(mouseX) + "," + Math.round(mouseY), 400, 100);
-    text("X-velocity: " + player.vel.x, 400, 250);
-    text("Y-velocity: " + player.vel.y, 400, 300);
+    text("X-velocity: " + player.vel.x, 400, 150);
+    text("Y-velocity: " + player.vel.y, 400, 200);
 
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9){
