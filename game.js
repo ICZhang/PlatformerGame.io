@@ -479,13 +479,13 @@ function spriteStuff(){
     bgBoard.scale.y = 0.95;
     bgBoard.collider = "none";
 
-    healthBar = new Sprite(150, 915, 50, 25);
+    healthBar = new Sprite(150, 935, 50, 25);
     healthBar.colour = "red";
     healthBar.collider = "none";
-    manaBar = new Sprite(530, 915, 50, 25);
+    manaBar = new Sprite(530, 935, 50, 25);
     manaBar.colour = "blue";
     manaBar.collider = "none";
-    staminaBar = new Sprite(930, 915, 50, 25);
+    staminaBar = new Sprite(930, 935, 50, 25);
     staminaBar.colour = "yellow";
     staminaBar.collider = "none";
 
@@ -696,8 +696,6 @@ function basicMovement(){
     
     player.vel.x = 0;
     barMovement();
-
-    if(stamina < 100) stamina += 1;
     
     let d = Math.sqrt(Math.pow(player.x - lever.x, 2) + Math.pow(player.y - lever.y, 2));
 
@@ -1880,6 +1878,8 @@ function hideEverything(){
 function resetStage(){
     dead = false;
     health = normalHealth;
+    mana = 100;
+    stamina = 100;
     counterDeath = 1;
     if(downPos == false && stage != 6){
         player.x = 100;
@@ -2011,7 +2011,7 @@ function spriteSheetSetup(){
 }
 
 function barMovement(){
-    let maxWidth = 300;
+    let maxWidth = 250;
     let healthRatio = health / maxHealth;
     healthBar.width = maxWidth * healthRatio;
     healthBar.x = 150 + healthBar.width / 2;
@@ -2019,14 +2019,16 @@ function barMovement(){
     let manaRatio = mana / 100;
     manaBar.width = maxWidth * manaRatio;
     manaBar.x = 530 + manaBar.width / 2;
+    if(mana < 100) mana += 1;
 
     let staminaRatio = stamina / 100;
     staminaBar.width = maxWidth * staminaRatio;
     staminaBar.x = 930 + staminaBar.width / 2;
+    if(stamina < 100) stamina += 1;
 
-    textSprite("Hp: " + health, 50, 930, healthLabel);
-    textSprite("Mana: " + mana, 430, 930, manaLabel);
-    textSprite("Stamina: " + stamina, 830, 930, staminaLabel);
+    textSprite("Hp: " + health, 50, 950, healthLabel);
+    textSprite("Mana: " + mana, 430, 950, manaLabel);
+    textSprite("Stamina: " + stamina, 830, 950, staminaLabel);
 
 }
 
