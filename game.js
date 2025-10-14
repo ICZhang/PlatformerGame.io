@@ -518,7 +518,6 @@ function spriteStuff(){
     arrow1 = new Sprite(arrow, 200,200,50,50);
     arrow1.debug = false;
     ground.debug = false;
-    player.debug = false;
     resizeThings();
     portal = new Sprite(portal2, 200,200,120,120);
     portal.debug = false;
@@ -1113,7 +1112,7 @@ function level1(){
     blocks[0].width = 150;
     blocks[0].height = 550;
 
-    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the blue dot.", 600, 500);
+    textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500);
 }
 
 
@@ -1463,10 +1462,10 @@ function castle(){
     if(dStage == 0) message("Who are you? Why have you entered my castle?");
     else if(dStage == 1 && kb.presses("x")) message("A knight? How interesting. You guys always seem to appear.");
     else if(dStage == 2 && kb.presses("x")) message("So, what do you want?.");
-    else if(dStage == 3 && kb.presses("x")) message("My story? You want to know how I ended up like this? Well, it all started on that one fateful day. He, told all us angels not to interfere with the humans. He said that we shouldn’t care about humans and what is happening on earth. At first, all of us listened to him because the humans weren’t struggling. However, everything changed when He had a bad day. Out of fury, he summoned storms and tornados to destroy the humans even if they didn’t do anything. As we watched, hundreds of them perished while his anger only seemed to grow. I won’t ever understand why he did this. However, I couldn’t stand by and watch the humans suffer. Against his orders, I flew down to Earth and used my powers to protect the withering humans. With my assistance, they were able to survive his wrath. When the storms ended, I returned to heaven. When I got back, he confronted me personally and pierced me with his light. After burning in his harsh power, he banished me from heaven and now I reside here. Never to return to my true home, rotting away on this planet. Was this what I deserved for my kindness? ");
+    else if(dStage == 3 && kb.presses("x")) message("My story? You want to know how I ended up like this? Well, it all started on that one fateful day. He, told all us angels not to interfere with the humans. At first, we listened to him because the humans weren’t struggling. However, everything changed when He had a bad day. Out of fury, he summoned storms and tornados to destroy the humans even if they didn’t do anything. As we watched, hundreds perished while his anger only grew. I won’t ever understand his reasoning. However, I couldn’t stand by and watch the humans suffer. Against his orders, I flew down to Earth and used my powers to protect the withering humans. With my help, they survived his wrath. When the storms ended, I returned to heaven, and He confronted me personally, piercing me with his harsh light. After an eternity, he banished me from heaven and now I reside here. Never to return to my home, rotting away on this planet. Was this what I deserved for my kindness?");
     else if(dStage == 4 && kb.presses("x")) {speech.setPitch(0.6);
     message("He sent you to punish me, correct?")}
-    else if(dStage == 5 && kb.presses("x")) message("After everything that's happened, I apparently am still in the wrong.");
+    else if(dStage == 5 && kb.presses("x")) message("After everything that's happened, apparently, I'm still in the wrong.");
     else if(dStage == 6 && kb.presses("x")) message("Well, I don't plan on losing easily. Let's take this outside");
     else if(dStage == 7){
         stage = 9;
