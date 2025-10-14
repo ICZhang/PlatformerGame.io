@@ -479,13 +479,13 @@ function spriteStuff(){
     bgBoard.scale.y = 0.95;
     bgBoard.collider = "none";
 
-    healthBar = new Sprite(150, 960, 50, 25);
+    healthBar = new Sprite(150, 945, 50, 25);
     healthBar.colour = "red";
     healthBar.collider = "none";
-    manaBar = new Sprite(530, 960, 50, 25);
+    manaBar = new Sprite(530, 945, 50, 25);
     manaBar.colour = "blue";
     manaBar.collider = "none";
-    staminaBar = new Sprite(930, 960, 50, 25);
+    staminaBar = new Sprite(930, 945, 50, 25);
     staminaBar.colour = "yellow";
     staminaBar.collider = "none";
 
@@ -2026,9 +2026,9 @@ function barMovement(){
     staminaBar.x = 900 + staminaBar.width / 2;
     if(stamina < 100) stamina += 1;
 
-    textSprite("Hp: " + health, 50, 950, healthLabel);
-    textSprite("Mana: " + mana, 430, 950, manaLabel);
-    textSprite("Stamina: " + stamina, 830, 950, staminaLabel);
+    textSprite("Hp: " + health, 60, 950, healthLabel);
+    textSprite("Mana: " + mana, 440, 950, manaLabel);
+    textSprite("Stamina: " + stamina, 840, 950, staminaLabel);
 
 }
 
