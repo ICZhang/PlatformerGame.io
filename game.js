@@ -43,6 +43,7 @@ var bossMovement = 10;
 var direction = true;
 var jCoolDown = false;
 let blocks = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+let blocksGroup, blocksData;
 let arrowListRight = [1,2,3,4,5];
 let arrowListLeft = [1,2,3,4,5];
 let arrowListDown = [1,2,3,4,5];
@@ -133,7 +134,7 @@ function preload(){
     
     dirt = loadImage(gs("ground.png"));
     idle = loadImage(gs("walk1.png"));
-    dirt2 = loadImage(gs("dirt2.jpeg"));
+    stone = loadImage(gs("stone.jpeg"));
     arrow = loadImage(gs("arrow.png"));
 
     arrowR = loadImage(gs("arrowR.png"));
@@ -163,6 +164,9 @@ function preload(){
 function setup(){
     createCanvas(1200, 1000);
     textStyle(BOLD);
+
+    blocksGroup = new Group();
+    blocksData = [];
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -485,7 +489,7 @@ function draw() {
         text("Congratulations! You win!.", 500,500);
         hideEverything();
     }
-    
+    spawnBlock(400, 400, 50, 100);
 }
 
 
@@ -616,8 +620,8 @@ function spriteStuff(){
     finalAttackSprite.visible = false;
 
     for(let i = 0; i < blocks.length; i++){
-        blocks[i] = new Sprite(dirt2, -100, 600, 50,50);
-        blocks[i].debug = false;
+        blocks[i] = new Sprite(stone, -100, 600, 50,50);
+        blocks[i].debug = true;
         blocks[i].scale.x = 0.1;
         blocks[i].scale.y = 0.1;
         blocks[i].width = 50;
@@ -2069,3 +2073,40 @@ function textSetup(){
     staminaLabel = new Sprite(400, 300, 0, 0); staminaLabel.collider = "none"; staminaLabel.textSize = 16; staminaLabel.textColor = "Yellow";
 
 }
+
+class BlockSprite{
+    //Width and height only change hitbox size, not actual image size
+    //x and y are the center of the object
+    constructor(x, y, w, h){
+        //This builds each block using smaller blocks so it doesn't look stretched, will look slightly different each time due to random
+        let gfx = createGraphics(w, h);
+ 
+        for(let i = 0; i < w; i += stone.width-2){
+            for(let j = 0; j < h; j += stone.height-2){
+                gfx.push();
+                gfx.translate(i + stone.width / 2, j + stone.height / 2);
+                gfx.rotate(random(-0.11, 0.11));
+                gfx.image(stone, -stone.width / 2, -stone.height / 2, stone.width*1.05, stone.height*1.05);
+                gfx.pop();
+            }
+        }
+ 
+        let blockObj = new blocksGroup.Sprite();
+        blockObj.x = x;
+        blockObj.y = y;
+        blockObj.image = gfx;
+        blockObj.image.scale.x = w / blockObj.image.width;
+        blockObj.image.scale.y = h / blockObj.image.height;
+        blockObj.width = w;
+        blockObj.height = h;
+        blockObj.collider = "static";
+        blockObj.debug = true;
+    }
+ }
+ 
+ 
+ function spawnBlock(x, y, w, h){
+    let newBlock = new BlockSprite(x, y, w, h);
+    blocksData.push(newBlock);
+ }
+ 
