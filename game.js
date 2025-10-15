@@ -180,6 +180,7 @@ function setup(){
     textSetup();
 
     spriteSheetSetup();
+    spawnBlock(400, 400, 50, 100);
 }
 
 
@@ -489,7 +490,6 @@ function draw() {
         text("Congratulations! You win!.", 500,500);
         hideEverything();
     }
-    spawnBlock(400, 400, 50, 100);
 }
 
 
