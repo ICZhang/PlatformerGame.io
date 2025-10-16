@@ -2020,11 +2020,37 @@ class BlockSprite{
         blockObj.collider = "kinematic";
         blockObj.debug = true;
     }
+}
+ 
+function spawnBlock(x, y, w, h){
+    let newBlock = new BlockSprite(x, y, w, h);
+    blocksData.push(newBlock);
+}
+
+class EnemySlimeSprite{
+    //x, y, speed
+    constructor(x, y, s){
+        let slimeObj = new slimesGroup.Sprite();
+        slimeObj.x = x;
+        slimeObj.y = y;
+        slimeObj.image = slimeImageDefault;
+        slimeObj.image.scale.x = 80 / slimeObj.image.width;
+        slimeObj.image.scale.y = 80 / slimeObj.image.height;
+        slimeObj.width = 50;
+        slimeObj.height = 60;
+        slimeObj.collider = "dynamic"; //Experiment more with kinematic collider
+        slimeObj.debug = true;
+        slimeObj.offset.y = 10;
+        this.EHealth = 100;
+        this.ESpeed = s;
+        this.SlimeDead = false;
+        this.DeathCounter = 1;
+    }
  }
  
  
- function spawnBlock(x, y, w, h){
-    let newBlock = new BlockSprite(x, y, w, h);
-    blocksData.push(newBlock);
+ function spawnSlime(x, y, s){
+    let newSlime = new EnemySlimeSprite(x, y, s);
+    slimesData.push(newSlime);
  }
  
