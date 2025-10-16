@@ -224,7 +224,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 300;
             normalStageStuff();
@@ -242,7 +242,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 100;
             normalStageStuff();
@@ -262,7 +262,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 50;
             player.y = 600;
             normalStageStuff();
@@ -283,7 +283,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 300;
             normalStageStuff();
@@ -306,7 +306,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 300;
             normalStageStuff();
@@ -351,7 +351,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 0;
             normalStageStuff();
@@ -414,7 +414,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 300;
             normalStageStuff();
@@ -436,7 +436,7 @@ function draw() {
         else{
             deathAnimation();
         }
-        if(player.collides(portal)){
+        if(player.overlaps(portal)){
             player.x = 100;
             player.y = 300;
             normalStageStuff();
@@ -564,7 +564,7 @@ function spriteStuff(){
     portal.debug = true;
     portal.scale.x = 0.3;
     portal.scale.y = 0.3;
-    portal.collider = "static";
+    portal.collider = "none";
 
     lava = new Sprite(lavaImage, 200,-200,120,120);
     lava.debug = false;
@@ -766,7 +766,21 @@ function pjump(){
     }
 
     blocksGroup.forEach(spriteB => {
-        if(player.collides(spriteB)){
+        if(player.collides(spriteB) && spriteB.vel.y != 0){
+            let playerBottom = player.y + player.height / 2;
+            let blockTop = spriteB.y - spriteB.height / 2;
+            if (abs(playerBottom - blockTop) < 5 && player.vel.y >= 0) {
+                player.y += spriteB.vel.y;  
+
+                if (kb.pressing("ArrowUp") && stamina >= 20) {
+                    player.vel.y = -20;
+                    jumpAni();
+                    stamina -= 20;
+                } else player.vel.y = 0;
+    
+            }
+        }
+        else if(player.collides(spriteB)){
             if(kb.pressing("ArrowUp") && stamina >= 20){ 
                 player.vel.y = -20; 
                 jumpAni(); 
@@ -1716,7 +1730,7 @@ function bossFight(){
         }
 
 
-        if(player.collides(portal) && portal.visible == true) stage++;
+        if(player.overlaps(portal) && portal.visible == true) stage++;
     }
 }
 
@@ -2003,7 +2017,7 @@ class BlockSprite{
         blockObj.image.scale.y = h / blockObj.image.height;
         blockObj.width = w;
         blockObj.height = h;
-        blockObj.collider = "static";
+        blockObj.collider = "kinematic";
         blockObj.debug = true;
     }
  }
