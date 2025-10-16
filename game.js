@@ -1182,10 +1182,10 @@ function level2(){
     blocks[3].height = 550;
     blocks[3].width = 70;
 
-    spawnBlock(400, 480, 150, 225);
-    spawnBlock(900, 390, 70, 50);
-    spawnBlock(1050, 260, 70, 50);
-    spawnBlock(1050, 540, 70, 50);
+    spawnBlock(400, 580, 150, 225);
+    spawnBlock(900, 490, 70, 50);
+    spawnBlock(1050, 360, 70, 50);
+    spawnBlock(1050, 640, 70, 50);
     blocksPlaced = true;
     textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400, label);
 }
