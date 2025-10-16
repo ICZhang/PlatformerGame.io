@@ -42,7 +42,6 @@ var counterTp = 1;
 var bossMovement = 10;
 var direction = true;
 var jCoolDown = false;
-let blocks = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
 let blocksGroup, blocksData;
 let arrowListRight = [1,2,3,4,5];
 let arrowListLeft = [1,2,3,4,5];
@@ -270,8 +269,6 @@ function draw() {
             box.x = 950;
             box.y = 675;
             downPos = true;
-            blocks[4].x = 100;
-            blocks[4].y = 600;
             blocksGroup.removeAll();
             blocksPlaced = false;
         }
@@ -319,9 +316,6 @@ function draw() {
             enemiesS[2].y = 100;
             respawnSlime(2);
 
-
-            blocks[4].x = 1000;
-            blocks[4].y = 700;
             Ldoor.x = 100
             Ldoor.y = 150
 
@@ -364,9 +358,7 @@ function draw() {
             gearSprite.x = -1000;
             lava.x = -1000;
             healthUp.x = -1000;
-            blocks[0].x = -1000;
-            blocks[4].x = -1000;
-            blocks[5].x = -1000;
+
             lever.x = -1000;
             open = false;
             Ldoor.x = 1000
@@ -634,15 +626,7 @@ function spriteStuff(){
     finalAttackSprite.collider = "none";
     finalAttackSprite.visible = false;
 
-    for(let i = 0; i < blocks.length; i++){
-        blocks[i] = new Sprite(stone, -100, 600, 50,50);
-        blocks[i].debug = true;
-        blocks[i].scale.x = 0.1;
-        blocks[i].scale.y = 0.1;
-        blocks[i].width = 50;
-        blocks[i].height = 50;
-        blocks[i].collider = "static";
-
+    for(let i = 0; i < enemiesS.length; i++){
         enemiesS[i] = new Sprite(slime,-1000,600,50,50);
         enemiesS[i].debug = false;
         enemiesS[i].scale.x = 0.2;
@@ -780,18 +764,6 @@ function pjump(){
         stamina -= 20;
         jumpAni();
     }
-    for(let i = 0; i < blocks.length; i++){
-        if(player.collides(blocks[i])){
-            if(kb.pressing("ArrowUp") && stamina >= 20){
-                player.vel.y = -20;
-                jumpAni();
-                stamina -= 20;
-            }
-            else player.vel.y = 0;
-            
-        }
-        
-    }
 
     blocksGroup.forEach(spriteB => {
         if(player.collides(spriteB)){
@@ -803,7 +775,6 @@ function pjump(){
             else player.vel.y = 0;
         }
     });
- 
 }
 
 
@@ -1061,19 +1032,17 @@ function fireBallAttack(){
     if(fireball.visible == true && fireball.collides(box) || fireball2.visible == true && fireball2.collides(box)){
         box.x = -200;
     }
-    
-    for(let i = 0; i < blocks.length; i++){
-        if(fireball.collides(blocks[i]) || fireball.collides(portal) || fireball.collides(lever) || fireball.collides(Ldoor)){
+
+    blocksGroup.forEach(spriteB => {
+        if(fireball.collides(spriteB) || fireball.collides(portal) || fireball.collides(lever) || fireball.collides(Ldoor)){
             fireball.visible = false;
             FcoolDown = false;
-            
-            
         }
-        if(fireball2.collides(blocks[i]) || fireball2.collides(portal) || fireball2.collides(lever) || fireball2.collides(Ldoor)){
+        if(fireball2.collides(spriteB) || fireball2.collides(portal) || fireball2.collides(lever) || fireball2.collides(Ldoor)){
             fireball2.visible = false;
             FcoolDown2 = false;
         }
-    }
+    });
 }
 
 
@@ -1145,23 +1114,7 @@ function rope(){
     }
 }
 
-
-function resize(i){
-    blocks[i].scale.y = 0.375;
-    blocks[i].scale.x = 0.5;
-    blocks[i].height = 600;
-    blocks[i].width = 300;
-}
-
-
 function level1(){
-    //Can delete after
-    blocks[0].x = 600;
-    blocks[0].y = 675;
-    blocks[0].scale.x = 0.25;
-    blocks[0].scale.y = 0.20;
-    blocks[0].width = 150;
-    blocks[0].height = 550;
     if(blocksPlaced == false){
         spawnBlock(600, 680, 180, 120);
         blocksPlaced = true;
@@ -1169,31 +1122,7 @@ function level1(){
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
 }
 
-
 function level2(){
-    blocks[0].x = 400;
-    blocks[0].y = 575;
-    blocks[0].scale.y = 0.375;
-    blocks[0].height = 600;
-
-    blocks[1].x = 1050;
-    blocks[1].y = 625;
-    blocks[1].scale.y = 0.1;
-    blocks[1].height = 550;
-    blocks[1].width = 70;
-
-    blocks[2].x = 900;
-    blocks[2].y = 475;
-    blocks[2].scale.y = 0.1;
-    blocks[2].height = 550;
-    blocks[2].width = 70;
-
-    blocks[3].x = 1050;
-    blocks[3].y = 350;
-    blocks[3].scale.y = 0.1;
-    blocks[3].height = 550;
-    blocks[3].width = 70;
-
     if(blocksPlaced == false){
         spawnBlock(400, 570, 150, 250);
         spawnBlock(900, 480, 70, 60);
@@ -1206,23 +1135,6 @@ function level2(){
 
 
 function level3(){
-    blocks[0].x = 100;
-    blocks[0].y = 350;
-    blocks[0].scale.y = 0.375;
-    blocks[0].scale.x = 0.5;
-    blocks[0].height = 600;
-    blocks[0].width = 300;
-
-    blocks[1].x = 900;
-    blocks[1].y = 350;
-    blocks[1].scale.y = 0.375;
-    blocks[1].scale.x = 0.5;
-    blocks[1].height = 600;
-    blocks[1].width = 300;
-
-    blocks[2].x = -200;
-    blocks[3].x = -200;
-
     lava.x = 600;
     lava.y = 800;
     lava.scale.x = 0.5;
@@ -1256,30 +1168,10 @@ function level3(){
 
 function level4(){
     lava.x = -500;
-    blocks[0].x = 1050;
-    blocks[0].y = 525;
-    
     gearSprite.x = -500;
     healthUp.x = -500;
 
     textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 950, 300, label);
-
-    blocks[1].x = 400;
-    blocks[1].y = 600;
-    
-    resize(2);
-    resize(3);
-    blocks[2].x = 400;
-    blocks[2].y = 400;
-
-    blocks[3].x = 400;
-    blocks[3].y = 200;
-    
-    blocks[4].height = 500;
-    blocks[4].y -= 5;
-    if(blocks[4].y < 0){
-        blocks[4].y = 700;
-    }
 
     if(blocksPlaced == false){
         spawnBlock(130, 750, 70, 70); //Moving one
@@ -1288,23 +1180,11 @@ function level4(){
         blocksPlaced = true;
     }
 
-    text("This y: " + blocksGroup[0].y, 950, 200);
-    text("Condition: " + (blocksGroup[0].y < 0), 950, 150);
-
     blocksGroup[0].y -= 5;
     if(blocksGroup[0].y < 0){
         blocksGroup[0].y = 750;
     }
 }
-
-
-function away(){
-    blocks[0].x = -500;
-    blocks[1].x = -500;
-    blocks[2].x = -500;
-    blocks[3].x = -500;
-}
-
 
 function slimeMove(i){
   
@@ -1331,15 +1211,15 @@ function slimeMove(i){
     }
 
     enemiesS[i].rotation = 0;
-    for(let i = 0; i < blocks.length; i++){
-        if(enemiesS[i].collides(ground) || enemiesS[i].collides(blocks[i])){
+    blocksGroup.forEach(spriteB => {
+        if(enemiesS[i].collides(ground) || enemiesS[i].collides(spriteB)){
             enemiesS[i].vel.y = 0;
         }
         else if(enemiesS[i].y < 1150){
             enemiesS[i].vel.y += 2;
         }
         else enemiesS[i].vel.y = 0;
-    }
+    });
 
     if(enemiesS[i].collides(player) && player.x < enemiesS[i].x && enemiesS[i].visible == true){
         health -= 2;
@@ -1394,20 +1274,10 @@ function respawnSlime(i){
 function level5(){
     textSprite("Try hitting the slimes with your fireball or sword.", 650, 500, label);
 
-    away();
-    blocks[4].x = -300;
     slimeMove(0);
     slimeMove(1);
     slimeMove(2);
-    
-    blocks[0].x = 500;
-    blocks[0].y = 700;
-
-    blocks[0].scale.x = 0.25;
-    blocks[0].scale.y = 0.20;
-    blocks[0].height = 525;
-    blocks[0].width = 150;
-    
+   
     if(blocksPlaced == false){
         spawnBlock(500, 700, 150, 110);
         blocksPlaced = true;
@@ -1423,9 +1293,6 @@ function level6(){
     else{
         Ldoor.x = 100;
     }
-
-    blocks[0].x = 500;
-    blocks[0].y = 700;
 
     gearSprite.x = 250;
     gearSprite.y = 500;
@@ -1446,25 +1313,7 @@ function level6(){
     if(player.collides(lava)){
         dead = true;
     }
-    resize(1);
-    resize(2);
-    resize(3);
-    resize(5);
-
-    blocks[1].x = 150;
-    blocks[1].y = 300;
-    blocks[2].x = 450;
-    blocks[2].y = 300;
-    blocks[3].x = 750;
-    blocks[3].y = 300;
-    blocks[5].x = 100;
-    blocks[5].y = 0;
-
-    blocks[4].height = 500;
-    blocks[4].y -= 5;
-    if(blocks[4].y < 0){
-        blocks[4].y = 700;
-    }
+    
     slimeMove(2);
 
     if(player.collides(healthUp)){
@@ -1497,27 +1346,6 @@ function level7(){
     else{
         Ldoor.x = 1000;
     }
-
-    resize(7);
-    resize(8);
-    resize(9);
-    resize(10);
-
-    blocks[1].y = 200;
-    blocks[2].y = 230;
-    blocks[3].y = 240;
-
-    blocks[7].x = 20;
-    blocks[7].y = 550;
-
-    blocks[8].x = 450;
-    blocks[8].y = 495;
-
-    blocks[9].x = 750;
-    blocks[9].y = 500;
-
-    blocks[10].x = 1050;
-    blocks[10].y = 500;
     
     slimeMove(0);
     slimeMove(1);
@@ -1542,9 +1370,7 @@ function level7(){
 
 function level8(){
     portal.x = 1100;
-    for(let i = 0; i < blocks.length; i++){
-        blocks[i].x = -300;
-    }
+
     for(let i = 0; i < enemiesS.length; i++){
         enemiesS[i].x = -300;
     }
@@ -1978,7 +1804,6 @@ function hideEverything(){
     ground.visible = false;
     bossSword.visible = false;
     lava.visible = false;
-    blocks[0].visible = false;
     staticCloudSprite.visible = false;
     dynamicCloudSprite.visible = false;
     dynamicCloudSprite2.visible = false;
@@ -1989,6 +1814,7 @@ function hideEverything(){
     player.visible = false;
     portal.visible = false;
     speech.stop();
+    blocksGroup.removeAll();
 }
 
 function resetStage(){
