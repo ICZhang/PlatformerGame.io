@@ -216,13 +216,11 @@ function draw() {
         }
     }
     if(stage == 0){
-        if(blocksPlaced == false && dead == false){
-            level1();
-        }
         portal.x = 1150;
         portal.y = 675;
         if(dead == false){
             normalStuff();
+            level1();
         }
         else{
             deathAnimation();
@@ -236,13 +234,11 @@ function draw() {
         }
     }
     else if(stage == 1){
-        if(blocksPlaced == false && dead == false){
-            level2();
-        }
         portal.x = 1100;
         portal.y = 175;
         if(dead == false){
             normalStuff();
+            level2();
         }
         else{
             deathAnimation();
@@ -258,13 +254,11 @@ function draw() {
         }
     }
     else if(stage == 2){
-        if(blocksPlaced == false && dead == false){
-            level3();
-        }
         portal.x = 1100;
         portal.y = 175;
         if(dead == false){
             normalStuff();
+            level3();
         }
         else{
             deathAnimation();
@@ -283,13 +277,11 @@ function draw() {
         }
     }
     else if(stage == 3){
-        if(blocksPlaced == false && dead == false){
-            level4();
-        }
         portal.x = 1100;
         portal.y = 675;
         if(dead == false){
             normalStuff();
+            level4();
         }
         else{
             deathAnimation();
@@ -1160,8 +1152,10 @@ function level1(){
     blocks[0].scale.y = 0.20;
     blocks[0].width = 150;
     blocks[0].height = 550;
-    spawnBlock(600, 680, 180, 120);
-    blocksPlaced = true;
+    if(blocksPlaced == false){
+        spawnBlock(600, 680, 180, 120);
+        blocksPlaced = true;
+    }
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
 }
 
@@ -1190,11 +1184,13 @@ function level2(){
     blocks[3].height = 550;
     blocks[3].width = 70;
 
-    spawnBlock(400, 570, 150, 250);
-    spawnBlock(900, 480, 70, 50);
-    spawnBlock(1050, 350, 70, 50);
-    spawnBlock(1050, 630, 70, 50);
-    blocksPlaced = true;
+    if(blocksPlaced == false){
+        spawnBlock(400, 570, 150, 250);
+        spawnBlock(900, 480, 70, 60);
+        spawnBlock(1050, 350, 70, 60);
+        spawnBlock(1050, 630, 70, 60);
+        blocksPlaced = true;
+    }
     textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400, label);
 }
 
@@ -1239,10 +1235,11 @@ function level3(){
         health += 10;
         gotten = true;
     }
-
-    spawnBlock(100, 360, 300, 230);
-    spawnBlock(900, 360, 300, 230);
-    blocksPlaced = true;
+    if(blocksPlaced == false){
+        spawnBlock(100, 350, 300, 230);
+        spawnBlock(900, 350, 300, 230);
+        blocksPlaced = true;
+    }
     textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600, label);
 }
 
@@ -1274,11 +1271,12 @@ function level4(){
         blocks[4].y = 700;
     }
 
-    spawnBlock(100, 700, 70, 70);
-    spawnBlock(400, 400, 300, 650);
-    spawnBlock(1050, 530, 200, 250);
-    blocksPlaced = true;
-    
+    if(blocksPlaced == false){
+        spawnBlock(100, 700, 70, 70);
+        spawnBlock(400, 400, 300, 650);
+        spawnBlock(1050, 530, 200, 250);
+        blocksPlaced = true;
+    }
 }
 
 
