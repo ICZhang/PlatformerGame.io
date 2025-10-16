@@ -766,7 +766,7 @@ function pjump(){
     }
 
     blocksGroup.forEach(spriteB => {
-        if (player.collides(spriteB)) {
+        if (player.collides(spriteB) && spriteB.vel.y != 0) {
             let playerBottom = player.y + player.height / 2;
             let blockTop = spriteB.y - spriteB.height / 2;
           
@@ -779,7 +779,14 @@ function pjump(){
                 stamina -= 20;
               } else player.vel.y = 0;
             }
-          }
+        }
+        else if(player.collides(spriteB)){
+            if(kb.pressing("ArrowUp") && stamina >= 20){ 
+                player.vel.y = -20; 
+                jumpAni(); 
+                stamina -= 20; 
+            } else player.vel.y = 0;
+        }
     });
 }
 
@@ -1427,8 +1434,6 @@ function castle(){
 function message(m){
     speech.speak(m);
     dStage++;
-
-
 }
 
 function bossFight(){
