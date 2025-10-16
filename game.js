@@ -427,6 +427,9 @@ function draw() {
             player.y = 300;
             normalStageStuff();
             open = false;
+
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
     }
     else if(stage == 7){
@@ -1278,14 +1281,14 @@ function level4(){
     }
 
     if(blocksPlaced == false){
-        spawnBlock(130, 750, 70, 70);
+        spawnBlock(130, 750, 70, 70); //Moving one
         spawnBlock(400, 400, 300, 650);
-        spawnBlock(1050, 530, 300, 240);
+        spawnBlock(1050, 530, 300, 240); 
         blocksPlaced = true;
     }
-    blocksGroup[2].y -= 5;
-    if(blocksGroup[2] < 0){
-        blocksGroup[2].y = 750;
+    blocksGroup[0].y -= 5;
+    if(blocksGroup[0] < 0){
+        blocksGroup[0].y = 750;
     }
 }
 
@@ -1467,9 +1470,9 @@ function level6(){
 
     if(blocksPlaced == false){
         spawnBlock(500, 700, 150, 110);
-        spawnBlock(1000, 750, 50, 40); //Moving one
+        spawnBlock(1000, 750, 70, 40); //Moving one
         spawnBlock(450, 300, 900, 225);
-        spawnBlock(100, 0, 300, 200);
+        spawnBlock(100, 15, 300, 200);
         blocksPlaced = true;
     }
 }
@@ -1512,7 +1515,18 @@ function level7(){
     slimeMove(3);
     slimeMove(4);
     slimeMove(5);
+
+    if(blocksPlaced == false){
+        spawnBlock(150, 210, 300, 220);
+        spawnBlock(450, 240, 300, 220); 
+        spawnBlock(750, 250, 300, 220);
+        spawnBlock(20, 560, 300, 220);
+        spawnBlock(450, 500, 300, 220);
+        spawnBlock(900, 510, 600, 220);
+        blocksPlaced = true;
+    }
   
+    
 }
 
 
