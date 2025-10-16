@@ -1667,7 +1667,7 @@ function bossFight(){
         gearTimer ++;
         
         if(gearTimer == 50){
-            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 150, 75);
+            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 200, 150);
         }
         if(gearTimer > 130){
             lava.x = 600;
@@ -1847,7 +1847,7 @@ function bossFight(){
         laser.y = boss.y + 400;
 
         if(blocksPlaced == false){
-            spawnBlock(600, 775, 150, 75);
+            spawnBlock(600, 750, 300, 150);
             blocksPlaced = true;
         }
         finalAttackSprite.y = 100;
