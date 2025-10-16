@@ -461,7 +461,7 @@ function draw() {
             ground.visible = false;
             castle();
             normalStuff();
-            
+            blocksPlaced = false;
         }
         else{
             deathAnimation();
@@ -478,7 +478,7 @@ function draw() {
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
-            blocksPlaced = false;
+            
             
             ground.visible = true;
             bossFight();
@@ -1847,7 +1847,7 @@ function bossFight(){
         laser.y = boss.y + 400;
 
         if(blocksPlaced == false){
-            spawnBlock(600, 750, 300, 150);
+            spawnBlock(600, 700, 450, 150);
             blocksPlaced = true;
         }
         finalAttackSprite.y = 100;
