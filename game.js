@@ -561,7 +561,7 @@ function spriteStuff(){
     ground.debug = false;
     resizeThings();
     portal = new Sprite(portal2, 200,200,120,120);
-    portal.debug = false;
+    portal.debug = true;
     portal.scale.x = 0.3;
     portal.scale.y = 0.3;
     portal.collider = "static";
