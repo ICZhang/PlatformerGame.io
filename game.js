@@ -59,6 +59,7 @@ var shotL = false;
 var BallDirection = true;
 var downPos = false;
 var open = false;
+var blocksPlaced = false;
 var health = 120;  ////Testing Purpose
 var stamina = 100;
 var mana = 100;
@@ -181,7 +182,6 @@ function setup(){
     textSetup();
 
     spriteSheetSetup();
-    spawnBlock(400, 400, 50, 100);
 }
 
 
@@ -216,11 +216,13 @@ function draw() {
         }
     }
     if(stage == 0){
+        if(blocksPlaced == false && dead == false){
+            level1();
+        }
         portal.x = 1150;
         portal.y = 675;
         if(dead == false){
             normalStuff();
-            level1();
         }
         else{
             deathAnimation();
@@ -778,6 +780,18 @@ function pjump(){
         }
         
     }
+
+    blocksGroup.forEach(spriteB => {
+        if(player.collides(spriteB)){
+            if(kb.pressing("ArrowUp") && stamina >= 20){
+                player.vel.y = -20;
+                jumpAni();
+                stamina -= 20;
+            }
+            else player.vel.y = 0;
+        }
+    });
+ 
 }
 
 
@@ -1135,7 +1149,8 @@ function level1(){
     blocks[0].scale.y = 0.20;
     blocks[0].width = 150;
     blocks[0].height = 550;
-
+    spawnBlock(420, 470, 100, 80);
+    blocksPlaced = true;
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
 }
 
