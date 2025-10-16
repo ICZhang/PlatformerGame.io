@@ -1475,6 +1475,11 @@ function level6(){
         spawnBlock(100, 15, 300, 200);
         blocksPlaced = true;
     }
+
+    blocksGroup[1].y -= 5;
+    if(blocksGroup[1] < 0){
+        blocksGroup[1].y = 750;
+    }
 }
 
 
@@ -1657,9 +1662,7 @@ function bossFight(){
         gearTimer ++;
         
         if(gearTimer == 50){
-            blocks[0].x = Math.round(Math.random() * 10 * 100);
-            blocks[0].y = 720;
-            resize(0);
+            spawnBlock(Math.round(Math.random() * 10 * 100), 720, 600, 300);
         }
         if(gearTimer > 130){
             lava.x = 600;
@@ -1678,7 +1681,7 @@ function bossFight(){
     }
     else if(bossTimer > 2500 && bossTimer < 3500){
         lava.x = -1500;
-        blocks[0].x = -1500;
+        blocksGroup.removeAll();
         
         for(let i = 0; i < 6; i++){
             
@@ -1838,9 +1841,10 @@ function bossFight(){
         laser.x = boss.x;
         laser.y = boss.y + 400;
 
-        resize(0);
-        blocks[0].x = 600;
-        blocks[0].y = 750;
+        if(blocksPlaced == false){
+            spawnBlock(600, 750, 600, 300);
+            blocksPlaced = true;
+        }
         finalAttackSprite.y = 100;
     }
 
@@ -1852,7 +1856,7 @@ function bossFight(){
         boss.x = 600;
         if(boss.y < 650) boss.y += 10;
         laser.x = -1000;
-        blocks[0].x = -1000;
+        blocksGroup.removeAll();
     }
 
     if(player.collides(boss) && bossTimer > 10000){
