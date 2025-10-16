@@ -231,16 +231,18 @@ function draw() {
             player.x = 100;
             player.y = 300;
             normalStageStuff();
-            
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
     }
     else if(stage == 1){
-        
+        if(blocksPlaced == false && dead == false){
+            level2();
+        }
         portal.x = 1100;
         portal.y = 175;
         if(dead == false){
             normalStuff();
-            level2();
         }
         else{
             deathAnimation();
@@ -251,8 +253,8 @@ function draw() {
             normalStageStuff();
             healthUp.x = 60;
             healthUp.y = 675;
-
-
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
     }
     else if(stage == 2){
@@ -1143,12 +1145,13 @@ function resize(i){
 
 
 function level1(){
-    //blocks[0].x = 600;
-    //blocks[0].y = 675;
-    //blocks[0].scale.x = 0.25;
-    //blocks[0].scale.y = 0.20;
-    //blocks[0].width = 150;
-    //blocks[0].height = 550;
+    //Can delete after
+    blocks[0].x = 600;
+    blocks[0].y = 675;
+    blocks[0].scale.x = 0.25;
+    blocks[0].scale.y = 0.20;
+    blocks[0].width = 150;
+    blocks[0].height = 550;
     spawnBlock(600, 680, 180, 120);
     blocksPlaced = true;
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
@@ -1179,6 +1182,11 @@ function level2(){
     blocks[3].height = 550;
     blocks[3].width = 70;
 
+    spawnBlock(400, 480, 150, 225);
+    spawnBlock(900, 390, 70, 50);
+    spawnBlock(1050, 260, 70, 50);
+    spawnBlock(1050, 540, 70, 50);
+    blocksPlaced = true;
     textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400, label);
 }
 
