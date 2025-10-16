@@ -340,6 +340,9 @@ function draw() {
 
             healthUp.x = 1150;
             healthUp.y = 50;
+
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
     }
     else if(stage == 5){
@@ -401,6 +404,9 @@ function draw() {
                 enemiesS[j].image = gs("Ls1.png");
                 enemiesS[j].y = 100;
             }
+
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
     }
     else if(stage == 6){
@@ -1236,7 +1242,7 @@ function level3(){
         gotten = true;
     }
     if(blocksPlaced == false){
-        spawnBlock(100, 350, 300, 230);
+        spawnBlock(120, 350, 300, 230);
         spawnBlock(900, 350, 300, 230);
         blocksPlaced = true;
     }
@@ -1272,10 +1278,14 @@ function level4(){
     }
 
     if(blocksPlaced == false){
-        spawnBlock(100, 700, 70, 70);
+        spawnBlock(130, 750, 70, 70);
         spawnBlock(400, 400, 300, 650);
-        spawnBlock(1050, 530, 200, 250);
+        spawnBlock(1050, 530, 300, 240);
         blocksPlaced = true;
+    }
+    blocksGroup[2].y -= 5;
+    if(blocksGroup[2] < 0){
+        blocksGroup[2].y = 750;
     }
 }
 
@@ -1390,6 +1400,10 @@ function level5(){
     blocks[0].height = 525;
     blocks[0].width = 150;
     
+    if(blocksPlaced == false){
+        spawnBlock(500, 700, 150, 110);
+        blocksPlaced = true;
+    }
 }
 
 
@@ -1449,6 +1463,14 @@ function level6(){
         healthUp.x = -100;
         health += 10;
         gotten = true;
+    }
+
+    if(blocksPlaced == false){
+        spawnBlock(500, 700, 150, 110);
+        spawnBlock(1000, 750, 50, 40); //Moving one
+        spawnBlock(450, 300, 900, 225);
+        spawnBlock(100, 0, 300, 200);
+        blocksPlaced = true;
     }
 }
 
