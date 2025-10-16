@@ -75,7 +75,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 0;//6 to test boss easier, 9 total
+var stage = 6;//6 to test boss easier, 9 total
 var dStage = 0;
 var FcoolDown = false;
 var FcoolDown2 = false;
@@ -1288,6 +1288,9 @@ function level4(){
         blocksPlaced = true;
     }
 
+    text("This y: " + blocksGroup[0].y, 950, 200);
+    text("Condition: " + (blocksGroup[0].y < 0), 950, 150);
+
     blocksGroup[0].y -= 5;
     if(blocksGroup[0].y < 0){
         blocksGroup[0].y = 750;
@@ -1664,7 +1667,7 @@ function bossFight(){
         gearTimer ++;
         
         if(gearTimer == 50){
-            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 300, 150);
+            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 150, 75);
         }
         if(gearTimer > 130){
             lava.x = 600;
@@ -1844,7 +1847,7 @@ function bossFight(){
         laser.y = boss.y + 400;
 
         if(blocksPlaced == false){
-            spawnBlock(600, 775, 250, 150);
+            spawnBlock(600, 775, 150, 75);
             blocksPlaced = true;
         }
         finalAttackSprite.y = 100;
