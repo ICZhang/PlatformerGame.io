@@ -1149,7 +1149,7 @@ function level1(){
     blocks[0].scale.y = 0.20;
     blocks[0].width = 150;
     blocks[0].height = 550;
-    spawnBlock(600, 690, 180, 110);
+    spawnBlock(600, 685, 180, 115);
     blocksPlaced = true;
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
 }
