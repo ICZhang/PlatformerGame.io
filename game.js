@@ -196,7 +196,7 @@ function draw() {
 
     //Testing
     textSize(18);
-    text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - 100 - canvas.offsetTop) / 0.7), 400, 100);
+    text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - 200 - canvas.offsetTop) / 0.7), 400, 100);
     text("X-velocity: " + player.vel.x, 400, 150);
     text("Y-velocity: " + player.vel.y, 400, 200);
 
@@ -1143,13 +1143,13 @@ function resize(i){
 
 
 function level1(){
-    blocks[0].x = 600;
-    blocks[0].y = 675;
-    blocks[0].scale.x = 0.25;
-    blocks[0].scale.y = 0.20;
-    blocks[0].width = 150;
-    blocks[0].height = 550;
-    spawnBlock(600, 680, 180, 115);
+    //blocks[0].x = 600;
+    //blocks[0].y = 675;
+    //blocks[0].scale.x = 0.25;
+    //blocks[0].scale.y = 0.20;
+    //blocks[0].width = 150;
+    //blocks[0].height = 550;
+    spawnBlock(600, 680, 180, 120);
     blocksPlaced = true;
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
 }
