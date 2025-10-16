@@ -258,10 +258,12 @@ function draw() {
         }
     }
     else if(stage == 2){
+        if(blocksPlaced == false && dead == false){
+            level3();
+        }
         portal.x = 1100;
         portal.y = 175;
         if(dead == false){
-            level3();
             normalStuff();
         }
         else{
@@ -276,13 +278,17 @@ function draw() {
             downPos = true;
             blocks[4].x = 100;
             blocks[4].y = 600;
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
     }
     else if(stage == 3){
+        if(blocksPlaced == false && dead == false){
+            level4();
+        }
         portal.x = 1100;
         portal.y = 675;
         if(dead == false){
-            level4();
             normalStuff();
         }
         else{
@@ -295,6 +301,8 @@ function draw() {
             enemiesS[0].x = 600;
             enemiesS[1].x = 825;
             enemiesS[2].x = 300;
+            blocksGroup.removeAll();
+            blocksPlaced = false;
         }
 
 
@@ -1182,10 +1190,10 @@ function level2(){
     blocks[3].height = 550;
     blocks[3].width = 70;
 
-    spawnBlock(400, 560, 150, 225);
-    spawnBlock(900, 470, 70, 50);
-    spawnBlock(1050, 340, 70, 50);
-    spawnBlock(1050, 620, 70, 50);
+    spawnBlock(400, 570, 150, 250);
+    spawnBlock(900, 480, 70, 50);
+    spawnBlock(1050, 350, 70, 50);
+    spawnBlock(1050, 630, 70, 50);
     blocksPlaced = true;
     textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400, label);
 }
@@ -1232,6 +1240,8 @@ function level3(){
         gotten = true;
     }
 
+    spawnBlock(100, 360, 300, 230);
+    spawnBlock(900, 360, 300, 230);
     textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600, label);
 }
 
@@ -1262,6 +1272,11 @@ function level4(){
     if(blocks[4].y < 0){
         blocks[4].y = 700;
     }
+
+    spawnBlock(100, 700, 70, 70);
+    spawnBlock(400, 400, 300, 650);
+    spawnBlock(1050, 530, 200, 250);
+    
 }
 
 
