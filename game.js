@@ -263,7 +263,7 @@ function draw() {
             deathAnimation();
         }
         if(player.collides(portal)){
-            player.x = 100;
+            player.x = 50;
             player.y = 600;
             normalStageStuff();
             box.x = 950;
@@ -766,21 +766,7 @@ function pjump(){
     }
 
     blocksGroup.forEach(spriteB => {
-        if (player.collides(spriteB) && spriteB.vel.y != 0) {
-            let playerBottom = player.y + player.height / 2;
-            let blockTop = spriteB.y - spriteB.height / 2;
-          
-            if (abs(playerBottom - blockTop) < 5 && player.vel.y >= 0) {
-              player.y += spriteB.vel.y; 
-          
-              if (kb.pressing("ArrowUp") && stamina >= 20) {
-                player.vel.y = -20;
-                jumpAni();
-                stamina -= 20;
-              } else player.vel.y = 0;
-            }
-        }
-        else if(player.collides(spriteB)){
+        if(player.collides(spriteB)){
             if(kb.pressing("ArrowUp") && stamina >= 20){ 
                 player.vel.y = -20; 
                 jumpAni(); 
