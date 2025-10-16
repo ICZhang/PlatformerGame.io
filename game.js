@@ -478,6 +478,7 @@ function draw() {
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
+            blocksPlaced = false;
             
             ground.visible = true;
             bossFight();
@@ -1286,8 +1287,9 @@ function level4(){
         spawnBlock(1050, 530, 300, 240); 
         blocksPlaced = true;
     }
+
     blocksGroup[0].y -= 5;
-    if(blocksGroup[0] < 0){
+    if(blocksGroup[0].y < 0){
         blocksGroup[0].y = 750;
     }
 }
@@ -1477,7 +1479,7 @@ function level6(){
     }
 
     blocksGroup[1].y -= 5;
-    if(blocksGroup[1] < 0){
+    if(blocksGroup[1].y < 0){
         blocksGroup[1].y = 750;
     }
 }
@@ -1662,7 +1664,7 @@ function bossFight(){
         gearTimer ++;
         
         if(gearTimer == 50){
-            spawnBlock(Math.round(Math.random() * 10 * 100), 720, 600, 300);
+            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 300, 150);
         }
         if(gearTimer > 130){
             lava.x = 600;
@@ -1842,7 +1844,7 @@ function bossFight(){
         laser.y = boss.y + 400;
 
         if(blocksPlaced == false){
-            spawnBlock(600, 750, 600, 300);
+            spawnBlock(600, 775, 250, 150);
             blocksPlaced = true;
         }
         finalAttackSprite.y = 100;
