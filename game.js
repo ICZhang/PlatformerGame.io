@@ -167,6 +167,7 @@ function setup(){
 
     blocksGroup = new Group();
     blocksData = [];
+    stone.resize(stone.width / 10, stone.height / 10);
 
     cloudSetUp();
     speech = new p5.Speech();
