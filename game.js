@@ -1242,6 +1242,7 @@ function level3(){
 
     spawnBlock(100, 360, 300, 230);
     spawnBlock(900, 360, 300, 230);
+    blocksPlaced = true;
     textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600, label);
 }
 
@@ -1276,6 +1277,7 @@ function level4(){
     spawnBlock(100, 700, 70, 70);
     spawnBlock(400, 400, 300, 650);
     spawnBlock(1050, 530, 200, 250);
+    blocksPlaced = true;
     
 }
 
