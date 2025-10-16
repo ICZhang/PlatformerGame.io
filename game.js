@@ -766,19 +766,22 @@ function pjump(){
     }
 
     blocksGroup.forEach(spriteB => {
-        if(player.collides(spriteB)){
-            if(kb.pressing("ArrowUp") && stamina >= 20){
+        if (player.collides(spriteB)) {
+            let playerBottom = player.y + player.height / 2;
+            let blockTop = spriteB.y - spriteB.height / 2;
+          
+            if (abs(playerBottom - blockTop) < 5 && player.vel.y >= 0) {
+              player.y += spriteB.vel.y; 
+          
+              if (kb.pressing("ArrowUp") && stamina >= 20) {
                 player.vel.y = -20;
                 jumpAni();
                 stamina -= 20;
+              } else player.vel.y = 0;
             }
-            else player.vel.y = 0;
-        }
+          }
     });
 }
-
-
-
 
 function resizeThings(){
     ground.scale.x = 2.5;
@@ -1180,7 +1183,7 @@ function level4(){
         blocksPlaced = true;
     }
 
-    blocksGroup[0].y -= 5;
+    blocksGroup[0].vel.y = -5;
     if(blocksGroup[0].y < 0){
         blocksGroup[0].y = 750;
     }
@@ -1330,7 +1333,7 @@ function level6(){
         blocksPlaced = true;
     }
 
-    blocksGroup[1].y -= 5;
+    blocksGroup[1].vel.y = -5;
     if(blocksGroup[1].y < 0){
         blocksGroup[1].y = 750;
     }
