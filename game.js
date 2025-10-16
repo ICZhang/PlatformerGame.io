@@ -626,7 +626,7 @@ function spriteStuff(){
     finalAttackSprite.collider = "none";
     finalAttackSprite.visible = false;
 
-    for(let i = 0; i < enemiesS.length; i++){
+    for(let i = 0; i < 15; i++){
         enemiesS[i] = new Sprite(slime,-1000,600,50,50);
         enemiesS[i].debug = false;
         enemiesS[i].scale.x = 0.2;
@@ -1174,7 +1174,7 @@ function level4(){
     textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 950, 300, label);
 
     if(blocksPlaced == false){
-        spawnBlock(130, 750, 70, 70); //Moving one
+        spawnBlock(160, 750, 70, 70); //Moving one
         spawnBlock(400, 400, 300, 650);
         spawnBlock(1050, 530, 300, 240); 
         blocksPlaced = true;
