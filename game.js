@@ -442,8 +442,8 @@ function draw() {
     }
 
     text("Stage: " + stage, 100, 50);
-    text("Blocks: " + blocksGroup.length, 125, 50);
-    text("Slimes: " + slimesGroup.length, 150, 50);
+    text("Blocks: " + blocksGroup.length, 100, 80);
+    text("Slimes: " + slimesGroup.length, 100, 110);
 }
 
 
