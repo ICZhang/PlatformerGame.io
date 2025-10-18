@@ -1,4 +1,3 @@
-let var1 = 50;
 let player;
 let boss;
 let speech;
@@ -185,7 +184,7 @@ function setup(){
     speech.setPitch(1);
     speech.setVoice("Aaron");
 
-    position = createVector( width * 0.75, 20 );
+    position = createVector(width * 0.75, 20);
     velocity = createVector();
     spriteStuff();
 
@@ -221,6 +220,7 @@ function draw() {
         player.vel.y = 0;
     }
     if(respawned == true){
+        player.rotation = 0;
         reverseDeathAnimation();
         if(rCounterDeath < 0.9) {
             player.image = standFrame;
@@ -473,7 +473,7 @@ function spriteStuff(){
     gearSprite.scale.y = 0.3;
     gearSprite.collider = "static";
 
-    swordHitBox = new Sprite(300,300, 30,50);
+    swordHitBox = new Sprite(300,300, 40,60);
     swordHitBox.debug = true;
     swordHitBox.collider = "none";
 
@@ -481,7 +481,7 @@ function spriteStuff(){
     dummy.debug = false;
     
     fireball = new Sprite(Fireball,-150,-150,70,50);
-    fireball.debug = false;
+    fireball.debug = true;
     fireball2 = new Sprite(Fireball2,-150,-150,70,50);
     fireball2.debug = false;
 
@@ -666,6 +666,11 @@ function basicMovement(){
     if(open == true) lever.image = gs("lever2.png");
     
     if(open == false) lever.image = gs("lever.png");
+
+    if(kb.presses("i")){
+        fireball.visible = true;
+        fireball2.visible = true;
+    }
 }
 
 function resistance(){
@@ -833,10 +838,10 @@ function swordThingR(){
     }
     
     if(direction == true){
-        swordHitBox.x = player.x+50;
+        swordHitBox.x = player.x+40;
     }
     else if(direction == false){
-        swordHitBox.x = player.x-50;
+        swordHitBox.x = player.x-40;
     }
     swordHitBox.y = player.y;
     
@@ -910,6 +915,8 @@ function fireBallAttack(){
     }
 
     if(kb.presses("q") && direction == true && FcoolDown == false && mana >= 50){
+        if(!fireball.removed) fireball.collider = "dynamic";
+        
         mana -= 50;
         fireball.visible = true;
         shot = true;
@@ -922,7 +929,7 @@ function fireBallAttack(){
     }
     
     if(fireball.x < 1250){
-        fireball.x = fireball.x + 10;
+        fireball.vel.x = 10;
     }
     counterBall+=0.1;
     if(counterBall > 3){
@@ -943,6 +950,7 @@ function fireBallAttack(){
     }
 
     if(kb.presses("q") && direction == false && FcoolDown2 == false && mana >= 50){
+        fireball2.collider = "dynamic";
         mana -= 50;
         fireball2.visible = true;
         shotL = true;
@@ -954,7 +962,7 @@ function fireBallAttack(){
         fireball2.vel.y = 0;
     }
     if(fireball2.x > -50){
-        fireball2.x = fireball2.x - 10;
+        fireball2.vel.x = -10;
         
     }
     counterBallL+=0.1;
@@ -983,14 +991,19 @@ function fireBallAttack(){
         box.x = -200;
     }
 
+    //If no blocks, wont collide properly
     blocksGroup.forEach(spriteB => {
-        if(fireball.collides(spriteB) || fireball.collides(portal) || fireball.collides(lever) || fireball.collides(Ldoor)){
+        if(fireball.collides(spriteB) || fireball.overlaps(portal) || fireball.collides(lever) || fireball.collides(Ldoor)){
             fireball.visible = false;
             FcoolDown = false;
+            fireball.vel.x = 0;
+            fireball.collider = "none";
         }
-        if(fireball2.collides(spriteB) || fireball2.collides(portal) || fireball2.collides(lever) || fireball2.collides(Ldoor)){
+        if(fireball2.collides(spriteB) || fireball2.overlaps(portal) || fireball2.collides(lever) || fireball2.collides(Ldoor)){
             fireball2.visible = false;
             FcoolDown2 = false;
+            fireball2.vel.x = 0;
+            fireball2.collider = "none";
         }
     });
 }
@@ -1140,7 +1153,7 @@ function level4(){
 function slimeMove2(){
     slimesGroup.forEach(spriteS => {
         let index = slimesGroup.indexOf(spriteS); 
- 
+        slimesData[index].update();
         if(slimesData[index].SlimeDead == false){
             
             text("Y-vel: " + spriteS.vel.y, 150, 100);
@@ -1167,10 +1180,28 @@ function slimeMove2(){
             }
              
             spriteS.rotation = 0;
-            if(swordHitBox.collides(spriteS) || fireball.collides(spriteS) && fireball.visible == true || fireball2.collides(spriteS) && fireball2.visible == true){
-                slimesData[index].EHealth -= 50;
+            if(swordHitBox.overlapping(spriteS) && swordHitBox.collider == "static" && slimesData[index].canBeHit == true) {
+                slimesData[index].EHealth -= 100;
+                slimesData[index].hit = true;
+                if(direction == true) slimesData[index].knockback("r");
+                if(direction == false) slimesData[index].knockback("l")
             }
- 
+            
+            if(fireball.collides(spriteS) && fireball.visible == true){ 
+                slimesData[index].EHealth -= 50;
+                fireball.visible = false;
+                FcoolDown = false;
+                fireball.vel.x = 0;
+                fireball.collider = "none";
+            }
+            if(fireball2.collides(spriteS) && fireball2.visible == true){
+                slimesData[index].EHealth -= 50;
+                fireball2.visible = false;
+                FcoolDown2 = false;
+                fireball2.vel.x = 0;
+                fireball2.collider = "none";
+            }
+
             if(slimesData[index].EHealth <= 0) slimesData[index].SlimeDead = true;
  
             if(spriteS.collides(player) && player.x < spriteS.x && spriteS.visible == true){
@@ -1747,6 +1778,10 @@ function hideEverything(){
 }
 
 function resetStage(){
+    fireball.visible = false;
+    fireball2.visible = false;
+    FcoolDown = false;
+    FcoolDown2 = false;
     dead = false;
     health = normalHealth;
     mana = 100;
@@ -1907,6 +1942,7 @@ class EnemySlimeSprite{
     //x, y, speed
     constructor(x, y, s){
         let slimeObj = new slimesGroup.Sprite();
+        this.sprite = slimeObj;
         slimeObj.x = x;
         slimeObj.y = y;
         slimeObj.image = slimeImageDefault;
@@ -1917,11 +1953,39 @@ class EnemySlimeSprite{
         slimeObj.collider = "dynamic"; 
         slimeObj.debug = true;
         slimeObj.offset.y = 10;
-        this.EHealth = 100;
+    
+        this.EHealth = 150;
         this.ESpeed = s;
         this.SlimeDead = false;
         this.DeathCounter = 1;
-        
+        this.hit = false;
+        this.canBeHit = true;
+        this.hitCooldown = 0;
+    }
+
+    knockback(direction){
+        if(direction == "l") this.sprite.vel.x = -20;
+        if(direction == "r") this.sprite.vel.x = 20;
+        this.hit = true;
+        this.canBeHit = false;
+        this.hitCooldown = 30;
+    }
+
+    update(){
+        //All this basically controls the knockback and prevents the slime from being multihit by the same attack
+        if(this.hit == true){
+            this.sprite.vel.x *= 0.9;
+        }
+        if(Math.abs(this.sprite.vel.x) < 0.05) {
+            this.sprite.vel.x = 0;
+            this.hit = false;
+        }
+        this.sprite.text = "Hp: " + this.EHealth;
+
+        if(this.canBeHit == false){
+            this.hitCooldown--;
+            if(this.hitCooldown <= 0) this.canBeHit = true;
+        }
     }
  }
  
