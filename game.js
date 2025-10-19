@@ -2,9 +2,7 @@ let player;
 let boss;
 let speech;
 let swordHitBox;
-let fireball;
-let fireballL;
-let dummy;
+let fireballGroup, fireballData;
 let ground;
 let portal;
 let lava;
@@ -22,10 +20,14 @@ var counter = 1;
 var counterL = 1;
 var counterJumpRight = 1;
 var counterJumpLeft = 1;
-var counterRA = 1;
-var counterLA = 1;
-var counterSR = 1;
-var counterSL = 1;
+var counterRA = 1; //Right Attack
+var counterLA = 1; //Left Attack
+var counterSR = 1; //Right slide
+var counterSL = 1; //Left Slide
+var counterBR = 0; //Right block
+var counterBL = 3; //Left block
+var counterCR = 0; //Right crit
+var counterCL = 2; //Left crit
 var counterShadow = 0;
 var counterDeath = 1;
 var rCounterDeath = 10;
@@ -33,9 +35,6 @@ var counterBall = 1;
 var counterShoot = 1;
 var counterBallL = 1;
 var counterShootL = 1;
-var counterSlimeRight = 1;
-var counterSlimeLeft = 1;
-var counterSlimeDeath = 1;
 var counterPortal = 1;
 var counterTp = 1;
 var bossMovement = 10;
@@ -48,7 +47,9 @@ let arrowListDown = [1,2,3,4,5];
 let slimesGroup, slimesData;
 var swingR = false;
 var swingL = false;
-var arrowRS = false;
+var swingCritR = false;
+var swingCritL = false;
+var blocking = false;
 var dead = false;
 var respawned = false;
 var shot = false;
@@ -73,10 +74,8 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 0;//6 to test boss easier, 9 total
+var stage = 4;//6 to test boss easier, 9 total
 var dStage = 0;
-var FcoolDown = false;
-var FcoolDown2 = false;
 var deathMessage = true;
 const g = 0.1;
 const ropeClimbSpeed = 2;
@@ -87,11 +86,14 @@ let finalAttackSprite;
 var finalAttack = 0;
 let sneakAttackActivate = false;
 let sneakAttackTimer = 0;
+let pResistance = 1;
+let intelligence = 1;
+let swordAttackType = 0; //0 - Nothing, 1 - light swing, 2 crit swing
 
-let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault;
+let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault, fireballImageDefaultR, fireballImageDefaultL;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
-let portalSheet, tpSheet;
-let [portalFrames, tpFrames] = [[], []];
+let portalSheet, tpSheet, fireBallExplosionSheet, blockSheet, blockSheetL, critSheet, critSheetL;
+let [portalFrames, tpFrames, fireBallExplosionFrames, blockFrames, blockFramesL, critFrames, critFramesL] = [[], [], [], [], [], [], []];
 let label, label2, healthLabel, manaLabel, staminaLabel;
 let backBoard, healthBar, manaBar, staminaBar;
 let [RslimeFrames, LslimeFrames, DslimeFrames] = [[], [], []];
@@ -129,6 +131,13 @@ function preload(){
 
     portalSheet = loadImage(gs("portalsheet.png"));
     tpSheet = loadImage(gs("starSheet.png"));
+    fireBallExplosionSheet = loadImage(gs("fireballExplosionsheet.png"));
+    blockSheet = loadImage(gs("blockSheet.png"));
+    blockSheetL = loadImage(gs("blockSheetL.png"));
+    critSheet = loadImage(gs("critSheet.png"));
+    critSheetL = loadImage(gs("critSheetL.png"));
+    fireballImageDefaultL = loadImage(gs("a1.png"));
+    fireballImageDefaultR = loadImage(gs("b1.png"));
 
     staticCloud = loadImage(gs("staticCloud.png"));
     dynamicCloud = loadImage(gs("dynamicCloud.png"));
@@ -148,8 +157,6 @@ function preload(){
     arrowD = loadImage(gs("arrowD.png"));
 
     laserImage = loadImage(gs("laser.png"));
-    Fireball = loadImage(gs("b1.png"));
-    Fireball2 = loadImage(gs("a1.png"));
     portal2 = loadImage(gs("portal.png"));
     lavaImage = loadImage(gs("lava.png"));
     gear = loadImage(gs("gear.png"));
@@ -178,6 +185,8 @@ function setup(){
     slimesGroup = new Group();
     slimesData = [];
 
+    fireballGroup = new Group();
+    fireballData = [];
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -201,7 +210,7 @@ function draw() {
     moveClouds();
     portalAnimation();
     tpAnimation();
-    if(slimesGroup.length != 0) slimeMove2();
+    if(slimesGroup.length != 0 && dead == false) slimeMove2();
 
     //Testing
     textSize(18);
@@ -216,6 +225,8 @@ function draw() {
         respawned = true;
         player.image = gs("d10.png");
         clearSlimes();
+        fireballGroup.removeAll();
+        fireballData.length = 0;
         player.vel.x = 0;
         player.vel.y = 0;
     }
@@ -476,16 +487,9 @@ function spriteStuff(){
     swordHitBox = new Sprite(300,300, 40,60);
     swordHitBox.debug = true;
     swordHitBox.collider = "none";
-
-    dummy = new Sprite(750,700, 30,50);
-    dummy.debug = false;
     
-    fireball = new Sprite(Fireball,-150,-150,70,50);
-    fireball.debug = true;
-    fireball2 = new Sprite(Fireball2,-150,-150,70,50);
-    fireball2.debug = false;
 
-    tp = new Sprite(Fireball, 100,200,50,50);
+    tp = new Sprite(100,200,50,50);
     tp.scale.x = 0.15;
     tp.scale.y = 0.15;
     tp.collider = "none";
@@ -502,9 +506,6 @@ function spriteStuff(){
 
     ground = new Sprite(dirt, 600,800,1200,100);
     ground.collider = "static";
-
-    arrow1 = new Sprite(arrow, 200,200,50,50);
-    arrow1.debug = false;
     ground.debug = false;
     resizeThings();
     portal = new Sprite(portal2, 200,200,120,120);
@@ -602,7 +603,7 @@ function basicMovement(){
     player.scale.x = 0.2;
     player.scale.y = 0.2;
     
-    if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false){
+    if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false){
         player.x = player.x + 10;
         counter+=0.1;
         player.image = walkFrames[Math.round(counter)];
@@ -612,7 +613,7 @@ function basicMovement(){
     }
     else if(direction == true && player.vel.y == 0 && respawned == false) player.image = standFrame;
     
-    if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false){
+    if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false){
         player.x = player.x - 10;
         counterL+=0.1;
         player.image = LwalkFrames[Math.round(counterL)];
@@ -622,11 +623,11 @@ function basicMovement(){
     }
     else if(direction == false && player.vel.y == 0 && respawned == false) player.image = LstandFrame;
         
-    if(kb.pressing("ArrowDown") && direction == true){
+    if(kb.pressing("ArrowDown") && direction == true && kb.pressing("f") == false){
         player.image = crouchFrame;
         player.height = 240;
         
-        if(kb.pressing("ArrowRight") && stamina >= 4){
+        if(kb.pressing("ArrowRight") && stamina >= 4 && kb.pressing("f") == false){
             player.image = dashFrames[1];
             player.x = player.x + 15;
             player.height = 200;
@@ -639,11 +640,11 @@ function basicMovement(){
     }
     else if(direction == true && kb.pressing("ArrowDown") == false) player.height = 310;
 
-    if(kb.pressing("ArrowDown") && direction == false){
+    if(kb.pressing("ArrowDown") && direction == false && kb.pressing("f") == false){
         player.image = LcrouchFrame;
         player.height = 240;
         
-        if(kb.pressing("ArrowLeft") && stamina >= 4){
+        if(kb.pressing("ArrowLeft") && stamina >= 4 && kb.pressing("f") == false){
             player.image = LdashFrames[1];
             player.x = player.x - 15;
             player.height = 200;
@@ -667,10 +668,6 @@ function basicMovement(){
     
     if(open == false) lever.image = gs("lever.png");
 
-    if(kb.presses("i")){
-        fireball.visible = true;
-        fireball2.visible = true;
-    }
 }
 
 function resistance(){
@@ -703,7 +700,7 @@ function pjump(){
         player.vel.y = player.vel.y+2;
     }
     
-    if((kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite)) || player.collides(lava)) && stamina >= 20){
+    if((kb.pressing("f") == false && kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite)) || player.collides(lava)) && stamina >= 20){
         player.vel.y = -20;
         stamina -= 20;
         jumpAni();
@@ -742,46 +739,11 @@ function resizeThings(){
 
     player.height = 310;
     player.width = 180;
-
-    arrow1.width = 200;
-    arrow1.height = 5;
-    arrow1.scale.x = 0.2;
-    arrow1.scale.y = 0.1;
-    
-    fireball.scale.x = 0.3;
-    fireball.scale.y = 0.3;
-
-    fireball2.scale.x = 0.3;
-    fireball2.scale.y = 0.3;
-
-    arrow1.x = -100;
-    dummy.x = -100;
     gearSprite.x = -100;
 }
 
-
-function summonArrow(){
-   if(kb.presses("s")){
-       arrowRS = true;
-   }
-   if(arrowRS == true){
-       arrow1.rotation = 0;
-       arrow1.rotationSpeed = 0;
-       arrow1.x = 0;
-       arrow1.y = 690;
-       arrow1.vel.x = 25;
-       arrow1.vel.y = 0;
-       arrowRS = false;
-   }
-   if(player.collides(arrow1)){
-       health -= 50;
-   }
-}
-
-
 function moveShadow(){
     counterShadow++;
-
 
     if(counterShadow > 200){
         prevX = player.x;
@@ -798,39 +760,84 @@ function moveShadow(){
         if(health <= maxHealth - 10) health+=10;
         mana-=50;
     }
-
 }
 
 
 function swordThingR(){
-    if(kb.presses("a") && direction == true && stamina >= 20){
+    if(kb.pressing("s") && kb.presses("a") && direction == true && stamina >= 50 && mana >= 75 && swingR == false && kb.pressing("f") == false){
+        swingCritR = true;
+        stamina -= 50;
+        mana -= 75;
+        swordHitBox.width = 60;
+    }
+    if(swingCritR == true){
+        swordAttackType = 2;
+        counterCR += 0.1;
+        player.image = critFrames[Math.round(counterCR)];
+        player.image.scale = 1.7;
+
+        if(counterCR > 2){
+            swordAttackType = 0;
+            counterCR = 0;
+            swingCritR = false;
+            player.image = standFrame;
+            swordHitBox.width = 40;
+        }
+    }
+
+    if(kb.pressing("s") && kb.presses("a") && direction == false && stamina >= 50 && mana >= 100 && swingL == false && kb.pressing("f") == false){
+        swingCritL = true;
+        stamina -= 50;
+        mana -= 100;
+        swordHitBox.width = 60;
+    }
+    if(swingCritL == true){
+        swordAttackType = 2;
+        counterCL -= 0.1;
+        player.image = critFramesL[Math.round(counterCL)];
+        player.image.scale = 1.7;
+
+        if(counterCL < 0){
+            swordAttackType = 0;
+            counterCL = 2;
+            swingCritL = false;
+            player.image = LstandFrame;
+            swordHitBox.width = 40;
+        }
+    }
+
+    if(kb.presses("a") && direction == true && stamina >= 20 && kb.pressing("f") == false && swingCritR == false){
         swingR = true;
         stamina -= 20;
     }
     if(swingR == true){
         swordHitBox.collider = "static";
+        swordAttackType = 1;
         counterRA += 0.1;
         player.image = swingFrames[Math.round(counterRA)];
 
         if(counterRA > 4){
             swordHitBox.collider = "none";
+            swordAttackType = 0;
             counterRA = 1;
             swingR = false;
             player.image = standFrame;
         }
     }
 
-    if(kb.presses("a") && direction == false && stamina >= 20){
+    if(kb.presses("a") && direction == false && stamina >= 20 && kb.pressing("f") == false && swingCritL == false){
         swingL = true;
         stamina -= 20;
     }
     if(swingL == true){
         swordHitBox.collider = "static";
+        swordAttackType = 1;
         counterLA += 0.1;
         player.image = LswingFrames[Math.round(counterLA)];
 
         if(counterLA > 4){
             swordHitBox.collider = "none";
+            swordAttackType = 0;
             counterLA = 1;
             swingL = false;
             player.image = LstandFrame;
@@ -844,6 +851,36 @@ function swordThingR(){
         swordHitBox.x = player.x-40;
     }
     swordHitBox.y = player.y;
+    
+    if(kb.pressing("f") && direction == true && stamina >= 1){
+        stamina -= 1;
+        if(counterBR < 3) counterBR += 0.1;
+        player.image = blockFrames[Math.round(counterBR)];
+        player.image.scale = 2.9;
+        blocking = true;
+        pResistance = 0.5;
+    }
+    else if(blocking == true && direction == true){
+        counterBR = 0;
+        player.image = standFrame;
+        pResistance = 1;
+        blocking = false;
+    }
+
+    if(kb.pressing("f") && direction == false && stamina >= 1){
+        stamina -= 1;
+        if(counterBL > 0) counterBL -= 0.1;
+        player.image = blockFramesL[Math.round(counterBL)];
+        player.image.scale = 1.85;
+        blocking = true;
+        pResistance = 0.5;
+    }
+    else if (blocking == true && direction == false){
+        counterBL = 3;
+        player.image = LstandFrame;
+        pResistance = 1;
+        blocking = false;
+    }
     
 }
 
@@ -860,19 +897,6 @@ function normalStageStuff(){
     normalHealth = maxHealth;
     health = maxHealth;
     open = false;
-}
-
-
-function dummyAct(){
-    dummy.collider = "dynamic";
-    dummy.x = 750;
-        dummy.y = 700;
-    
-    if(swordHitBox.collides(dummy)){
-        health-=10;
-        text("Ouch", dummy.x, dummy.y - 20);
-        text(health, dummy.x, dummy.y - 50);
-    }
 }
 
 
@@ -908,34 +932,13 @@ function reverseDeathAnimation(){
 }
 
 function fireBallAttack(){
-    fireball.rotation = 0;
-    fireball2.rotation = 0;
-    if(fireball.collides(dummy)){
-        health-=5;
-    }
-
-    if(kb.presses("q") && direction == true && FcoolDown == false && mana >= 50){
-        if(!fireball.removed) fireball.collider = "dynamic";
-        
+    if(kb.presses("q") && direction == true && mana >= 50 && kb.pressing("f") == false){
+        spawnFireball(player.x + 10, player.y, "r", 15);
         mana -= 50;
-        fireball.visible = true;
         shot = true;
         counterShoot = 1;
-        BallDirection = true;
-        fireball.x = player.x + 10;
-        fireball.y = player.y;
-        FcoolDown = true;
-        fireball.vel.y = 0;
     }
     
-    if(fireball.x < 1250){
-        fireball.vel.x = 10;
-    }
-    counterBall+=0.1;
-    if(counterBall > 3){
-        counterBall = 0.9;
-    }
-    fireball.image = fireballFrames[Math.round(counterBall)];
     if(shot){
         counterShoot += 0.2;
         player.image = fireFrames[Math.round(counterShoot)];
@@ -944,32 +947,14 @@ function fireBallAttack(){
             player.image = standFrame;
         }
     }
-      
-    if(fireball2.collides(dummy)){
-        health-=5;
-    }
 
-    if(kb.presses("q") && direction == false && FcoolDown2 == false && mana >= 50){
-        fireball2.collider = "dynamic";
+    if(kb.presses("q") && direction == false && mana >= 50 && kb.pressing("f" == false)){
+        spawnFireball(player.x - 10, player.y, "l", 15);
         mana -= 50;
-        fireball2.visible = true;
         shotL = true;
         counterShootL = 1;
-        BallDirection = false;
-        fireball2.x = player.x - 10;
-        fireball2.y = player.y;
-        FcoolDown2 = true;
-        fireball2.vel.y = 0;
     }
-    if(fireball2.x > -50){
-        fireball2.vel.x = -10;
-        
-    }
-    counterBallL+=0.1;
-    if(counterBallL > 3){
-        counterBallL = 0.9;
-    }
-    fireball2.image = LfireballFrames[Math.round(counterBallL)];
+    
     if(shotL){
         counterShootL += 0.2;
         player.image = LfireFrames[Math.round(counterShootL)]; 
@@ -978,33 +963,10 @@ function fireBallAttack(){
             player.image = LstandFrame;
         }
     }
-    if(fireball.x > 1200){
-        FcoolDown = false;
-    }
-    
-    if(fireball2.x < 0){
-        FcoolDown2 = false;
-    }
-
-
-    if(fireball.visible == true && fireball.collides(box) || fireball2.visible == true && fireball2.collides(box)){
-        box.x = -200;
-    }
-
-    //If no blocks, wont collide properly
-    blocksGroup.forEach(spriteB => {
-        if(fireball.collides(spriteB) || fireball.overlaps(portal) || fireball.collides(lever) || fireball.collides(Ldoor)){
-            fireball.visible = false;
-            FcoolDown = false;
-            fireball.vel.x = 0;
-            fireball.collider = "none";
-        }
-        if(fireball2.collides(spriteB) || fireball2.overlaps(portal) || fireball2.collides(lever) || fireball2.collides(Ldoor)){
-            fireball2.visible = false;
-            FcoolDown2 = false;
-            fireball2.vel.x = 0;
-            fireball2.collider = "none";
-        }
+    fireballGroup.forEach(spriteFB => {
+        let index = fireballGroup.indexOf(spriteFB); 
+        fireballData[index].updateAnimation();
+        fireballData[index].checkIfExist();
     });
 }
 
@@ -1018,8 +980,6 @@ function normalStuff(){
         fireBallAttack();
     }
     resistance();
-    //dummyAct();
-    summonArrow();
     moveShadow();
 }
 
@@ -1161,56 +1121,38 @@ function slimeMove2(){
 
             if(spriteS.x < player.x && d < 200 && spriteS.visible == true){
                 spriteS.x += slimesData[index].ESpeed;
-                counterSlimeRight += 0.1;
-                spriteS.image = RslimeFrames[Math.round(counterSlimeRight)];
-                spriteS.image.scale.x = 80 / slimeImageDefault.width;
-                spriteS.image.scale.y = 80 / slimeImageDefault.height;
- 
-                if(counterSlimeRight > 3) counterSlimeRight = 1;
+                slimesData[index].updateAnimation("right");
             }
             
             if(spriteS.x > player.x && d < 200 && spriteS.visible == true){
                 spriteS.x -= slimesData[index].ESpeed;
-                counterSlimeLeft += 0.1;
-                spriteS.image = LslimeFrames[Math.round(counterSlimeLeft)];
-                spriteS.image.scale.x = 80 / slimeImageDefault.width;
-                spriteS.image.scale.y = 80 / slimeImageDefault.height;
- 
-                if(counterSlimeLeft > 3) counterSlimeLeft = 1;  
+                slimesData[index].updateAnimation("left");  
             }
              
             spriteS.rotation = 0;
-            if(swordHitBox.overlapping(spriteS) && swordHitBox.collider == "static" && slimesData[index].canBeHit == true) {
+            if(swordHitBox.overlapping(spriteS) && swordAttackType == 1 && slimesData[index].canBeHit == true) {
                 slimesData[index].EHealth -= 100;
                 slimesData[index].hit = true;
                 if(direction == true) slimesData[index].knockback("r");
                 if(direction == false) slimesData[index].knockback("l")
             }
-            
-            if(fireball.collides(spriteS) && fireball.visible == true){ 
-                slimesData[index].EHealth -= 50;
-                fireball.visible = false;
-                FcoolDown = false;
-                fireball.vel.x = 0;
-                fireball.collider = "none";
-            }
-            if(fireball2.collides(spriteS) && fireball2.visible == true){
-                slimesData[index].EHealth -= 50;
-                fireball2.visible = false;
-                FcoolDown2 = false;
-                fireball2.vel.x = 0;
-                fireball2.collider = "none";
+
+            if(swordHitBox.overlapping(spriteS) && swordAttackType == 2 && slimesData[index].canBeHit == true) {
+                slimesData[index].EHealth -= 200;
+                slimesData[index].hit = true;
+                if(direction == true) slimesData[index].knockback("r");
+                if(direction == false) slimesData[index].knockback("l")
             }
 
             if(slimesData[index].EHealth <= 0) slimesData[index].SlimeDead = true;
  
             if(spriteS.collides(player) && player.x < spriteS.x && spriteS.visible == true){
-                health -= 2;
+                health -= 4 * pResistance;
                 player.x -=10;
             }
  
             if(spriteS.collides(player) && player.x > spriteS.x && spriteS.visible == true){
-                health -= 2;
+                health -= 4 * pResistance;
                 player.x +=10;
             }
             
@@ -1452,7 +1394,7 @@ function bossFight(){
             
         }
         if(bossSword.collides(player)){
-            health -= 5;
+            health -= 5 * pResistance;
         }
     }
     else if(bossTimer > 1000 && bossTimer < 2500){
@@ -1571,7 +1513,7 @@ function bossFight(){
             
         }
         if(bossSword.collides(player)){
-            health -= 10;
+            health -= 10 * pResistance;
         }
         
         bossSwordShadow.visible = true;
@@ -1591,7 +1533,7 @@ function bossFight(){
 
         gearTimer = 0;
         if(bossSwordShadow.collides(player)){
-            health -= 5;
+            health -= 5 * pResistance;
         }
     }
 
@@ -1618,7 +1560,7 @@ function bossFight(){
         }
         if(gearTimer == 120){
             darkbox.image = gs("BCircle.png");
-            health -= 30;
+            health -= 30 * pResistance;
         }
         if(gearTimer > 140){
             gearTimer = 0;
@@ -1778,10 +1720,6 @@ function hideEverything(){
 }
 
 function resetStage(){
-    fireball.visible = false;
-    fireball2.visible = false;
-    FcoolDown = false;
-    FcoolDown2 = false;
     dead = false;
     health = normalHealth;
     mana = 100;
@@ -1853,23 +1791,32 @@ function spriteSheetSetup(){
     let w = portalSheet.width / cols;
     let h = portalSheet.height / rows;
 
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            portalFrames.push(portalSheet.get(c * w, r * h, w, h));
-        }
-    }
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) portalFrames.push(portalSheet.get(c * w, r * h, w, h));
 
-    cols = 4;
-    rows = 4;
-    w = tpSheet.width / cols;
-    h = tpSheet.height / rows;
+    cols = 4; rows = 4; w = tpSheet.width / cols; h = tpSheet.height / rows;
 
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            tpFrames.push(tpSheet.get(c * w, r * h, w, h));
-        }
-    }
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) tpFrames.push(tpSheet.get(c * w, r * h, w, h));
+        
+    cols = 7; rows = 1; w = fireBallExplosionSheet.width / cols; h = fireBallExplosionSheet.height / rows;
 
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) fireBallExplosionFrames.push(fireBallExplosionSheet.get(c * w, r * h, w, h));
+    
+    cols = 4; rows = 1; w = blockSheet.width / cols; h = blockSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) blockFrames.push(blockSheet.get(c * w, r * h, w, h));
+
+    cols = 4; rows = 1; w = blockSheetL.width / cols; h = blockSheetL.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) blockFramesL.push(blockSheetL.get(c * w, r * h, w, h));
+
+    cols = 3; rows = 1; w = critSheet.width / cols; h = critSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) critFrames.push(critSheet.get(c * w, r * h, w, h));
+
+    cols = 3; rows = 1; w = critSheetL.width / cols; h = critSheetL.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) critFramesL.push(critSheetL.get(c * w, r * h, w, h));
+    
 }
 
 function barMovement(){
@@ -1961,6 +1908,8 @@ class EnemySlimeSprite{
         this.hit = false;
         this.canBeHit = true;
         this.hitCooldown = 0;
+        this.counterRight = 1;
+        this.counterLeft = 1;
     }
 
     knockback(direction){
@@ -1986,7 +1935,24 @@ class EnemySlimeSprite{
             this.hitCooldown--;
             if(this.hitCooldown <= 0) this.canBeHit = true;
         }
+
     }
+
+    updateAnimation(direction) {
+        if (direction === "right") {
+          this.counterRight += 0.1;
+          this.sprite.image = RslimeFrames[Math.round(this.counterRight)];
+          this.sprite.image.scale.x = 80 / slimeImageDefault.width;
+          this.sprite.image.scale.y = 80 / slimeImageDefault.height;
+          if (this.counterRight > 3) this.counterRight = 1;
+        } else if (direction === "left") {
+          this.counterLeft += 0.1;
+          this.sprite.image = LslimeFrames[Math.round(this.counterLeft)];
+          this.sprite.image.scale.x = 80 / slimeImageDefault.width;
+          this.sprite.image.scale.y = 80 / slimeImageDefault.height;
+          if (this.counterLeft > 3) this.counterLeft = 1;
+        }
+      }
  }
  
 function spawnSlime(x, y, s){
@@ -2003,4 +1969,123 @@ function clearSlimes(){
     slimesGroup.removeAll();
     slimesSpawned = false;
     slimesData.length = 0;
+}
+
+class fireballSprite{
+    //x, y, width, height
+ 
+ 
+    //Width and height only change hitbox size, not actual image size
+    //x and y are the center of the object
+    constructor(x, y, d, s){
+         let fireballObj = new fireballGroup.Sprite();
+         this.sprite = fireballObj;
+         fireballObj.x = x;
+         fireballObj.y = y;
+         if(d == "r"){ 
+             fireballObj.image = fireballImageDefaultR;
+             fireballObj.vel.x = s;
+         }
+         if(d == "l"){
+             fireballObj.image = fireballImageDefaultL;
+             fireballObj.vel.x = -s;
+         }
+         fireballObj.image.scale.x = 50 / fireballObj.image.width;
+         fireballObj.image.scale.y = 40 / fireballObj.image.height;
+         fireballObj.width = 50;
+         fireballObj.height = 40;
+         fireballObj.collider = "dynamic"; 
+         fireballObj.debug = true;
+         this.direction = d;
+         this.ESpeed = s;
+         this.counterRight = 1;
+         this.counterLeft = 1;
+         this.DeathCounter = 1;
+    }
+ 
+    updateAnimation(){
+        this.sprite.rotation = 0;
+        this.sprite.vel.y = 0;
+        if (this.direction === "r") {
+            this.counterRight += 0.1;
+            this.sprite.image = fireballFrames[Math.round(this.counterRight)];
+            this.sprite.image.scale.x = 50 / fireballImageDefaultR.width;
+            this.sprite.image.scale.y = 40 / fireballImageDefaultR.height;
+            if (this.counterRight > 3) this.counterRight = 1;
+        } else if (this.direction === "l") {
+            this.counterLeft += 0.1;
+            this.sprite.image = LfireballFrames[Math.round(this.counterLeft)];
+            this.sprite.image.scale.x = 50 / fireballImageDefaultL.width;
+            this.sprite.image.scale.y = 40 / fireballImageDefaultL.height;
+            if (this.counterLeft > 3) this.counterLeft = 1;
+        }
+    }
+
+    checkIfExist(){
+        if(!fireballGroup.includes(this.sprite)) return;
+        this.sprite.vel.x *= 0.95;
+        let index = fireballGroup.indexOf(this.sprite);
+        if(Math.abs(this.sprite.vel.x) < 0.1 * this.ESpeed){ 
+            this.disappear();
+            return;
+        }
+
+    
+        slimesGroup.forEach(spriteS => {
+            if (this.sprite.overlapping(spriteS) && this.sprite.collider == "dynamic") {
+                let index2 = slimesGroup.indexOf(spriteS);
+                slimesData[index2].EHealth -= 50;
+                this.disappear();
+                return;
+            }
+        });
+
+        blocksGroup.forEach(spriteB => {
+            if (this.sprite.overlapping(spriteB) && this.sprite.collider == "dynamic") {
+                this.disappear();
+                return;
+            }
+        });
+
+        fireballGroup.forEach(spriteFB => {
+            if (this.sprite.overlapping(spriteFB)) {}
+        });
+
+        if(this.sprite.overlapping(portal)) this.disappear();
+        if(this.sprite.overlapping(swordHitBox)){}
+        if(this.sprite.overlapping(player)){}
+
+        if(this.sprite.overlapping(box)){
+            this.disappear();
+            box.x = -200;
+        }
+    }
+ 
+    disappear(){
+        this.sprite.vel.y = 0;
+        this.sprite.vel.x = 0;
+        this.sprite.collider = "none;"
+        
+        this.DeathCounter += 0.2;
+        this.sprite.image = fireBallExplosionFrames[Math.round(this.DeathCounter)];
+        this.sprite.image.scale.x = 100 / fireballImageDefaultR.width;
+        this.sprite.image.scale.y = 80 / fireballImageDefaultR.height;
+        
+        if(this.DeathCounter > 6){
+            //Prevent any indexing issues
+            this.sprite.visible = false;
+            if(fireballGroup.includes(this.sprite)){
+                fireballGroup.remove(this.sprite);
+            }
+            const index = fireballData.indexOf(this);
+            if(index !== -1){
+                fireballData.splice(index, 1);
+            }
+        }
+    }
+}
+
+function spawnFireball(x, y, d, s){
+    let newFireball = new fireballSprite(x, y, d, s);
+    fireballData.push(newFireball);
 }
