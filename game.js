@@ -35,6 +35,8 @@ var counterChL = 3; //Left charge
 var counterChIR = 0; //Right idle charge
 var counterChIL = 2; //Left idle charge
 var counterH = 0; //Hurt
+var counterDR = 0; //Right dash
+var counterDL = 0; //Left dash
 var counterBoom = 0;
 var counterShadow = 0;
 var counterDeath = 1;
@@ -106,6 +108,11 @@ let intelligence = 1;
 let swordAttackType = 0; //0 - Nothing, 1 - light swing, 2 crit swing
 var explodeX = -200; var explodeY = -200;
 let strengthCounter = [];
+
+let lastTapR = 0;     
+let dashR = false;      
+let dashDuration = 2; 
+let dashTimer = 0;
 
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault, fireballImageDefaultR, fireballImageDefaultL, boom;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
@@ -258,7 +265,6 @@ function draw() {
     if(stage == -1){
         startingScreenAnimation();
     }
-
     //This is for resetting the stage
     if(kb.presses("r") && stage != 9 && stage != -1){
         backgroundMusic.pause();
@@ -441,6 +447,7 @@ function draw() {
         }
     }
     else if(stage == 8){
+        backgroundMusic.stop();
         castleImage.visible = true;
         resizeCanvas(1100,800);
         downPos = true;
@@ -493,6 +500,7 @@ function draw() {
         hideEverything();
     }
 
+    text(counterDR, 200, 50);
     text("Stage: " + stage, 100, 50);
     text("Blocks: " + blocksGroup.length, 100, 80);
     text("Slimes: " + slimesGroup.length, 100, 110);
@@ -502,7 +510,7 @@ function mousePressed() {
     if(stage == -1){
         userStartAudio(); 
         backgroundMusic.loop();
-        backgroundMusic.setVolume(0.6);
+        backgroundMusic.setVolume(0);
         stage = 0;
         hideStartingScreen();
     }
@@ -539,7 +547,6 @@ function spriteStuff(){
     swordHitBox.debug = true;
     swordHitBox.collider = "none";
     
-
     tp = new Sprite(100,200,50,50);
     tp.scale.x = 0.15;
     tp.scale.y = 0.15;
@@ -687,6 +694,8 @@ function basicMovement(){
     player.scale.x = 0.2;
     player.scale.y = 0.2;
     
+    handleDash();
+    
     if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false && kb.pressing("s") == false){
         player.x = player.x + 10 + speedBuff;
         counter+=0.1;
@@ -747,7 +756,7 @@ function basicMovement(){
         sliding = false;
     }
     
-    player.vel.x = 0;
+    //player.vel.x = 0;
     barMovement();
     
     let d = Math.sqrt(Math.pow(player.x - lever.x, 2) + Math.pow(player.y - lever.y, 2));
@@ -2456,4 +2465,23 @@ function hideStartingScreen(){
     if(startingScreen2Sprite2) startingScreen2Sprite2.visible = false;
     if(startingScreen31Sprite) startingScreen31Sprite.visible = false;
     if(startingScreen32Sprite) startingScreen32Sprite.visible = false;
+}
+
+function handleDash() {
+    if (kb.presses("ArrowRight")) {
+        let now = frameCount; 
+        if (now - lastTapR < 10 && stamina >= 30 && mana >= 10) { 
+            dashR = true;
+            dashTimer = dashDuration;
+            stamina -= 30;
+            mana -= 10;
+        }
+        lastTapR = now;
+    }
+
+    if (dashR) {
+        player.vel.x = 15;       
+        dashTimer--;
+        if (dashTimer <= 0) dashR = false; 
+    }
 }
