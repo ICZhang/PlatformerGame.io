@@ -646,16 +646,19 @@ function spriteStuff(){
     }
 
     startingScreen1Sprite = new Sprite(startingScreen1, 600, 500, 50, 50);
+    startingScreen1Sprite.visible = true;
     startingScreen1Sprite.collider = "none";
     startingScreen1Sprite.image.scale.x = 1200 / startingScreen1Sprite.image.width;
     startingScreen1Sprite.image.scale.y = 1000 / startingScreen1Sprite.image.height;
 
     startingScreen2Sprite = new Sprite(dynamicCloudBoss, 600, 500, 50, 50);
+    startingScreen2Sprite.visible = true;
     startingScreen2Sprite.collider = "none";
     startingScreen2Sprite.width = 400;
     startingScreen2Sprite.scale.x = 2.7;
     startingScreen2Sprite.scale.y = 2.2;
     startingScreen2Sprite2 = new Sprite(dynamicCloudBoss, -900, 500, 50, 50);
+    startingScreen2Sprite2.visible = true;
     startingScreen2Sprite2.collider = "none";
     startingScreen2Sprite2.width = 400;
     startingScreen2Sprite2.scale.x = 2.7;
@@ -665,6 +668,7 @@ function spriteStuff(){
     startingScreen31Sprite.image.scale.x = 900 / startingScreen31Sprite.image.width;
     startingScreen31Sprite.image.scale.y = 750 / startingScreen31Sprite.image.height;
     startingScreen31Sprite.collider = "none";
+    startingScreen31Sprite.visible = false;
     startingScreen32Sprite = new Sprite(startingScreen32, 601, 509, 50 ,50);
     startingScreen32Sprite.image.scale.x = 900 / startingScreen32Sprite.image.width;
     startingScreen32Sprite.image.scale.y = 750 / startingScreen32Sprite.image.height;
