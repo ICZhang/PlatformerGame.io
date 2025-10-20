@@ -645,7 +645,8 @@ function spriteStuff(){
         arrowListLeft[i].visible = false;
     }
 
-    startingScreen1Sprite = new Sprite(startingScreen1, 600, 500, 0, 0);
+    startingScreen1Sprite = new Sprite(startingScreen1, 600, 500, 50, 50);
+    startingScreen1Sprite.collider = "none";
     startingScreen1Sprite.image.scale.x = 1200 / startingScreen1Sprite.image.width;
     startingScreen1Sprite.image.scale.y = 1000 / startingScreen1Sprite.image.height;
 
@@ -660,12 +661,14 @@ function spriteStuff(){
     startingScreen2Sprite2.scale.x = 2.7;
     startingScreen2Sprite2.scale.y = 2.2;
 
-    startingScreen31Sprite = new Sprite(startingScreen31, 600, 510, 0, 0);
+    startingScreen31Sprite = new Sprite(startingScreen31, 600, 510, 50, 50);
     startingScreen31Sprite.image.scale.x = 900 / startingScreen31Sprite.image.width;
     startingScreen31Sprite.image.scale.y = 750 / startingScreen31Sprite.image.height;
-    startingScreen32Sprite = new Sprite(startingScreen32, 601, 509, 0 ,0);
+    startingScreen31Sprite.collider = "none";
+    startingScreen32Sprite = new Sprite(startingScreen32, 601, 509, 50 ,50);
     startingScreen32Sprite.image.scale.x = 900 / startingScreen32Sprite.image.width;
     startingScreen32Sprite.image.scale.y = 750 / startingScreen32Sprite.image.height;
+    startingScreen32Sprite.collider = "none";
     startingScreen32Sprite.visible = false;
 }
 
