@@ -2451,9 +2451,9 @@ function startingScreenAnimation(){
 }
 
 function hideStartingScreen(){
-    startingScreen1Sprite.visible = false;
-    startingScreen2Sprite.visible = false;
-    startingScreen2Sprite2.visible = false;
-    startingScreen31Sprite.visible = false;
-    startingScreen32Sprite.visible = false;
+    if(startingScreen1Sprite) startingScreen1Sprite.visible = false;
+    if(startingScreen2Sprite) startingScreen2Sprite.visible = false;
+    if(startingScreen2Sprite2) startingScreen2Sprite2.visible = false;
+    if(startingScreen31Sprite) startingScreen31Sprite.visible = false;
+    if(startingScreen32Sprite) startingScreen32Sprite.visible = false;
 }
