@@ -168,7 +168,7 @@ function preload(){
     critSheet = loadImage(gs("critSheet.png"));
     critSheetL = loadImage(gs("critSheetL.png"));
     chargeSheet = loadImage(gs("chargesheetR.png"));
-    chargeSheetL = loadImage(gs("chargeSheetL.png"));
+    chargeSheetL = loadImage(gs("chargesheetL.png"));
     chargeIdleSheet = loadImage(gs("chargeIdlesheetR.png"));
     chargeIdleSheetL = loadImage(gs("chargeIdlesheetL.png"));
     hurtSheet = loadImage(gs("hurtSheet.png"));
