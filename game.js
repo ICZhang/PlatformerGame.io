@@ -26,8 +26,16 @@ var counterSR = 1; //Right slide
 var counterSL = 1; //Left Slide
 var counterBR = 0; //Right block
 var counterBL = 3; //Left block
+var counterBIR = 0; //Right idle block
+var counterBIL = 2; //Left idle block
 var counterCR = 0; //Right crit
 var counterCL = 2; //Left crit
+var counterChR = 0; //Right charge
+var counterChL = 3; //Left charge
+var counterChIR = 0; //Right idle charge
+var counterChIL = 2; //Left idle charge
+var counterH = 0; //Hurt
+var counterBoom = 0;
 var counterShadow = 0;
 var counterDeath = 1;
 var rCounterDeath = 10;
@@ -50,6 +58,12 @@ var swingL = false;
 var swingCritR = false;
 var swingCritL = false;
 var blocking = false;
+var charging = false;
+var playerIsHurt = false;
+var playerHurtDirection = "n";
+var explosionSummoned = false;
+var speedBuff = 0;
+var damageBuff = 0;
 var dead = false;
 var respawned = false;
 var shot = false;
@@ -59,6 +73,7 @@ var downPos = false;
 var open = false;
 var blocksPlaced = false;
 var slimesSpawned = false;
+var sliding = false;
 var health = 120;  ////Testing Purpose
 var stamina = 100;
 var mana = 100;
@@ -74,7 +89,7 @@ var sPosy = 300;
 var prevX = 0;
 var prevY = 0;
 var isHooked = false;
-var stage = 0;//6 to test boss easier, 9 total
+var stage = -1;//6 to test boss easier, 9 total
 var dStage = 0;
 var deathMessage = true;
 const g = 0.1;
@@ -89,21 +104,37 @@ let sneakAttackTimer = 0;
 let pResistance = 1;
 let intelligence = 1;
 let swordAttackType = 0; //0 - Nothing, 1 - light swing, 2 crit swing
+var explodeX = -200; var explodeY = -200;
+let strengthCounter = [];
 
-let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault, fireballImageDefaultR, fireballImageDefaultL;
+let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault, fireballImageDefaultR, fireballImageDefaultL, boom;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
-let portalSheet, tpSheet, fireBallExplosionSheet, blockSheet, blockSheetL, critSheet, critSheetL;
-let [portalFrames, tpFrames, fireBallExplosionFrames, blockFrames, blockFramesL, critFrames, critFramesL] = [[], [], [], [], [], [], []];
+let portalSheet, tpSheet, fireBallExplosionSheet, blockSheet, blockSheetL, critSheet, critSheetL, chargeSheet, chargeSheetL;
+let chargeIdleSheet, chargeIdleSheetL, hurtSheet, hurtSheetL;
+let [portalFrames, tpFrames, fireBallExplosionFrames, blockFrames, blockFramesL, critFrames, critFramesL, chargeFrames, chargeFramesL] = [[], [], [], [], [], [], [], [], []];
+let [chargeIdleFrames, chargeIdleFramesL, blockIdleFrames, blockIdleFramesL, hurtFrames, hurtFramesL] = [[], [], [], [], [], []];
 let label, label2, healthLabel, manaLabel, staminaLabel;
 let backBoard, healthBar, manaBar, staminaBar;
 let [RslimeFrames, LslimeFrames, DslimeFrames] = [[], [], []];
 
+let backgroundMusic;
+let startingScreen1Sprite, startingScreen2Sprite, startingScreen2Sprite2, startingScreen31Sprite, startingScreen32Sprite, startingScreen1, startingScreen2, startingScreen31, startingScreen32;
+var counterScreen3 = 0;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
 }
 
+function ga(fileName){
+    return "/GameAudio/" + fileName;
+}
+
 function preload(){
+    startingScreen1 = loadImage(gs("startingScreen1.png"));
+    startingScreen2 = loadImage(gs("dynamicCloudBoss.png"));
+    startingScreen31 = loadImage(gs("startingScreen31.png"));
+    startingScreen32 = loadImage(gs("startingScreen32.png"));
+    backgroundMusic = loadSound(ga("backgroundMusic.mp3"));
     for(let i = 1; i <= 6; i++) walkFrames[i] = loadImage(gs("walk" + i + ".png"));
     for(let i = 1; i <= 6; i++) LwalkFrames[i] = loadImage(gs("Lwalk" + i + ".png"));
     standFrame = loadImage(gs("stand1.png"));
@@ -136,6 +167,12 @@ function preload(){
     blockSheetL = loadImage(gs("blockSheetL.png"));
     critSheet = loadImage(gs("critSheet.png"));
     critSheetL = loadImage(gs("critSheetL.png"));
+    chargeSheet = loadImage(gs("chargesheetR.png"));
+    chargeSheetL = loadImage(gs("chargeSheetL.png"));
+    chargeIdleSheet = loadImage(gs("chargeIdlesheetR.png"));
+    chargeIdleSheetL = loadImage(gs("chargeIdlesheetL.png"));
+    hurtSheet = loadImage(gs("hurtSheet.png"));
+    hurtSheetL = loadImage(gs("hurtSheetL.png"));
     fireballImageDefaultL = loadImage(gs("a1.png"));
     fireballImageDefaultR = loadImage(gs("b1.png"));
 
@@ -218,8 +255,13 @@ function draw() {
     text("X-velocity: " + player.vel.x, 400, 150);
     text("Y-velocity: " + player.vel.y, 400, 200);
 
+    if(stage == -1){
+        startingScreenAnimation();
+    }
+
     //This is for resetting the stage
-    if(kb.presses("r") && stage != 9){
+    if(kb.presses("r") && stage != 9 && stage != -1){
+        backgroundMusic.pause();
         resetStage();
         rCounterDeath = 10;
         respawned = true;
@@ -229,6 +271,7 @@ function draw() {
         fireballData.length = 0;
         player.vel.x = 0;
         player.vel.y = 0;
+        backgroundMusic.play();
     }
     if(respawned == true){
         player.rotation = 0;
@@ -424,8 +467,6 @@ function draw() {
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
-            
-            
             ground.visible = true;
             bossFight();
             normalStuff();
@@ -455,6 +496,16 @@ function draw() {
     text("Stage: " + stage, 100, 50);
     text("Blocks: " + blocksGroup.length, 100, 80);
     text("Slimes: " + slimesGroup.length, 100, 110);
+}
+
+function mousePressed() {
+    if(stage == -1){
+        userStartAudio(); 
+        backgroundMusic.loop();
+        backgroundMusic.setVolume(0.6);
+        stage = 0;
+        hideStartingScreen();
+    }
 }
 
 
@@ -493,6 +544,9 @@ function spriteStuff(){
     tp.scale.x = 0.15;
     tp.scale.y = 0.15;
     tp.collider = "none";
+
+    boom = new Sprite(-200, -200, 80, 80);
+    boom.collider = "none";
 
     player = new Sprite(idle, 100,200,50,50);
     player.debug = true; 
@@ -590,6 +644,29 @@ function spriteStuff(){
         arrowListLeft[i].collider = "dynamic";
         arrowListLeft[i].visible = false;
     }
+
+    startingScreen1Sprite = new Sprite(startingScreen1, 600, 500, 0, 0);
+    startingScreen1Sprite.image.scale.x = 1200 / startingScreen1Sprite.image.width;
+    startingScreen1Sprite.image.scale.y = 1000 / startingScreen1Sprite.image.height;
+
+    startingScreen2Sprite = new Sprite(dynamicCloudBoss, 600, 500, 50, 50);
+    startingScreen2Sprite.collider = "none";
+    startingScreen2Sprite.width = 400;
+    startingScreen2Sprite.scale.x = 2.7;
+    startingScreen2Sprite.scale.y = 2.2;
+    startingScreen2Sprite2 = new Sprite(dynamicCloudBoss, -900, 500, 50, 50);
+    startingScreen2Sprite2.collider = "none";
+    startingScreen2Sprite2.width = 400;
+    startingScreen2Sprite2.scale.x = 2.7;
+    startingScreen2Sprite2.scale.y = 2.2;
+
+    startingScreen31Sprite = new Sprite(startingScreen31, 600, 510, 0, 0);
+    startingScreen31Sprite.image.scale.x = 900 / startingScreen31Sprite.image.width;
+    startingScreen31Sprite.image.scale.y = 750 / startingScreen31Sprite.image.height;
+    startingScreen32Sprite = new Sprite(startingScreen32, 601, 509, 0 ,0);
+    startingScreen32Sprite.image.scale.x = 900 / startingScreen32Sprite.image.width;
+    startingScreen32Sprite.image.scale.y = 750 / startingScreen32Sprite.image.height;
+    startingScreen32Sprite.visible = false;
 }
 
 
@@ -603,8 +680,8 @@ function basicMovement(){
     player.scale.x = 0.2;
     player.scale.y = 0.2;
     
-    if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false){
-        player.x = player.x + 10;
+    if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false && kb.pressing("s") == false){
+        player.x = player.x + 10 + speedBuff;
         counter+=0.1;
         player.image = walkFrames[Math.round(counter)];
         direction = true;
@@ -613,8 +690,8 @@ function basicMovement(){
     }
     else if(direction == true && player.vel.y == 0 && respawned == false) player.image = standFrame;
     
-    if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false){
-        player.x = player.x - 10;
+    if(kb.pressing("ArrowLeft") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false && kb.pressing("s") == false){
+        player.x = player.x - 10 - speedBuff;
         counterL+=0.1;
         player.image = LwalkFrames[Math.round(counterL)];
         direction = false;
@@ -623,39 +700,45 @@ function basicMovement(){
     }
     else if(direction == false && player.vel.y == 0 && respawned == false) player.image = LstandFrame;
         
-    if(kb.pressing("ArrowDown") && direction == true && kb.pressing("f") == false){
+    if(kb.pressing("ArrowDown") && direction == true && kb.pressing("f") == false && kb.pressing("s") == false){
         player.image = crouchFrame;
         player.height = 240;
         
-        if(kb.pressing("ArrowRight") && stamina >= 4 && kb.pressing("f") == false){
+        if(kb.pressing("ArrowRight") && stamina >= 4 && kb.pressing("f") == false && kb.pressing("s") == false){
             player.image = dashFrames[1];
-            player.x = player.x + 15;
+            player.x = player.x + 15 + speedBuff;
             player.height = 200;
             counterSR+=0.1;
             player.image = dashFrames[Math.round(counterSR)];
             stamina -= 1;
-
+            sliding = true;
             if(counterSR > 2) counterSR = 1;
         }
     }
-    else if(direction == true && kb.pressing("ArrowDown") == false) player.height = 310;
+    else if(direction == true && kb.pressing("ArrowDown") == false){
+        player.height = 310;
+        sliding = false;
+    } 
 
-    if(kb.pressing("ArrowDown") && direction == false && kb.pressing("f") == false){
+    if(kb.pressing("ArrowDown") && direction == false && kb.pressing("f") == false && kb.pressing("s") == false){
         player.image = LcrouchFrame;
         player.height = 240;
         
-        if(kb.pressing("ArrowLeft") && stamina >= 4 && kb.pressing("f") == false){
+        if(kb.pressing("ArrowLeft") && stamina >= 4 && kb.pressing("f") == false && kb.pressing("s") == false){
             player.image = LdashFrames[1];
-            player.x = player.x - 15;
+            player.x = player.x - 15 - speedBuff;
             player.height = 200;
             counterSL+=0.1;
             player.image = LdashFrames[Math.round(counterSL)];
             stamina -= 1;
-
+            sliding = true;
             if(counterSL > 2) counterSL = 1;
         }
     }
-    else if(direction == false && kb.pressing("ArrowDown") == false) player.height = 310;
+    else if(direction == false && kb.pressing("ArrowDown") == false){
+        player.height = 310;
+        sliding = false;
+    }
     
     player.vel.x = 0;
     barMovement();
@@ -672,35 +755,42 @@ function basicMovement(){
 
 function resistance(){
     if(stage != 8){
-       if(player.x > 1175){
-           player.x -= 10;
-       }
-       if(player.x < 25){
-           player.x += 10;
-       }
+        if(player.x > 1175 && sliding == false){
+            player.x -= (10 + speedBuff);
+        }
+        if(player.x < 25 && sliding == false){
+            player.x += (10 + speedBuff);
+        }
+        if(player.x > 1175 && sliding == true){
+            player.x -= (15 + speedBuff);
+        }
+        if(player.x < 25 && sliding == true){
+            player.x += (15 + speedBuff);
+        }
    }
    else{
-       if(player.x > 1000){
-           player.x -= 10;
-       }
-       if(player.x < 100){
-           player.x += 10;
-       }
-   }
+        if(player.x > 1000){
+            player.x -= (10 + speedBuff);
+        }
+        if(player.x < 100){
+            player.x += (10 + speedBuff);
+        }
+        if(player.x > 1175 && sliding == true){
+            player.x -= (15 + speedBuff);
+        }
+        if(player.x < 25 && sliding == true){
+            player.x += (15 + speedBuff);
+        }
+    }
 }
 
 function pjump(){
     player.rotation = 0;
 
-    if(player.collides(ground)){
-        player.vel.y = 0;
-        
-    }
-    else if(isHooked == false){
-        player.vel.y = player.vel.y+2;
-    }
+    if(player.collides(ground)) player.vel.y = 0;
+    else if(isHooked == false) player.vel.y = player.vel.y+2;
     
-    if((kb.pressing("f") == false && kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite)) || player.collides(lava)) && stamina >= 20){
+    if((kb.pressing("s") == false && kb.pressing("f") == false && kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite)) || player.collides(lava)) && stamina >= 20){
         player.vel.y = -20;
         stamina -= 20;
         jumpAni();
@@ -723,7 +813,7 @@ function pjump(){
             }
         }
         else if(player.collides(spriteB)){
-            if(kb.pressing("ArrowUp") && stamina >= 20){ 
+            if(kb.pressing("ArrowUp") && stamina >= 20 && blocking == false && charging == false){ 
                 player.vel.y = -20; 
                 jumpAni(); 
                 stamina -= 20; 
@@ -758,16 +848,17 @@ function moveShadow(){
         player.x = prevX;
         player.y = prevY;
         if(health <= maxHealth - 10) health+=10;
+        else health = maxHealth;
         mana-=50;
     }
 }
 
 
 function swordThingR(){
-    if(kb.pressing("s") && kb.presses("a") && direction == true && stamina >= 50 && mana >= 75 && swingR == false && kb.pressing("f") == false){
+    if(kb.pressing("s") && kb.presses("a") && direction == true && stamina >= 80 && mana >= 90 && swingR == false && kb.pressing("f") == false){
         swingCritR = true;
-        stamina -= 50;
-        mana -= 75;
+        stamina -= 80;
+        mana -= 90;
         swordHitBox.width = 60;
     }
     if(swingCritR == true){
@@ -785,10 +876,10 @@ function swordThingR(){
         }
     }
 
-    if(kb.pressing("s") && kb.presses("a") && direction == false && stamina >= 50 && mana >= 100 && swingL == false && kb.pressing("f") == false){
+    if(kb.pressing("s") && kb.presses("a") && direction == false && stamina >= 80 && mana >= 90 && swingL == false && kb.pressing("f") == false){
         swingCritL = true;
-        stamina -= 50;
-        mana -= 100;
+        stamina -= 80;
+        mana -= 90;
         swordHitBox.width = 60;
     }
     if(swingCritL == true){
@@ -806,7 +897,7 @@ function swordThingR(){
         }
     }
 
-    if(kb.presses("a") && direction == true && stamina >= 20 && kb.pressing("f") == false && swingCritR == false){
+    if(kb.presses("a") && direction == true && stamina >= 20 && kb.pressing("f") == false && swingCritR == false && swingR == false){
         swingR = true;
         stamina -= 20;
     }
@@ -825,7 +916,7 @@ function swordThingR(){
         }
     }
 
-    if(kb.presses("a") && direction == false && stamina >= 20 && kb.pressing("f") == false && swingCritL == false){
+    if(kb.presses("a") && direction == false && stamina >= 20 && kb.pressing("f") == false && swingCritL == false && swingL == false){
         swingL = true;
         stamina -= 20;
     }
@@ -852,11 +943,19 @@ function swordThingR(){
     }
     swordHitBox.y = player.y;
     
-    if(kb.pressing("f") && direction == true && stamina >= 1){
+    if(kb.pressing("f") && direction == true && stamina >= 20 && charging == false){
         stamina -= 1;
-        if(counterBR < 3) counterBR += 0.1;
-        player.image = blockFrames[Math.round(counterBR)];
-        player.image.scale = 2.9;
+        if(counterBR < 3){
+            counterBR += 0.1;
+            player.image = blockFrames[Math.round(counterBR)];
+            player.image.scale = 2.9;
+        }
+        else{
+            counterBIR += 0.1
+            player.image = blockIdleFrames[Math.round(counterBIR)];
+            if(counterBIR > 2) counterBIR = 0;
+            player.image.scale = 2.9;
+        }
         blocking = true;
         pResistance = 0.5;
     }
@@ -867,11 +966,19 @@ function swordThingR(){
         blocking = false;
     }
 
-    if(kb.pressing("f") && direction == false && stamina >= 1){
+    if(kb.pressing("f") && direction == false && stamina >= 20 && charging == false){
         stamina -= 1;
-        if(counterBL > 0) counterBL -= 0.1;
-        player.image = blockFramesL[Math.round(counterBL)];
-        player.image.scale = 1.85;
+        if(counterBL > 0){
+            counterBL -= 0.1;
+            player.image = blockFramesL[Math.round(counterBL)];
+            player.image.scale = 1.85;
+        }
+        else{
+            counterBIL -= 0.1;
+            player.image = blockIdleFramesL[Math.round(counterBIL)];
+            if(counterBIL < 0) counterBIL = 2;
+            player.image.scale = 1.85;
+        }
         blocking = true;
         pResistance = 0.5;
     }
@@ -881,11 +988,61 @@ function swordThingR(){
         pResistance = 1;
         blocking = false;
     }
+
+    if(kb.pressing("s") && direction == true && swingCritR == false && swingR == false && blocking == false){
+        if(stamina < 100) stamina++;
+        if(mana < 100) mana++;
+        if(counterChR < 3) {
+            counterChR += 0.1;
+            player.image = chargeFrames[Math.round(counterChR)];
+            player.image.scale = 2;
+            player.image.offset.y = -40;
+        }
+        else{
+            counterChIR += 0.2;
+            player.image = chargeIdleFrames[Math.round(counterChIR)];
+            if(counterChIR > 2) counterChIR = 0;
+            player.image.scale = 1.7;
+            player.image.offset.y = -50;
+        }
+        charging = true;
+    }
+    else if(charging == true && direction == true){
+        counterChR = 0;
+        player.image = standFrame;
+        charging = false;
+    }
+
+    if(kb.pressing("s") && direction == false && swingCritL == false && swingL == false && blocking == false){
+        if(stamina < 100) stamina++;
+        if(mana < 100) mana++;
+        if(counterChL > 0){
+            counterChL -= 0.1;
+            player.image = chargeFramesL[Math.round(counterChL)];
+            player.image.scale = 2;
+            player.image.offset.y = -40;
+        }
+        else{
+            counterChIL -= 0.2;
+            player.image = chargeIdleFramesL[Math.round(counterChIL)];
+            if(counterChIL < 0) counterChIL = 2;
+            player.image.scale = 1.7;
+            player.image.offset.y = -50;
+        }
+        charging = true;
+    }
+    else if (charging == true && direction == false){
+        counterChL = 3;
+        player.image = LstandFrame;
+        charging = false;
+    }
     
 }
 
 
 function normalStageStuff(){
+    speedBuff = 0;
+    damageBuff = 0;
     if(gotten == true){
         gotten = false;
         maxHealth = normalHealth + 10;
@@ -922,6 +1079,8 @@ function deathAnimation(){
         player.image = deathFrames[Math.round(counterDeath)]; 
     }   
     player.vel.y = 0;
+    strengthCounter.length = 0;
+    backgroundMusic.pause();
 }
 
 function reverseDeathAnimation(){
@@ -932,7 +1091,7 @@ function reverseDeathAnimation(){
 }
 
 function fireBallAttack(){
-    if(kb.presses("q") && direction == true && mana >= 50 && kb.pressing("f") == false){
+    if(kb.presses("q") && direction == true && mana >= 50 && !kb.pressing("f") && !kb.pressing("s") && !kb.pressing("ArrowDown") && !kb.pressing("ArrowUp")){
         spawnFireball(player.x + 10, player.y, "r", 15);
         mana -= 50;
         shot = true;
@@ -948,7 +1107,7 @@ function fireBallAttack(){
         }
     }
 
-    if(kb.presses("q") && direction == false && mana >= 50 && kb.pressing("f" == false)){
+    if(kb.presses("q") && direction == false && mana >= 50 && !kb.pressing("f") && !kb.pressing("s") && !kb.pressing("ArrowDown") && !kb.pressing("ArrowUp")){
         spawnFireball(player.x - 10, player.y, "l", 15);
         mana -= 50;
         shotL = true;
@@ -968,6 +1127,32 @@ function fireBallAttack(){
         fireballData[index].updateAnimation();
         fireballData[index].checkIfExist();
     });
+
+    if(kb.presses("q") && mana >= 100 && !kb.pressing("f") && !kb.pressing("s") && !kb.pressing("ArrowDown") && kb.pressing("ArrowUp")){
+        mana -= 100;
+        health -= 20;
+        player.vel.y = -25;
+        playerIsHurt = true;
+        counterH = 0;
+        playerHurtDirection = "n";
+        counterBoom = 0;
+        explodeX = player.x;
+        explodeY = player.y;
+        explosionSummoned = true;
+    }
+
+    if(kb.presses("q") && mana >= 100 && !kb.pressing("f") && !kb.pressing("s") && kb.pressing("ArrowDown") && !kb.pressing("ArrowUp")){
+        mana -= 50;
+        health -= 30;
+        playerIsHurt = true;
+        counterH = 0;
+        playerHurtDirection = "n";
+        counterBoom = 0;
+        explodeX = player.x;
+        explodeY = player.y;
+        explosionSummoned = true;
+        buffStrength();
+    }
 }
 
 
@@ -978,6 +1163,9 @@ function normalStuff(){
         basicMovement();
         swordThingR();
         fireBallAttack();
+        playerHurtAnimation(playerHurtDirection);
+        explosionAnimation(explodeX, explodeY);
+        updateStrengthBuffs();
     }
     resistance();
     moveShadow();
@@ -1131,14 +1319,14 @@ function slimeMove2(){
              
             spriteS.rotation = 0;
             if(swordHitBox.overlapping(spriteS) && swordAttackType == 1 && slimesData[index].canBeHit == true) {
-                slimesData[index].EHealth -= 100;
+                slimesData[index].EHealth -= (100 + damageBuff);
                 slimesData[index].hit = true;
                 if(direction == true) slimesData[index].knockback("r");
                 if(direction == false) slimesData[index].knockback("l")
             }
 
             if(swordHitBox.overlapping(spriteS) && swordAttackType == 2 && slimesData[index].canBeHit == true) {
-                slimesData[index].EHealth -= 200;
+                slimesData[index].EHealth -= (200 + damageBuff);
                 slimesData[index].hit = true;
                 if(direction == true) slimesData[index].knockback("r");
                 if(direction == false) slimesData[index].knockback("l")
@@ -1146,33 +1334,45 @@ function slimeMove2(){
 
             if(slimesData[index].EHealth <= 0) slimesData[index].SlimeDead = true;
  
-            if(spriteS.collides(player) && player.x < spriteS.x && spriteS.visible == true){
-                health -= 4 * pResistance;
-                player.x -=10;
-            }
- 
-            if(spriteS.collides(player) && player.x > spriteS.x && spriteS.visible == true){
-                health -= 4 * pResistance;
-                player.x +=10;
+            if(spriteS.overlapping(player) && spriteS.visible == true){
+                if (!playerIsHurt) {
+                    health -= 4 * pResistance;
+                    playerIsHurt = true;
+                    counterH = 0;
+            
+                    if(player.x < spriteS.x){
+                        playerHurtDirection = "r";
+                    }
+                    else{
+                        playerHurtDirection = "l";
+                    }
+                }
             }
             
-            blocksGroup.forEach(spriteB => {
-                if(spriteS.collides(spriteB)) spriteS.vel.y = 0;
-                else if(spriteS.y < 1150) spriteS.vel.y += 2;
-                else spriteS.vel.y = 0;
-            });
+            if(slimesData[index].upKnockback == false){
+                blocksGroup.forEach(spriteB => {
+                    if(spriteS.collides(spriteB)) spriteS.vel.y = 0;
+                    else if(spriteS.y < 1150) spriteS.vel.y += 2;
+                });
 
-            if(spriteS.collides(ground)) spriteS.vel.y = 0;
-            else if(spriteS.y < 1150) spriteS.vel.y += 2;
-            else spriteS.vel.y = 0;
+                if(spriteS.collides(ground)) spriteS.vel.y = 0;
+                else if(spriteS.y < 1150) spriteS.vel.y += 2;
+            }
         }
         else{
-            spriteS.vel.y = 0;
+            spriteS.vel.y *= 0.8;
             spriteS.collider = "none;"
             slimesData[index].DeathCounter += 0.1;
             spriteS.image = DslimeFrames[Math.round(slimesData[index].DeathCounter)];
             spriteS.image.scale.x = 80 / slimeImageDefault.width;
             spriteS.image.scale.y = 80 / slimeImageDefault.height;
+
+            blocksGroup.forEach(spriteB => {
+                if(spriteS.overlapping(spriteB)){
+                    spriteS.vel.x = 0;
+                    spriteS.vel.y = 0;
+                }
+            });
 
             if(slimesData[index].DeathCounter > 4){
                 spriteS.visible = false;
@@ -1720,6 +1920,8 @@ function hideEverything(){
 }
 
 function resetStage(){
+    damageBuff = 0;
+    speedBuff = 0;
     dead = false;
     health = normalHealth;
     mana = 100;
@@ -1809,6 +2011,9 @@ function spriteSheetSetup(){
 
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) blockFramesL.push(blockSheetL.get(c * w, r * h, w, h));
 
+    blockIdleFrames[0] = blockFrames[1]; blockIdleFrames[1] = blockFrames[2]; blockIdleFrames[2] = blockFrames[3];
+    blockIdleFramesL[0] = blockFramesL[1]; blockIdleFramesL[1] = blockFramesL[2]; blockIdleFramesL[2] = blockFramesL[3];
+
     cols = 3; rows = 1; w = critSheet.width / cols; h = critSheet.height / rows;
 
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) critFrames.push(critSheet.get(c * w, r * h, w, h));
@@ -1816,6 +2021,30 @@ function spriteSheetSetup(){
     cols = 3; rows = 1; w = critSheetL.width / cols; h = critSheetL.height / rows;
 
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) critFramesL.push(critSheetL.get(c * w, r * h, w, h));
+
+    cols = 4; rows = 1; w = chargeSheet.width / cols; h = chargeSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) chargeFrames.push(chargeSheet.get(c * w, r * h, w, h));
+
+    cols = 4; rows = 1; w = chargeSheetL.width / cols; h = chargeSheetL.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) chargeFramesL.push(chargeSheetL.get(c * w, r * h, w, h));
+
+    cols = 3; rows = 1; w = chargeIdleSheet.width / cols; h = chargeIdleSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) chargeIdleFrames.push(chargeIdleSheet.get(c * w, r * h, w, h));
+
+    cols = 3; rows = 1; w = chargeIdleSheetL.width / cols; h = chargeIdleSheetL.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) chargeIdleFramesL.push(chargeIdleSheetL.get(c * w, r * h, w, h));
+
+    cols = 2; rows = 1; w = hurtSheet.width / cols; h = hurtSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) hurtFrames.push(hurtSheet.get(c * w, r * h, w, h));
+
+    cols = 2; rows = 1; w = hurtSheetL.width / cols; h = hurtSheetL.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = cols-1; c >= 0; c--) hurtFramesL.push(hurtSheetL.get(c * w, r * h, w, h));
     
 }
 
@@ -1910,17 +2139,30 @@ class EnemySlimeSprite{
         this.hitCooldown = 0;
         this.counterRight = 1;
         this.counterLeft = 1;
+        this.upKnockback = false;
+        this.knockbackTimer = 0;
     }
 
     knockback(direction){
-        if(direction == "l") this.sprite.vel.x = -20;
-        if(direction == "r") this.sprite.vel.x = 20;
+        if(direction == "l"){
+            this.sprite.vel.x = -20;
+            this.sprite.vel.y = -3;
+        }
+        if(direction == "r"){
+            this.sprite.vel.x = 20;
+            this.sprite.vel.y = -3;
+        }
         this.hit = true;
         this.canBeHit = false;
         this.hitCooldown = 30;
+        this.upKnockback = true;
+        this.knockbackTimer = 10;
     }
 
     update(){
+        this.knockbackTimer--;
+        if(this.knockbackTimer <= 0) this.upKnockback = false;
+        
         //All this basically controls the knockback and prevents the slime from being multihit by the same attack
         if(this.hit == true){
             this.sprite.vel.x *= 0.9;
@@ -2088,4 +2330,123 @@ class fireballSprite{
 function spawnFireball(x, y, d, s){
     let newFireball = new fireballSprite(x, y, d, s);
     fireballData.push(newFireball);
+}
+
+function playerHurtAnimation(d){
+    if(!playerIsHurt) return;
+    counterH += 0.1;
+    if(d == "n"){
+        if(counterH < 1){
+            player.image = hurtFrames[Math.round(counterH)];
+        }
+        else{
+            player.image = standFrame;
+            counterH = 0;
+            playerIsHurt = false;
+            player.vel.x = 0;
+        } 
+    }
+    if(d == "r"){
+        player.vel.x = -4;
+        if(counterH < 1){
+            player.image = hurtFrames[Math.round(counterH)];
+        }
+        else{
+            player.image = standFrame;
+            counterH = 0;
+            playerIsHurt = false;
+            player.vel.x = 0;
+        } 
+    }
+    if(d == "l"){
+        player.vel.x = 4;
+        if(counterH < 1){
+            player.image = hurtFramesL[Math.round(counterH)];
+        }
+        else{
+            player.image = LstandFrame;
+            counterH = 0;
+            playerIsHurt = false;
+            player.vel.x = 0;
+        } 
+    }
+}
+
+function explosionAnimation(x, y){
+    if(!explosionSummoned){ 
+        boom.x = -200;
+        return;
+    }
+    boom.x = x; 
+    boom.y = y;
+    if(counterBoom < 6){
+        counterBoom += 0.2;
+        boom.image = fireBallExplosionFrames[Math.round(counterBoom)];
+        slimesGroup.forEach(spriteS => {
+            if(boom.overlapping(spriteS)){
+                let index = slimesGroup.indexOf(spriteS); 
+                slimesData[index].EHealth -= 2;
+            }
+        });
+    }
+    else{
+        counterBoom = 0;
+        explosionSummoned = false;
+    }
+}
+
+class strengthBuffs{
+    constructor(){
+        this.counter = 0; 
+        damageBuff += 10;
+        speedBuff += 5;
+    }
+    update(index){
+        this.counter++;
+
+        if(this.counter > 360){
+            damageBuff -= 10;
+            speedBuff -= 5;
+            health += 5;
+            strengthCounter.splice(index, 1);
+        }
+    }
+}
+
+function buffStrength(){
+    let newStrength = new strengthBuffs();
+    strengthCounter.push(newStrength);
+}
+
+function updateStrengthBuffs(){
+    for(let i = strengthCounter.length - 1; i >= 0; i--) strengthCounter[i].update(i);
+}
+
+function startingScreenAnimation(){
+    counterScreen3 += 0.01;
+    if(Math.round(counterScreen3) == 0){
+        startingScreen31Sprite.visible = true;
+        startingScreen32Sprite.visible = false;
+    }
+    else{
+        startingScreen31Sprite.visible = false;
+        startingScreen32Sprite.visible = true;
+    }
+    if(counterScreen3 > 0.9) counterScreen3 = 0;
+
+    startingScreen2Sprite.visible = true;
+    startingScreen2Sprite2.visible = true;
+
+    startingScreen2Sprite.x+=1;
+    startingScreen2Sprite2.x+=1;
+    if(startingScreen2Sprite.x > 2100) startingScreen2Sprite.x = -900;
+    if(startingScreen2Sprite2.x > 2100) startingScreen2Sprite2.x = -900;
+}
+
+function hideStartingScreen(){
+    startingScreen1Sprite.visible = false;
+    startingScreen2Sprite.visible = false;
+    startingScreen2Sprite2.visible = false;
+    startingScreen31Sprite.visible = false;
+    startingScreen32Sprite.visible = false;
 }
