@@ -1,143 +1,116 @@
-let fireballGroup, fireballData;
-let fireballImageDefaultR, fireballImageDefaultL;
-
-let arr = [1, 2, 3];
+let arrowsGroup, arrowsData;
+let arrowImageDefault;
+let wall1, wall2, wall3, wall4;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
 }
 
+
 function preload(){
-    fireballImageDefaultL = loadImage(gs("a1.png"));
-    fireballImageDefaultR = loadImage(gs("b1.png"));
+    arrowImageDefault = loadImage(gs("arrowD.png"));
+    //arrowImageDefault = loadImage("arrowD.png");
 }
+
+
 
 
 function setup(){
-   createCanvas(1200,1000);
-  
-   fireballGroup = new Group();
-   fireballData = [];
-
-   spawnFireball(400, 400, "r", 11);
-   spawnFireball(400, 500, "l", 11);
+    createCanvas(1200,1000);
+    arrowsGroup = new Group();
+    arrowsData = [];  
+    wall1 = new Sprite(600,0, 1500, 100);//Top
+    wall2 = new Sprite(600,1000, 1500, 100);//Bot
+    wall3 = new Sprite(0,500, 100, 1500);//Left
+    wall4 = new Sprite(1200,500, 100, 1500);//Right
+    wall1.collider = "static";
+    wall2.collider = "static";
+    wall3.collider = "static";
+    wall4.collider = "static";
 }
+
+
 
 
 function draw(){
-   background("lightblue");
+    background("lightblue");
 
+    if(kb.presses("space")) spawnArrow(400, 400, 5, 1);
+    text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
+    text("Arrows: " + arrowsGroup.length, 200, 450);
 
-   text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
-   text("Fireballs: " + fireballGroup.length, 200, 450);
-   text(arr[1], 200, 500);
+    rect(50, 50, 50, 50);
 
-
-   rect(50, 50, 50, 50);
-
-
-   //0 degrees is pointed down
-}
-
-
-class fireballSprite{
-   //x, y, width, height
-
-
-   //Width and height only change hitbox size, not actual image size
-   //x and y are the center of the object
-   constructor(x, y, d, s){
-        let fireballObj = new fireballGroup.Sprite();
-        this.sprite = fireballObj;
-        fireballObj.x = x;
-        fireballObj.y = y;
-        if(d == "r"){ 
-            fireballObj.image = fireballImageDefaultR;
-            fireballObj.vel.x = s;
-        }
-        if(d == "l"){
-            fireballObj.image = fireballImageDefaultL;
-            fireballObj.vel.x = -s;
-        }
-        fireballObj.image.scale.x = 50 / fireballObj.image.width;
-        fireballObj.image.scale.y = 40 / fireballObj.image.height;
-        fireballObj.width = 50;
-        fireballObj.height = 40;
-        fireballObj.collider = "dynamic"; 
-        fireballObj.debug = true;
-        this.direction = d;
-        this.ESpeed = s;
-        this.counterRight = 1;
-        this.counterLeft = 1;
-   }
-
-    updateAnimation() {
-        if (this.direction === "r") {
-            this.counterRight += 0.1;
-            this.sprite.image = fireballFrames[Math.round(this.counterRight)];
-            this.sprite.image.scale.x = 50 / fireballImageDefaultR.width;
-            this.sprite.image.scale.y = 40 / fireballImageDefaultR.height;
-            if (this.counterRight > 3) this.counterRight = 1;
-        } else if (this.direction === "l") {
-            this.counterLeft += 0.1;
-            this.sprite.image = LfireballFrames[Math.round(this.counterLeft)];
-            this.sprite.image.scale.x = 50 / fireballImageDefaultL.width;
-            this.sprite.image.scale.y = 40 / fireballImageDefaultL.height;
-            if (this.counterLeft > 3) this.counterLeft = 1;
-        }
-    }
-
-    checkIfExist(){
-        if(!fireballGroup.includes(this.sprite)) return;
-        this.sprite.vel.x *= 0.9;
-        let index = fireballGroup.indexOf(this.sprite);
-        if(Math.abs(this.sprite.vel.x) < 0.05){ 
-            this.disappear();
-            return;
-        }
-
-        for(let spriteS of slimesGroup){
-            if (this.sprite.overlapping(spriteS)) {
-                let index2 = slimesGroup.indexOf(spriteS);
-                slimesData[index2].EHealth -= 50;
-                this.disappear();
-                return;
-            }
-        }
+    //0 degrees is pointed down
+    arrowsGroup.forEach(spriteA => {
+        let index = arrowsGroup.indexOf(spriteA);
+        arrowsData[index].update();
+        text("Angle: " + spriteA.rotation % 360, spriteA.x, spriteA.y - 25);
+        text("Rotation speed: " + spriteA.rotationSpeed, spriteA.x, spriteA.y - 50);
         
-        for(let spriteB of blocksGroup){
-            if (this.sprite.overlapping(spriteB)) {
-                this.disappear();
-                return;
+    });
+ 
+}
+
+
+
+
+class BossArrowSprite{
+  //x, y, speed, rotation
+    constructor(x, y, s, r){
+        let arrowObj = new arrowsGroup.Sprite();
+        this.sprite = arrowObj;
+        arrowObj.x = x;
+        arrowObj.y = y;
+        arrowObj.image = arrowImageDefault;
+        arrowObj.image.scale.x = 40 / arrowObj.image.width;
+        arrowObj.image.scale.y = 120 / arrowObj.image.height;
+        arrowObj.width = 30; //30
+        arrowObj.height = 110;//110
+        arrowObj.collider = "dynamic"; //Experiment more with kinematic collider
+        arrowObj.debug = true;
+        arrowObj.rotationSpeed = r; //1.57 is basically the max rotation speed
+
+        this.ESpeed = s;
+        this.launched = false;
+    }
+
+
+    update(){
+        stroke(0);
+        line(this.sprite.x, this.sprite.y, mouseX, mouseY);
+        this.sprite.rotationSpeed *= 1.01;
+
+        if (!this.launched) {
+            // Spin the arrow
+            this.sprite.rotation = (this.sprite.rotation + this.sprite.rotationSpeed) % 360;
+
+            if(this.sprite.rotationSpeed > 5) this.launched = true;
+
+            if(this.launched == true){
+                let dx = mouseX - this.sprite.x;
+                let dy = mouseY - this.sprite.y;
+                let targetAngle = atan2(dy, dx);
+                this.sprite.vel.x = this.ESpeed * cos(targetAngle);
+                this.sprite.vel.y = this.ESpeed * sin(targetAngle);
             }
         }
+        else this.sprite.rotationSpeed = 0;
+    } 
+}
 
-        if(this.sprite.overlapping(portal)) this.disappear();
-
-        if(this.sprite.overlapping(box)){
-            this.disappear();
-            box.x = -200;
-        }
-
-    }
-
-    disappear(){
-        //Prevent any indexing issues
-        if(fireballGroup.includes(this.sprite)) {
-            fireballGroup.remove(this.sprite);
-        }
-        const index = fireballData.indexOf(this);
-        if (index !== -1) {
-            fireballData.splice(index, 1);
-        }
-    }
+function spawnArrow(x, y, s, r){
+    let newArrow = new BossArrowSprite(x, y, s, r);
+    arrowsData.push(newArrow);    
 }
 
 
-function spawnFireball(x, y, d, s){
-   let newFireball = new fireballSprite(x, y, d, s);
-   fireballData.push(newFireball);
-}
+
+
+
+
+
+
 
 
 
