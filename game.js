@@ -5,11 +5,11 @@ let swordHitBox;
 let fireballGroup, fireballData;
 let ground;
 let portal;
-let lava;
+let lavaData, lavaGroup;
 let healthUp;
-let box;
-let Ldoor;
-let lever;
+let boxData, boxGroup;
+let Ldoor, Ldoor2;
+let lever, lever2;
 let bossSword;
 let bossSwordShadow;
 let castleImage;
@@ -71,8 +71,12 @@ var shotL = false;
 var BallDirection = true;
 var downPos = false;
 var open = false;
+var open2 = false;
 var blocksPlaced = false;
 var slimesSpawned = false;
+var lavaPlaced = false;
+var boxPlaced = false;
+var turretPlaced = false;
 var sliding = false;
 var health = 120;  ////Testing Purpose
 var stamina = 100;
@@ -90,6 +94,7 @@ var prevX = 0;
 var prevY = 0;
 var isHooked = false;
 var stage = -1;//6 to test boss easier, 9 total
+var bossStage = 10;
 var dStage = 0;
 var deathMessage = true;
 const g = 0.1;
@@ -110,6 +115,7 @@ let dashTrailGroup = []; let recallTrailGroup = [];
 let ropeSprite;
 let [prevXArr, prevYArr, prevDArr, savedprevXArr, savedprevYArr, savedprevDArr] = [[], [], [], [], [], []];;
 let recallTimer = 0; let recallIndex = null;
+let turretData, turretGroup, turretBulletData, turretBulletGroup;
 
 let lastTapR = 0;     
 let dashR = false;  
@@ -122,12 +128,12 @@ let dashCooldownTime = 60;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault, fireballImageDefaultR, fireballImageDefaultL, boom, dashTrailR, dashTrailL;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 let portalSheet, tpSheet, fireBallExplosionSheet, blockSheet, blockSheetL, critSheet, critSheetL, chargeSheet, chargeSheetL;
-let chargeIdleSheet, chargeIdleSheetL, hurtSheet, hurtSheetL;
+let chargeIdleSheet, chargeIdleSheetL, hurtSheet, hurtSheetL, turretBulletSheet;
 let [portalFrames, tpFrames, fireBallExplosionFrames, blockFrames, blockFramesL, critFrames, critFramesL, chargeFrames, chargeFramesL] = [[], [], [], [], [], [], [], [], []];
 let [chargeIdleFrames, chargeIdleFramesL, blockIdleFrames, blockIdleFramesL, hurtFrames, hurtFramesL] = [[], [], [], [], [], []];
 let label, label2, healthLabel, manaLabel, staminaLabel;
 let backBoard, healthBar, manaBar, staminaBar;
-let [RslimeFrames, LslimeFrames, DslimeFrames] = [[], [], []];
+let [RslimeFrames, LslimeFrames, DslimeFrames, turretBEFrames] = [[], [], [], []];
 let castleGate, castleGateImage; 
 
 let backgroundMusic;
@@ -225,6 +231,8 @@ function preload(){
     swordImage = loadImage(gs("sword.png"));
     swordImageShadow = loadImage(gs("dsword.png"));
     shadowBox = loadImage(gs("BBox.png"));
+    turretImage = loadImage(gs("turret.png"));
+    turretBulletSheet = loadImage(gs("turretBulletSheet.png"));
 }
 
 function setup(){
@@ -237,9 +245,16 @@ function setup(){
 
     slimesGroup = new Group();
     slimesData = [];
-
     fireballGroup = new Group();
     fireballData = [];
+    lavaGroup = new Group();
+    lavaData = [];
+    boxGroup = new Group();
+    boxData = [];
+    turretGroup = new Group();
+    turretData = [];
+    turretBulletGroup = new Group();
+    turretBulletData = [];
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -256,6 +271,7 @@ function setup(){
 
 
 function draw() {
+    if(kb.presses("w")) {player.x = portal.x; player.y = portal.y;};
     clear();
     background(138, 176, 226);
     fill("green");
@@ -266,10 +282,13 @@ function draw() {
     if(slimesGroup.length != 0 && dead == false) slimeMove2();
     if(dashTrailGroup.length != 0) dashTrailGroup.forEach(spriteT => spriteT.update());
     if(recallTrailGroup.length != 0) recallTrailGroup.forEach(spriteT => spriteT.update());
+    lavaGroup.forEach(spriteL => { if(spriteL.collides(player)) health = 0; });
+    turretBulletData.forEach(spriteTB => {spriteTB.update()});
+    turretData.forEach(spriteT => {spriteT.update()});
 
     //Testing
     textSize(18);
-    text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - 200 - canvas.offsetTop) / 0.7), 400, 100);
+    text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - canvas.offsetTop) / 0.7 - 40), 400, 100);
     text("X-velocity: " + player.vel.x, 400, 150);
     text("Y-velocity: " + player.vel.y, 400, 200);
 
@@ -277,7 +296,7 @@ function draw() {
         startingScreenAnimation();
     }
     //This is for resetting the stage
-    if(kb.presses("r") && stage != 9 && stage != -1) resetStage();
+    if(kb.presses("r") && stage != 10 && stage != -1 && stage != 11) resetStage();
     
     if(respawned == true){
         player.rotation = 0;
@@ -288,7 +307,7 @@ function draw() {
             direction = true;
         }
     }
-    if(stage >= 0 && stage <= 7 && dead == true) deathAnimation();
+    if(stage >= 0 && stage <= 8 && dead == true) deathAnimation();
     
     if(stage == 0){
         portal.x = 1150;
@@ -331,10 +350,9 @@ function draw() {
             player.x = 50;
             player.y = 600;
             normalStageStuff();
-            box.x = 950;
-            box.y = 700;
             downPos = true;
             clearBlocks();
+            clearLava();
         }
     }
     else if(stage == 3){
@@ -347,8 +365,12 @@ function draw() {
         if(player.overlaps(portal)){
             player.x = 100;
             player.y = 300;
+            label2.y = -100;
             normalStageStuff();
             clearBlocks();
+            clearBox();
+            clearTurretBullet();
+            clearTurret();
         }
 
     }
@@ -370,11 +392,6 @@ function draw() {
 
             player.x = 50;
             player.y = 600;
-
-            box.x = 200;
-            box.y = 150;
-
-            box.visible = true;
             lever.x = 1100;
 
             healthUp.x = 1150;
@@ -384,7 +401,7 @@ function draw() {
         }
     }
     else if(stage == 5){
-        
+        hideStartingScreen();
         downPos = true;
         portal.x = 25;
         portal.y = 150;
@@ -397,26 +414,31 @@ function draw() {
             player.y = 0;
             normalStageStuff();
             gearSprite.x = -1000;
-            lava.x = -1000;
             healthUp.x = -1000;
 
             lever.x = -1000;
-            open = false;
             Ldoor.x = 1000
             Ldoor.y = 675
             Ldoor.height = 300;
             Ldoor.width = 60;
             Ldoor.scale.y = 0.7;
 
+            Ldoor2.height = 300;
+            Ldoor2.width = 60;
+            Ldoor2.scale.y = 0.7;
+            clearTurret();
+            clearTurretBullet();
             clearBlocks();
             clearSlimes();
+            clearLava();
+            clearBox();
         }
     }
     else if(stage == 6){
         hideStartingScreen();
         downPos = false;
-        portal.x = 1100;
-        portal.y = 650;
+        portal.x = 1150;
+        portal.y = 670;
         if(dead == false){
             level7();
             normalStuff();
@@ -425,35 +447,73 @@ function draw() {
         }
         if(player.overlaps(portal)){
             player.x = 100;
-            player.y = 300;
+            player.y = 600;
+            healthUp.x = 450;
+            healthUp.y = 550;
+            clearTurret();
+            clearTurretBullet();
             normalStageStuff();
-            open = false;
             clearBlocks();
             clearSlimes();
+            clearLava();
         }
     }
     else if(stage == 7){
         downPos = true;
         if(dead == false){
-            Ldoor.x = -100;
-            portal.x = -1900;
-            
+            lever.x = 40; lever.y = 50;
+            lever2.x = 430; lever2.y = 370; 
             level8();
             normalStuff();
         }
         if(player.overlaps(portal)){
+            healthUp.x = -200;
+            lever.x = -100;
+            lever2.x = -200;
+            gearSprite.x = -200;
             player.x = 100;
-            player.y = 300;
+            player.y = 670;
+            Ldoor.x = -200;
+            Ldoor2.x = -300;
             normalStageStuff();
+            clearTurretBullet();
+            clearTurret();
+            clearBlocks();
+            clearSlimes();
+            clearLava();
+            clearBox();
         }
     }
     else if(stage == 8){
+        portal.x = 1150;
+        portal.y = 90;
+        if(dead == false){
+            lever.x = 550; lever.y = 350;
+            level9();
+            normalStuff();
+        }
+        if(player.overlaps(portal)){
+            lever.x = -100;
+            gearSprite.x = -200;
+            player.x = 100;
+            player.y = 600;
+            normalStageStuff();
+            clearTurretBullet();
+            clearTurret();
+            clearBlocks();
+            clearSlimes();
+            clearLava();
+            clearBox();
+        }
+    }
+    else if(stage == bossStage-1){
         backgroundMusic.stop();
         castleImage.visible = true;
         resizeCanvas(1100,800);
         downPos = true;
         if(dead == false){
             Ldoor.x = -100;
+            Ldoor2.x = -100;
             portal.visible = false;
             ground.visible = false;
             castle();
@@ -466,7 +526,7 @@ function draw() {
         textSprite("Press x to continue with the dialogue.", 575, 200, label2);
         textSprite("Press j to skip dialogue.", 570, 175, label);
     }
-    else if(stage == 9){
+    else if(stage == bossStage){
         label.y = -100;
         label2.y = -100;
         resizeCanvas(1200,1000);
@@ -495,7 +555,7 @@ function draw() {
             hideEverything();
         }
     }
-    else if(stage == 10){
+    else if(stage == 11){
         background("Yellow");
         text("Congratulations! You win!.", 500,500);
         hideEverything();
@@ -504,6 +564,7 @@ function draw() {
     text("Stage: " + stage, 100, 50);
     text("Blocks: " + blocksGroup.length, 100, 80);
     text("Slimes: " + slimesGroup.length, 100, 110);
+    text("Bullets: " + turretBulletGroup.length, 100, 130);
 }
 
 function mousePressed() {
@@ -577,12 +638,7 @@ function spriteStuff(){
     portal = new Sprite(portal2, 200,200,120,120);
     portal.debug = true;
     portal.scale = 0.35;
-    
     portal.collider = "none";
-
-    lava = new Sprite(lavaImage, 200,-200,120,120);
-    lava.debug = false;
-    lava.collider = "static";
 
     healthUp = new Sprite(hpUp, -200,200,750,750);
     healthUp.scale.x = 0.03;
@@ -590,13 +646,6 @@ function spriteStuff(){
     healthUp.debug = false;
     healthUp.collider = "static";
     healthUp.x = -100;
-
-    box = new Sprite(boxImage, -200,200,250,150);
-    box.scale.x = 0.5;
-    box.scale.y = 0.5;
-    box.debug = false;
-    box.collider = "static";
-    box.x = -100;
 
     Ldoor = new Sprite(door, -200,600,200,200);
     Ldoor.scale.x = 0.5;
@@ -610,6 +659,19 @@ function spriteStuff(){
     lever.scale.y = 0.1;
     lever.debug = false;
     lever.collider = "static";
+
+    Ldoor2 = new Sprite(door, -200,600,200,200);
+    Ldoor2.scale.x = 0.5;
+    Ldoor2.scale.y = 0.5;
+    Ldoor2.debug = false;
+    Ldoor2.collider = "static";
+    Ldoor2.x = -400;
+
+    lever2 = new Sprite(leverImage, -1100,700,400,400);
+    lever2.scale.x = 0.1;
+    lever2.scale.y = 0.1;
+    lever2.debug = false;
+    lever2.collider = "static";
     
     bossSword = new Sprite(swordImage, -200,200,50,400);
     bossSword.debug = false;
@@ -772,10 +834,18 @@ function basicMovement(){
     
     if(open == false) lever.image = gs("lever.png");
 
+    d2 = Math.sqrt(Math.pow(player.x - lever2.x, 2) + Math.pow(player.y - lever2.y, 2));
+
+    if(kb.presses("e") && d2 < 50) open2 = !open2;
+    
+    if(open2 == true) lever2.image = gs("lever2.png");
+    
+    if(open2 == false) lever2.image = gs("lever.png");
+
 }
 
 function resistance(){
-    if(stage != 8){
+    if(stage != 9){
         if(player.x > 1175 && sliding == false){
             player.x -= (10 + speedBuff);
         }
@@ -790,10 +860,10 @@ function resistance(){
         }
    }
    else{
-        if(player.x > 1000){
+        if(player.x > 1000 && sliding == false){
             player.x -= (10 + speedBuff);
         }
-        if(player.x < 100){
+        if(player.x < 100 && sliding == false){
             player.x += (10 + speedBuff);
         }
         if(player.x > 1175 && sliding == true){
@@ -1091,6 +1161,7 @@ function swordThingR(){
 function normalStageStuff(){
     speedBuff = 0;
     damageBuff = 0;
+    strengthCounter.splice(0);
     prevXArr = []; prevYArr = []; prevDArr = []; savedprevXArr = []; savedprevYArr = []; savedprevDArr = [];
     if(gotten == true){
         gotten = false;
@@ -1103,6 +1174,7 @@ function normalStageStuff(){
     normalHealth = maxHealth;
     health = maxHealth;
     open = false;
+    open2 = false;
 }
 
 
@@ -1223,7 +1295,7 @@ function normalStuff(){
 
 function level1(){
     if(blocksPlaced == false){
-        spawnBlock(600, 680, 180, 120);
+        spawnBlock(600, 680, 180, 120, "None", 0);
         blocksPlaced = true;
     }
     textSprite("Welcome. Arrows keys to move. D to teleport to your previous location. Previous location is shown by the red star.", 600, 500, label);
@@ -1231,10 +1303,10 @@ function level1(){
 
 function level2(){
     if(blocksPlaced == false){
-        spawnBlock(400, 570, 150, 250);
-        spawnBlock(900, 480, 70, 60);
-        spawnBlock(1050, 350, 70, 60);
-        spawnBlock(1050, 630, 70, 60);
+        spawnBlock(400, 570, 150, 250, "None", 0);
+        spawnBlock(900, 480, 70, 60, "None", 0);
+        spawnBlock(1050, 350, 70, 60, "None", 0);
+        spawnBlock(1050, 630, 70, 60, "None", 0);
         blocksPlaced = true;
     }
     textSprite("Hold down arrow and/or right or left to slide. A to swing your sword.", 600, 400, label);
@@ -1242,14 +1314,11 @@ function level2(){
 
 
 function level3(){
-    lava.x = 600;
-    lava.y = 800;
-    lava.scale.x = 0.5;
-    lava.width = 600;
-    lava.height = 150;
-    if(player.collides(lava)){
-        dead = true;
+    if(lavaPlaced == false){
+        spawnLava(600, 780, 600, 150);
+        lavaPlaced = true;
     }
+    
     gearSprite.x = 500;
     gearSprite.y = 50;
     hookThing();
@@ -1260,8 +1329,8 @@ function level3(){
         gotten = true;
     }
     if(blocksPlaced == false){
-        spawnBlock(120, 350, 300, 230);
-        spawnBlock(900, 350, 300, 230);
+        spawnBlock(120, 350, 300, 230, "None", 0);
+        spawnBlock(900, 350, 300, 230, "None", 0);
         blocksPlaced = true;
     }
     textSprite("Press space when near a gear to hook onto it. R to respawn if you die. You may appear invisible once you respawn.", 600, 600, label);
@@ -1269,23 +1338,29 @@ function level3(){
 
 
 function level4(){
-    lava.x = -500;
+    if(boxPlaced == false){
+        spawnBox(950, 700, 125, 95);
+        boxPlaced = true;
+    }
     gearSprite.x = -500;
     healthUp.x = -500;
 
-    textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 950, 300, label);
+    textSprite("Press q to shoot a fireball. Fireballs can burn blocks of wood.", 930, 300, label);
+    textSprite("Bullets hurt. You can destroy them with your sword or fireballs.", 930, 330, label2);
 
     if(blocksPlaced == false){
-        spawnBlock(160, 750, 70, 70); //Moving one
-        spawnBlock(400, 400, 300, 650);
-        spawnBlock(1050, 530, 300, 240); 
+        spawnBlock(160, 750, 70, 70, "n", 5); //Moving one
+        spawnBlock(400, 400, 300, 650, "None", 0);
+        spawnBlock(1050, 530, 300, 240, "None", 0); 
         blocksPlaced = true;
     }
 
-    blocksGroup[0].vel.y = -5;
-    if(blocksGroup[0].y < 0){
-        blocksGroup[0].y = 750;
+    if(turretPlaced == false){
+        spawnTurret(550, 670, 80, "e");
+        turretPlaced = true;
     }
+
+    if(blocksGroup[0].y < 0) blocksGroup[0].y = 750;
 }
 
 function slimeMove2(){
@@ -1321,6 +1396,7 @@ function slimeMove2(){
                 if(direction == true) slimesData[index].knockback("r");
                 if(direction == false) slimesData[index].knockback("l")
             }
+            lavaGroup.forEach(spriteL => { if(spriteL.collides(spriteS)) slimesData[index].EHealth = 0; });
 
             if(slimesData[index].EHealth <= 0) slimesData[index].SlimeDead = true;
  
@@ -1375,7 +1451,7 @@ function slimeMove2(){
 }
 
 function level5(){
-    textSprite("Try hitting the slimes with your fireball or sword.", 650, 500, label);
+    textSprite("Try hitting the slimes with your fireballs or sword.", 650, 500, label);
     if(slimesSpawned == false){
         spawnSlime(300, 650, 2.5);
         spawnSlime(500, 570, 2.5);
@@ -1384,14 +1460,14 @@ function level5(){
     }
    
     if(blocksPlaced == false){
-        spawnBlock(500, 700, 150, 110);
+        spawnBlock(500, 700, 150, 110, "None", 0);
         blocksPlaced = true;
     }
 }
 
 
 function level6(){
-    label.y = -100;
+    textSprite("Press e to interact with levers.", 1000, 100, label);
     if(open == true) Ldoor.x = -100;
     else Ldoor.x = 100;
     
@@ -1399,15 +1475,15 @@ function level6(){
     gearSprite.y = 500;
     hookThing();
 
-    lava.x = 450;
-    lava.y = 800;
-    lava.scale.x = 0.5;
-    lava.width = 600;
-    lava.height = 150;
+    if(boxPlaced == false){
+        spawnBox(200, 150, 125, 95);
+        boxPlaced = true;
+    }
 
-
-    if(player.collides(lava)) dead = true;
-    
+    if(lavaPlaced == false){
+        spawnLava(450, 780, 600, 150);
+        lavaPlaced = true;
+    }
     
     if(slimesSpawned == false){
         spawnSlime(500, 120, 2.5);
@@ -1421,55 +1497,185 @@ function level6(){
     }
 
     if(blocksPlaced == false){
-        spawnBlock(500, 700, 150, 110);
-        spawnBlock(1000, 750, 70, 40); //Moving one
-        spawnBlock(450, 300, 900, 225);
-        spawnBlock(100, 15, 300, 200);
+        spawnBlock(500, 700, 150, 110, "None", 0);
+        spawnBlock(1000, 750, 70, 40, "n", 5); //Moving one
+        spawnBlock(450, 300, 900, 225, "None", 0);
+        spawnBlock(100, 15, 300, 200, "None", 0);
+        spawnBlock(1190, 150, 40, 300, "None");
         blocksPlaced = true;
     }
 
-    blocksGroup[1].vel.y = -5;
-    if(blocksGroup[1].y < 0){
-        blocksGroup[1].y = 750;
+    if(turretPlaced == false){
+        spawnTurret(1190, 150, 80, "w");
+        turretPlaced = true;
     }
+
+    if(blocksGroup[1].y < 0) blocksGroup[1].y = 750;
 }
 
 
 function level7(){
-    lava.scale.x = 1;
-    lava.scale.y = 1;
-    if(open == true){
-        Ldoor.x = -100;
-    }
-    else{
-        Ldoor.x = 1000;
+    if(open == true) Ldoor.x = -100;
+    else Ldoor.x = 1000;
+    
+    if(lavaPlaced == false){
+        spawnLava(100, 780, 300, 150);
+        lavaPlaced = true;
     }
 
     if(slimesSpawned == false){
         spawnSlime(800, 50, 2.5);
         spawnSlime(1000, 330, 2.5);
         spawnSlime(1100, 330, 2.5);
-        spawnSlime(200, 600, 2.5);
+        spawnSlime(800, 600, 2.5);
         spawnSlime(500, 600, 2.5);
         spawnSlime(500, 600, 2.5);
         slimesSpawned = true;
     }
 
     if(blocksPlaced == false){
-        spawnBlock(150, 210, 300, 220);
-        spawnBlock(450, 240, 300, 220); 
-        spawnBlock(750, 250, 300, 220);
-        spawnBlock(20, 560, 300, 220);
-        spawnBlock(450, 500, 300, 220);
-        spawnBlock(900, 510, 600, 220);//510
+        spawnBlock(150, 210, 300, 220, "None", 0);
+        spawnBlock(450, 240, 300, 220, "None", 0); 
+        spawnBlock(750, 250, 300, 220, "None", 0);
+        spawnBlock(20, 560, 300, 220, "None", 0);
+        spawnBlock(450, 500, 300, 220, "None", 0);
+        spawnBlock(900, 510, 600, 220, "None", 0);//510
         blocksPlaced = true;
     }
   
-    
+    if(turretPlaced == false){
+        spawnTurret(15, 700, 80, "e");
+        turretPlaced = true;
+    }  
 }
 
-
 function level8(){
+    if(boxPlaced == false){
+        spawnBox(700, 370, 125, 95);
+        spawnBox(680, 590, 125, 95);
+        boxPlaced = true;
+    }
+    if(player.collides(healthUp)){
+        healthUp.x = -100;
+        health += 10;
+        gotten = true;
+    }
+    gearSprite.x = 600; 
+    gearSprite.y = 0;
+    hookThing();
+    if(open == true) Ldoor.x = -100;
+    else {Ldoor.x = 1015; Ldoor.y = 205;}
+    if(open2 == true) Ldoor2.x = -100;
+    else {Ldoor2.x = 1015; Ldoor2.y = 375;}
+    if(lavaPlaced == false){
+        spawnLava(700, 780, 1100, 150);
+        spawnLava(600, 260, 400, 150);
+        lavaPlaced = true;
+    }
+       
+    if(slimesSpawned == false){
+        spawnSlime(240, 350, 2.5);
+        spawnSlime(250, 70, 2.5);
+        spawnSlime(370, 20, 2.5);
+        spawnSlime(550, 370, 2.5);
+        slimesSpawned = true;
+    }
+    
+    if(blocksPlaced == false){
+        spawnBlock(850, 715, 120, 30, "w", 2); //Moving one
+
+        spawnBlock(370, 400, 70, 700, "None", 0);
+        spawnBlock(230, 650, 70, 50, "None", 0);
+        spawnBlock(60, 500, 70, 50, "None", 0); 
+        spawnBlock(250, 420, 100, 50, "None", 0);
+        spawnBlock(50, 300, 70, 50, "None", 0);
+        spawnBlock(230, 180, 100, 50, "None", 0);
+        spawnBlock(60, 100, 90, 50, "None", 0);
+
+        spawnBlock(600, 300, 420, 50, "None", 0);//
+        spawnBlock(660, 420, 520, 50, "None", 0);//
+        spawnBlock(820, 215, 70, 220, "None", 0);
+        spawnBlock(950, 370, 70, 550, "None", 0);
+        spawnBlock(1080, 170, 70, 1000, "None", 0);
+        spawnBlock(1080, 715, 180, 30, "None", 0);
+
+        spawnBlock(680, 650, 100, 30, "None", 0);
+        blocksPlaced = true;
+    }
+    
+    if(blocksGroup[0].x < 680 || blocksGroup[0].x > 920) blocksGroup[0].vel.x *= -1;
+
+    if(turretPlaced == false){
+        spawnTurret(1065, 70, 80, "w");
+        turretPlaced = true;
+    }
+}
+
+function level9(){
+    if(boxPlaced == false){
+        spawnBox(900, 685, 125, 95);
+        spawnBox(500, 100, 125, 95);
+        boxPlaced = true;
+    }
+    gearSprite.x = 180; 
+    gearSprite.y = 0;
+    hookThing();
+    if(open == true) Ldoor.x = -100;
+    else {Ldoor.x = 1060; Ldoor.y = 100;}
+    if(lavaPlaced == false){
+        spawnLava(390, 570, 1100, 130);
+        spawnLava(680, 240, 1100, 130);
+        lavaPlaced = true;
+    }
+    if(slimesSpawned == false){
+        spawnSlime(500, 670, 2.5);
+        spawnSlime(600, 670, 2.5);
+        spawnSlime(520, 470, 2.5);
+        spawnSlime(600, 340, 2.5);
+        slimesSpawned = true;
+    }
+    
+    if(blocksPlaced == false){
+        spawnBlock(260, 480, 120, 30, "w", 2); //Moving one
+        spawnBlock(300, 160, 120, 30, "e", 2); //Moving one
+        spawnBlock(630, 160, 120, 30, "w", 2); //Moving one
+
+        spawnBlock(390, 590, 1120, 90, "None", 0);
+        spawnBlock(1165, 500, 90, 500, "None", 0);
+        spawnBlock(680, 260, 1120, 100, "None", 0); 
+
+        spawnBlock(1120, 650, 70, 30, "None", 0); 
+        spawnBlock(980, 600, 60, 30, "None", 0); 
+        spawnBlock(1100, 500, 70, 30, "None", 0); 
+        spawnBlock(800, 480, 70, 30, "None", 0); 
+        spawnBlock(700, 480, 70, 30, "None", 0); 
+        spawnBlock(920, 450, 70, 30, "None", 0); 
+        spawnBlock(520, 490, 140, 30, "None", 0); 
+        spawnBlock(600, 380, 140, 10, "None", 0); 
+
+        spawnBlock(1130, 160, 200, 30, "None", 0); 
+        spawnBlock(1130, 40, 200, 30, "None", 0); 
+
+        spawnBlock(120, 430, 100, 30, "None", 0); 
+        spawnBlock(15, 350, 100, 30, "None", 0); 
+        spawnBlock(120, 250, 100, 30, "None", 0); 
+        spawnBlock(0, 150, 70, 30, "None", 0); 
+
+        blocksPlaced = true;
+    }
+    
+    if(blocksGroup[0].x < 190 || blocksGroup[0].x > 450) blocksGroup[0].vel.x *= -1;
+    if(blocksGroup[1].x < 200 || blocksGroup[1].x > 440) blocksGroup[1].vel.x *= -1;
+    if(blocksGroup[2].x < 480 || blocksGroup[2].x > 970) blocksGroup[2].vel.x *= -1;
+
+    if(turretPlaced == false){
+        spawnTurret(1135, 680, 80, "w");
+        spawnTurret(10, 400, 80, "e");
+        turretPlaced = true;
+    }
+}
+
+function level10(){
     portal.x = 1100;
     castleGate.visible = true;
     lever.x = -300;
@@ -1499,7 +1705,7 @@ function castle(){
     else if(dStage == 5 && kb.presses("x")) message("After everything that's happened, apparently, I'm still in the wrong.");
     else if(dStage == 6 && kb.presses("x")) message("Well, I don't plan on losing easily. Let's take this outside");
     else if(dStage == 7){
-        stage = 9;
+        stage = bossStage;
         boss.x = 600;
         boss.y = 100;
     }
@@ -1588,25 +1794,18 @@ function bossFight(){
         gearTimer ++;
         
         if(gearTimer == 50){
-            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 200, 150);
+            spawnBlock(Math.round(Math.random() * 10 * 100), 750, 200, 150, "None", 0);
         }
-        if(gearTimer > 130){
-            lava.x = 600;
-            lava.y = 785;
-            lava.width = 1500;
-            lava.visible = true;
-            if(player.collides(lava)){
-                health = 0;
-            }
-        }
+        if(gearTimer == 130) spawnLava(600, 780, 1500, 150);
+        
         if(gearTimer > 200){
             blocksGroup.removeAll();
+            lavaGroup.removeAll();
             gearTimer = 0;
-            lava.visible = false;
         }
     }
     else if(bossTimer > 2500 && bossTimer < 3500){
-        lava.x = -1500;
+        lavaGroup.removeAll();
         blocksGroup.removeAll();
         
         for(let i = 0; i < 6; i++){
@@ -1722,7 +1921,6 @@ function bossFight(){
         }
     }
 
-
     if(bossTimer > 6500 && bossTimer < 8000){
         bossSword.x = -1000;
         bossSwordShadow.x = -1000;
@@ -1762,7 +1960,7 @@ function bossFight(){
         laser.y = boss.y + 400;
 
         if(blocksPlaced == false){
-            spawnBlock(600, 700, 450, 150);
+            spawnBlock(600, 700, 450, 150, "None", 0);
             blocksPlaced = true;
         }
         finalAttackSprite.y = 100;
@@ -1857,7 +2055,7 @@ function cloudSetUp(){
 }
 
 function moveClouds(){
-    if(stage < 8){
+    if(stage < bossStage - 1){
         dynamicCloudSprite.x+=1;
         dynamicCloudSprite2.x+=1;
         if(dynamicCloudSprite.x > 2100) dynamicCloudSprite.x = -900;
@@ -1867,7 +2065,7 @@ function moveClouds(){
         dynamicCloudBossSprite2.visible = false;
         skyBossSprite.visible = false;
     }
-    else if(stage == 8){
+    else if(stage == bossStage - 1){
         staticCloudSprite.visible = false;
         dynamicCloudSprite.visible = false;
         dynamicCloudSprite2.visible = false;
@@ -1890,7 +2088,6 @@ function hideEverything(){
     boss.visible = false;
     ground.visible = false;
     bossSword.visible = false;
-    lava.visible = false;
     staticCloudSprite.visible = false;
     dynamicCloudSprite.visible = false;
     dynamicCloudSprite2.visible = false;
@@ -1905,11 +2102,16 @@ function hideEverything(){
 }
 
 function resetStage(){
+    strengthCounter.splice(0);
     backgroundMusic.pause();
     rCounterDeath = 10;
     respawned = true;
     player.image = gs("d10.png");
+    clearTurretBullet();
+    clearTurret();
     clearSlimes();
+    clearBlocks();
+    clearBox();
     fireballGroup.removeAll();
     fireballData.length = 0;
     player.vel.x = 0;
@@ -1946,8 +2148,7 @@ function resetStage(){
         healthUp.y = 675;
     }
     if(stage == 3){
-        box.x = 950;
-        box.y = 675;
+    
     }
     if(stage == 4){
 
@@ -1955,14 +2156,25 @@ function resetStage(){
     else if(stage == 5){
         open = false;
         lever.image = gs("lever.png");
-        box.x = 200;
-        box.y = 150;
     }
     else if(stage == 6){
         open = false;
         lever.image = gs("lever.png");
     }
-    else if(stage == 8) dStage = 0;
+    else if(stage == 7){
+        open = false;
+        open2 = false;
+        lever.image = gs("lever.png");
+        healthUp.x = 450;
+        healthUp.y = 550;
+    }
+    else if(stage == 8){
+        player.x = 100;
+        player.y = 670;
+        lever.image = gs("lever.png");
+        open = false;
+    }
+    else if(stage == bossStage - 1) dStage = 0;
 }
 
 function textSprite(message, x2, y2, labelName){
@@ -2041,7 +2253,10 @@ function spriteSheetSetup(){
     cols = 2; rows = 1; w = hurtSheetL.width / cols; h = hurtSheetL.height / rows;
 
     for (let r = 0; r < rows; r++) for (let c = cols-1; c >= 0; c--) hurtFramesL.push(hurtSheetL.get(c * w, r * h, w, h));
-    
+
+    cols = 4; rows = 1; w = turretBulletSheet.width / cols; h = turretBulletSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) turretBEFrames.push(turretBulletSheet.get(c * w, r * h, w, h));
 }
 
 function barMovement(){
@@ -2078,7 +2293,7 @@ function textSetup(){
 class BlockSprite{
     //Width and height only change hitbox size, not actual image size
     //x and y are the center of the object
-    constructor(x, y, w, h){
+    constructor(x, y, w, h, d, s){
         //This builds each block using smaller blocks so it doesn't look stretched, will look slightly different each time due to random
         let gfx = createGraphics(w, h);
  
@@ -2102,11 +2317,19 @@ class BlockSprite{
         blockObj.height = h;
         blockObj.collider = "kinematic";
         blockObj.debug = true;
+        this.BSpeed = s;
+        this.BDirection = d;
+        this.sprite = blockObj;
+
+        if(d == "n") blockObj.vel.y = -s;
+        if(d == "s") blockObj.vel.y = s;
+        if(d == "e") blockObj.vel.x = s;
+        if(d == "w") blockObj.vel.x = -s;
     }
 }
  
-function spawnBlock(x, y, w, h){
-    let newBlock = new BlockSprite(x, y, w, h);
+function spawnBlock(x, y, w, h, d, s){
+    let newBlock = new BlockSprite(x, y, w, h, d, s);
     blocksData.push(newBlock);
 }
 
@@ -2201,6 +2424,7 @@ function spawnSlime(x, y, s){
 function clearBlocks(){
     blocksGroup.removeAll();
     blocksPlaced = false;
+    blocksData.length = 0;
 }
 
 function clearSlimes(){
@@ -2267,7 +2491,16 @@ class fireballSprite{
             this.disappear();
             return;
         }
-
+        boxGroup.forEach(spriteBox => {
+            if(this.sprite.overlapping(spriteBox)){
+                this.disappear();
+                let index = boxGroup.indexOf(spriteBox);
+                boxData.splice(index, 1);
+                boxGroup.remove(spriteBox);
+                spriteBox.x = -400;
+                return;
+            }
+        });
     
         slimesGroup.forEach(spriteS => {
             if (this.sprite.overlapping(spriteS) && this.sprite.collider == "dynamic") {
@@ -2292,11 +2525,6 @@ class fireballSprite{
         if(this.sprite.overlapping(portal)) this.disappear();
         if(this.sprite.overlapping(swordHitBox)){}
         if(this.sprite.overlapping(player)){}
-
-        if(this.sprite.overlapping(box)){
-            this.disappear();
-            box.x = -200;
-        }
     }
  
     disappear(){
@@ -2615,4 +2843,202 @@ function makeLineSprite(x1, y1, x2, y2) {
     lineSprite.rotation = degrees(angle);
   
     return lineSprite;
-  }
+}
+
+class LavaSprite{
+//Width and height only change hitbox size, not actual image size
+//x and y are the center of the object
+    constructor(x, y, w, h){
+        let lavaObj = new lavaGroup.Sprite();
+        lavaObj.x = x;
+        lavaObj.y = y;
+        lavaObj.image = lavaImage.get();
+        lavaObj.image.scale.x = w / lavaObj.image.width;
+        lavaObj.image.scale.y = h / lavaObj.image.height;
+        lavaObj.width = w;
+        lavaObj.height = h - 40;
+        lavaObj.collider = "static";
+        lavaObj.debug = true;
+    }
+}
+
+function spawnLava(x, y, w, h){
+    let newLava = new LavaSprite(x, y, w, h);
+    lavaData.push(newLava);
+}
+
+function clearLava(){
+    lavaGroup.removeAll();
+    lavaPlaced = false;
+    lavaData.length = 0;
+}
+
+class BoxSprite{
+    //Width and height only change hitbox size, not actual image size
+    //x and y are the center of the object
+    constructor(x, y, w, h){
+        let boxObj = new boxGroup.Sprite();
+        boxObj.x = x;
+        boxObj.y = y;
+        boxObj.image = boxImage.get();
+        boxObj.image.scale.x = w / boxObj.image.width;
+        boxObj.image.scale.y = h / boxObj.image.height;
+        boxObj.width = w;
+        boxObj.height = h;
+        boxObj.collider = "static";
+        boxObj.debug = true;
+    }
+}
+    
+function spawnBox(x, y, w, h){
+    let newBox = new BoxSprite(x, y, w, h);
+    boxData.push(newBox);
+}
+
+function clearBox(){
+    boxGroup.removeAll();
+    boxPlaced = false;
+    boxData.length = 0;
+}
+
+class TurretSprite{
+    constructor(x, y, s, d){
+        let turretObj = new turretGroup.Sprite();
+        turretObj.x = x;
+        turretObj.y = y;
+        turretObj.image = turretImage.get();
+        turretObj.image.scale.x = s / turretObj.image.width;
+        turretObj.image.scale.y = s / turretObj.image.height;
+        turretObj.width = s;
+        turretObj.height = s;
+        turretObj.collider = "static";
+        turretObj.debug = true;
+        this.sprite = turretObj;
+        this.TDirection = d;
+        this.shootCounter = 0;
+        if(d == "n") turretObj.rotation = 90;
+        if(d == "s") turretObj.rotation = 270;
+        if(d == "e") turretObj.rotation = 180;
+        if(d == "w") turretObj.rotation = 0;
+    }
+    update(){
+        this.shootCounter++;
+        if(this.shootCounter > 50){
+            this.shootCounter = 0;
+            if(this.TDirection == "w") spawnTurretBullet(this.sprite.x-40, this.sprite.y, 5, this.TDirection);
+            if(this.TDirection == "e") spawnTurretBullet(this.sprite.x+40, this.sprite.y, 5, this.TDirection);
+            if(this.TDirection == "n") spawnTurretBullet(this.sprite.x, this.sprite.y-40, 5, this.TDirection);
+            if(this.TDirection == "s") spawnTurretBullet(this.sprite.x, this.sprite.y+40, 5, this.TDirection);
+        }
+    }
+}
+
+function spawnTurret(x, y, s, d){
+    let newTurret = new TurretSprite(x, y, s, d);
+    turretData.push(newTurret);
+}
+
+function clearTurret(){
+    turretGroup.removeAll();
+    turretPlaced = false;
+    turretData.length = 0;
+}
+
+class TurretBulletSprite{
+    //x, y, speed, direction
+    constructor(x, y, s, d){
+        let turretBullObj = new turretBulletGroup.Sprite();
+        turretBullObj.x = x;
+        turretBullObj.y = y;
+        turretBullObj.collider = "dynamic";
+        turretBullObj.debug = true;
+        turretBullObj.image = turretBEFrames[0].get();
+        this.TBDirection = d;
+        this.sprite = turretBullObj;
+        this.counter = 0;
+        
+        if(d == "n") {
+            turretBullObj.rotation = 90;
+            turretBullObj.width = 40;
+            turretBullObj.height = 20;
+            turretBullObj.image.scale.x = 20 / turretBullObj.image.height;
+            turretBullObj.image.scale.y = 40 / turretBullObj.image.width;
+            turretBullObj.vel.y = -s;
+        }
+        if(d == "s") {
+            turretBullObj.rotation = 270;
+            turretBullObj.width = 40;
+            turretBullObj.height = 20;
+            turretBullObj.image.scale.x = 20 / turretBullObj.image.height;
+            turretBullObj.image.scale.y = 40 / turretBullObj.image.width;
+            turretBullObj.vel.y = s;
+        }
+        if(d == "e") {
+            turretBullObj.rotation = 180;
+            turretBullObj.width = 40;
+            turretBullObj.height = 20;
+            turretBullObj.image.scale.x = 50 / turretBullObj.image.width;
+            turretBullObj.image.scale.y = 20 / turretBullObj.image.height;
+            turretBullObj.vel.x = s;
+        }
+        if(d == "w"){
+            turretBullObj.rotation = 0;
+            turretBullObj.width = 40;
+            turretBullObj.height = 20;
+            turretBullObj.image.scale.x = 50 / turretBullObj.image.width;
+            turretBullObj.image.scale.y = 20 / turretBullObj.image.height;
+            turretBullObj.vel.x = -s;
+        }
+    }
+    update(){
+        this.counter+=0.1;
+        if(this.counter > 3) this.counter = 0;
+        this.sprite.image = turretBEFrames[Math.round(this.counter)].get();
+        if(this.TBDirection == "w" || this.TBDirection == "e"){this.sprite.image.scale.x = 2; this.sprite.image.scale.y = 1.7;}
+        if(this.TBDirection == "n" || this.TBDirection == "s"){this.sprite.image.scale.x = 2; this.sprite.image.scale.y = 1.7;}
+        if(this.TBDirection == "n") this.sprite.rotation = 90;
+        if(this.TBDirection == "s") this.sprite.rotation = 270;
+        if(this.TBDirection == "e") this.sprite.rotation = 180;
+        if(this.TBDirection == "w") this.sprite.rotation = 0;
+        if(this.TBDirection == "n" || this.TBDirection == "s") if(this.sprite.y < 0 || this.sprite.y > 1000) this.disappear();
+        if(this.TBDirection == "e" || this.TBDirection == "w") if(this.sprite.x < 0 || this.sprite.x > 1200) this.disappear();
+        if(this.sprite.overlaps(player)){
+            this.disappear();
+            if (!playerIsHurt) {
+                health -= 10 * pResistance;
+                playerIsHurt = true;
+                counterH = 0;
+                if(player.x < this.sprite.x) playerHurtDirection = "r";
+                else if(player.x >= this.sprite.x) playerHurtDirection = "l";
+            }
+        }
+        turretGroup.forEach(spriteT => {if(this.sprite.overlaps(spriteT));});
+        if(this.sprite.overlaps(ground)) this.disappear();
+        turretBulletGroup.forEach(spriteTB => {if(this.sprite.overlaps(spriteTB));});
+        if(this.sprite.overlaps(swordHitBox) && swordHitBox.collider == "static") this.disappear();
+        fireballData.forEach(spriteFB => {if(this.sprite.overlaps(spriteFB.sprite)) {this.disappear(); spriteFB.disappear();}});
+        lavaGroup.forEach(spriteL => {if(this.sprite.overlaps(spriteL)) this.disappear()});
+        boxGroup.forEach(spriteB => {if(this.sprite.overlaps(spriteB)) this.disappear()});
+        blocksGroup.forEach(spriteB => {if(this.sprite.overlaps(spriteB)) this.disappear()});
+        slimesGroup.forEach(spriteS => {if(this.sprite.overlaps(spriteS));});
+        if(this.sprite.collides(portal) || this.sprite.collides(gearSprite) || this.sprite.collides(Ldoor) || this.sprite.collides(Ldoor2) || this.sprite.collides(lever) || this.sprite.collides(lever2)) this.disappear();
+    }
+    disappear(){
+        let index = turretBulletGroup.indexOf(this.sprite);
+        turretBulletData.splice(index, 1);
+        turretBulletGroup.remove(this.sprite);
+        this.sprite.remove();
+        return;
+    }
+}
+
+function spawnTurretBullet(x, y, s, d){
+    let newTurretBullet = new TurretBulletSprite(x, y, s, d);
+    turretBulletData.push(newTurretBullet);
+}
+
+function clearTurretBullet(){
+    turretBulletGroup.removeAll();
+    turretBulletData.length = 0;
+}
+
