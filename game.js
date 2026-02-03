@@ -320,7 +320,7 @@ function draw() {
             player.x = 100;
             player.y = 300;
             normalStageStuff();
-            clearBlocks();
+            clearEverything();
         }
     }
     else if(stage == 1){
@@ -336,7 +336,7 @@ function draw() {
             normalStageStuff();
             healthUp.x = 60;
             healthUp.y = 675;
-            clearBlocks();
+            clearEverything();
         }
     }
     else if(stage == 2){
@@ -351,8 +351,7 @@ function draw() {
             player.y = 600;
             normalStageStuff();
             downPos = true;
-            clearBlocks();
-            clearLava();
+            clearEverything();
         }
     }
     else if(stage == 3){
@@ -367,10 +366,7 @@ function draw() {
             player.y = 300;
             label2.y = -100;
             normalStageStuff();
-            clearBlocks();
-            clearBox();
-            clearTurretBullet();
-            clearTurret();
+            clearEverything();
         }
 
     }
@@ -396,8 +392,7 @@ function draw() {
 
             healthUp.x = 1150;
             healthUp.y = 50;
-            clearBlocks();
-            clearSlimes();
+            clearEverything();
         }
     }
     else if(stage == 5){
@@ -426,12 +421,7 @@ function draw() {
             Ldoor2.height = 300;
             Ldoor2.width = 60;
             Ldoor2.scale.y = 0.7;
-            clearTurret();
-            clearTurretBullet();
-            clearBlocks();
-            clearSlimes();
-            clearLava();
-            clearBox();
+            clearEverything();
         }
     }
     else if(stage == 6){
@@ -450,12 +440,8 @@ function draw() {
             player.y = 600;
             healthUp.x = 450;
             healthUp.y = 550;
-            clearTurret();
-            clearTurretBullet();
             normalStageStuff();
-            clearBlocks();
-            clearSlimes();
-            clearLava();
+            clearEverything();
         }
     }
     else if(stage == 7){
@@ -476,12 +462,7 @@ function draw() {
             Ldoor.x = -200;
             Ldoor2.x = -300;
             normalStageStuff();
-            clearTurretBullet();
-            clearTurret();
-            clearBlocks();
-            clearSlimes();
-            clearLava();
-            clearBox();
+            clearEverything();
         }
     }
     else if(stage == 8){
@@ -498,12 +479,7 @@ function draw() {
             player.x = 100;
             player.y = 600;
             normalStageStuff();
-            clearTurretBullet();
-            clearTurret();
-            clearBlocks();
-            clearSlimes();
-            clearLava();
-            clearBox();
+            clearEverything();
         }
     }
     else if(stage == bossStage-1){
@@ -565,6 +541,16 @@ function draw() {
     text("Blocks: " + blocksGroup.length, 100, 80);
     text("Slimes: " + slimesGroup.length, 100, 110);
     text("Bullets: " + turretBulletGroup.length, 100, 130);
+}
+
+function clearEverything(){
+    clearTurret();
+    clearTurretBullet();
+    clearBlocks();
+    clearSlimes();
+    clearLava();
+    clearBox();
+    clearDashTrails();
 }
 
 function mousePressed() {
@@ -1416,6 +1402,7 @@ function slimeMove2(){
             }
             
             if(slimesData[index].upKnockback == false){
+                /*
                 blocksGroup.forEach(spriteB => {
                     if(spriteS.collides(spriteB)) spriteS.vel.y = 0;
                     else if(spriteS.y < 1150) spriteS.vel.y += 2;
@@ -1423,6 +1410,10 @@ function slimeMove2(){
 
                 if(spriteS.collides(ground)) spriteS.vel.y = 0;
                 else if(spriteS.y < 1150) spriteS.vel.y += 2;
+                */
+                spriteS.vel.y += 2;
+                spriteS.collides(blocksGroup);
+                spriteS.collides(ground);
             }
         }
         else{
@@ -1432,13 +1423,6 @@ function slimeMove2(){
             spriteS.image = DslimeFrames[Math.round(slimesData[index].DeathCounter)];
             spriteS.image.scale.x = 80 / slimeImageDefault.width;
             spriteS.image.scale.y = 80 / slimeImageDefault.height;
-
-            blocksGroup.forEach(spriteB => {
-                if(spriteS.overlapping(spriteB)){
-                    spriteS.vel.x = 0;
-                    spriteS.vel.y = 0;
-                }
-            });
 
             if(slimesData[index].DeathCounter > 4){
                 spriteS.visible = false;
@@ -2112,6 +2096,7 @@ function resetStage(){
     clearSlimes();
     clearBlocks();
     clearBox();
+    clearDashTrails();
     fireballGroup.removeAll();
     fireballData.length = 0;
     player.vel.x = 0;
@@ -2320,11 +2305,17 @@ class BlockSprite{
         this.BSpeed = s;
         this.BDirection = d;
         this.sprite = blockObj;
+        this.gone = false;
 
         if(d == "n") blockObj.vel.y = -s;
         if(d == "s") blockObj.vel.y = s;
         if(d == "e") blockObj.vel.x = s;
         if(d == "w") blockObj.vel.x = -s;
+    }
+    disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
     }
 }
  
@@ -2360,6 +2351,7 @@ class EnemySlimeSprite{
         this.counterLeft = 1;
         this.upKnockback = false;
         this.knockbackTimer = 0;
+        this.gone = false;
     }
 
     knockback(direction){
@@ -2414,6 +2406,11 @@ class EnemySlimeSprite{
           if (this.counterLeft > 3) this.counterLeft = 1;
         }
       }
+      disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
+    }
  }
  
 function spawnSlime(x, y, s){
@@ -2422,13 +2419,14 @@ function spawnSlime(x, y, s){
 }
  
 function clearBlocks(){
-    blocksGroup.removeAll();
+    blocksData.forEach(spriteB => {spriteB.disappear()});
     blocksPlaced = false;
     blocksData.length = 0;
 }
 
 function clearSlimes(){
-    slimesGroup.removeAll();
+    slimesData.forEach(spriteS => spriteS.disappear());
+    //slimesGroup.removeAll();
     slimesSpawned = false;
     slimesData.length = 0;
 }
@@ -2727,11 +2725,15 @@ class dashTrail{
         if(d == "r") this.sprite.image = dashTrailR;
         if(d == "l") this.sprite.image = dashTrailL;
         this.counter = 0; 
+        this.gone = false;
     }
     update(){
+        if(this.gone) return;
         this.counter++;
         this.sprite.opacity = max(0, 1 - this.counter / 30);
         if(this.counter > 30){ 
+            this.disappear();
+            /*
             let index = dashTrailGroup.indexOf(this.sprite);
             this.sprite.remove();
             if(index !== -1) dashTrailGroup.splice(index, 1);
@@ -2739,8 +2741,22 @@ class dashTrail{
             index = recallTrailGroup.indexOf(this.sprite);
             this.sprite.remove();
             if(index !== -1) recallTrailGroup.splice(index, 1);
+            */
         }
     }
+    disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
+    }
+}
+
+function clearDashTrails(){
+    dashTrailGroup.forEach(spriteDT => spriteDT.disappear());
+    dashTrailGroup.length = 0;
+
+    recallTrailGroup.forEach(spriteRT => spriteRT.disappear());
+    recallTrailGroup.length = 0;
 }
 
 function hookThing(){
@@ -2859,6 +2875,13 @@ class LavaSprite{
         lavaObj.height = h - 40;
         lavaObj.collider = "static";
         lavaObj.debug = true;
+        this.sprite = lavaObj;
+        this.gone = false;
+    }
+    disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
     }
 }
 
@@ -2868,7 +2891,7 @@ function spawnLava(x, y, w, h){
 }
 
 function clearLava(){
-    lavaGroup.removeAll();
+    lavaData.forEach(spriteL => {spriteL.disappear()});
     lavaPlaced = false;
     lavaData.length = 0;
 }
@@ -2878,6 +2901,7 @@ class BoxSprite{
     //x and y are the center of the object
     constructor(x, y, w, h){
         let boxObj = new boxGroup.Sprite();
+        this.sprite = boxObj;
         boxObj.x = x;
         boxObj.y = y;
         boxObj.image = boxImage.get();
@@ -2887,6 +2911,12 @@ class BoxSprite{
         boxObj.height = h;
         boxObj.collider = "static";
         boxObj.debug = true;
+        this.gone = false;
+    }
+    disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
     }
 }
     
@@ -2896,7 +2926,7 @@ function spawnBox(x, y, w, h){
 }
 
 function clearBox(){
-    boxGroup.removeAll();
+    boxData.forEach(spriteB => {spriteB.disappear()});
     boxPlaced = false;
     boxData.length = 0;
 }
@@ -2920,16 +2950,22 @@ class TurretSprite{
         if(d == "s") turretObj.rotation = 270;
         if(d == "e") turretObj.rotation = 180;
         if(d == "w") turretObj.rotation = 0;
+        this.gone = false;
     }
     update(){
         this.shootCounter++;
-        if(this.shootCounter > 50){
+        if(this.shootCounter > 75){
             this.shootCounter = 0;
             if(this.TDirection == "w") spawnTurretBullet(this.sprite.x-40, this.sprite.y, 5, this.TDirection);
             if(this.TDirection == "e") spawnTurretBullet(this.sprite.x+40, this.sprite.y, 5, this.TDirection);
             if(this.TDirection == "n") spawnTurretBullet(this.sprite.x, this.sprite.y-40, 5, this.TDirection);
             if(this.TDirection == "s") spawnTurretBullet(this.sprite.x, this.sprite.y+40, 5, this.TDirection);
         }
+    }
+    disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
     }
 }
 
@@ -2939,7 +2975,7 @@ function spawnTurret(x, y, s, d){
 }
 
 function clearTurret(){
-    turretGroup.removeAll();
+    turretData.forEach(spriteT => {spriteT.disappear()});
     turretPlaced = false;
     turretData.length = 0;
 }
@@ -2956,6 +2992,7 @@ class TurretBulletSprite{
         this.TBDirection = d;
         this.sprite = turretBullObj;
         this.counter = 0;
+        this.gone = false;
         
         if(d == "n") {
             turretBullObj.rotation = 90;
@@ -2991,6 +3028,8 @@ class TurretBulletSprite{
         }
     }
     update(){
+        if(this.gone) return;
+
         this.counter+=0.1;
         if(this.counter > 3) this.counter = 0;
         this.sprite.image = turretBEFrames[Math.round(this.counter)].get();
@@ -3005,7 +3044,7 @@ class TurretBulletSprite{
         if(this.sprite.overlaps(player)){
             this.disappear();
             if (!playerIsHurt) {
-                health -= 10 * pResistance;
+                health -= 30 * pResistance;
                 playerIsHurt = true;
                 counterH = 0;
                 if(player.x < this.sprite.x) playerHurtDirection = "r";
@@ -3017,18 +3056,18 @@ class TurretBulletSprite{
         turretBulletGroup.forEach(spriteTB => {if(this.sprite.overlaps(spriteTB));});
         if(this.sprite.overlaps(swordHitBox) && swordHitBox.collider == "static") this.disappear();
         fireballData.forEach(spriteFB => {if(this.sprite.overlaps(spriteFB.sprite)) {this.disappear(); spriteFB.disappear();}});
-        lavaGroup.forEach(spriteL => {if(this.sprite.overlaps(spriteL)) this.disappear()});
-        boxGroup.forEach(spriteB => {if(this.sprite.overlaps(spriteB)) this.disappear()});
-        blocksGroup.forEach(spriteB => {if(this.sprite.overlaps(spriteB)) this.disappear()});
+
+        this.sprite.overlaps(lavaGroup, () => this.disappear());
+        this.sprite.overlaps(boxGroup, () => this.disappear());
+        this.sprite.overlaps(blocksGroup, () => this.disappear());
+
         slimesGroup.forEach(spriteS => {if(this.sprite.overlaps(spriteS));});
         if(this.sprite.collides(portal) || this.sprite.collides(gearSprite) || this.sprite.collides(Ldoor) || this.sprite.collides(Ldoor2) || this.sprite.collides(lever) || this.sprite.collides(lever2)) this.disappear();
     }
     disappear(){
-        let index = turretBulletGroup.indexOf(this.sprite);
-        turretBulletData.splice(index, 1);
-        turretBulletGroup.remove(this.sprite);
+        if(this.gone) return;
+        this.gone = true;
         this.sprite.remove();
-        return;
     }
 }
 
@@ -3038,7 +3077,6 @@ function spawnTurretBullet(x, y, s, d){
 }
 
 function clearTurretBullet(){
-    turretBulletGroup.removeAll();
+    turretBulletData.forEach(spriteTB => {spriteTB.disappear()});
     turretBulletData.length = 0;
 }
-

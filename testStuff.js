@@ -36,7 +36,8 @@ function draw(){
     background("lightblue");
 
     if(kb.presses("space")) spawnArrow(400, 400, 5, 1);
-    text(Math.round(mouseX) + "," + Math.round(mouseY), 200, 400);
+    text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - canvas.offsetTop) / 0.7 - 40), 400, 100);
+
     text("Arrows: " + arrowsGroup.length, 200, 450);
 
     rect(50, 50, 50, 50);
