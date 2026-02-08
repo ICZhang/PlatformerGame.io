@@ -49,6 +49,7 @@ var bossMovement = 10;
 var direction = true;
 var jCoolDown = false;
 let blocksGroup, blocksData;
+let poisonGasData;
 let arrowListRight = [1,2,3,4,5];
 let arrowListLeft = [1,2,3,4,5];
 let arrowListDown = [1,2,3,4,5];
@@ -69,7 +70,6 @@ var respawned = false;
 var shot = false;
 var shotL = false;
 var BallDirection = true;
-var downPos = false;
 var open = false;
 var open2 = false;
 var blocksPlaced = false;
@@ -77,6 +77,7 @@ var slimesSpawned = false;
 var lavaPlaced = false;
 var boxPlaced = false;
 var turretPlaced = false;
+var gasPlaced = false;
 var sliding = false;
 var health = 120;  ////Testing Purpose
 var stamina = 100;
@@ -94,7 +95,7 @@ var prevX = 0;
 var prevY = 0;
 var isHooked = false;
 var stage = -1;//6 to test boss easier, 9 total
-var bossStage = 10;
+var bossStage = 12;
 var dStage = 0;
 var deathMessage = true;
 const g = 0.1;
@@ -128,17 +129,19 @@ let dashCooldownTime = 60;
 let standFrame, LstandFrame, crouchFrame, LcrouchFrame, slimeImageDefault, fireballImageDefaultR, fireballImageDefaultL, boom, dashTrailR, dashTrailL;
 let [walkFrames, LwalkFrames, swingFrames, LswingFrames, dashFrames, LdashFrames, jumpFrames, LjumpFrames, deathFrames, fireFrames, LfireFrames, fireballFrames, LfireballFrames] = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 let portalSheet, tpSheet, fireBallExplosionSheet, blockSheet, blockSheetL, critSheet, critSheetL, chargeSheet, chargeSheetL;
-let chargeIdleSheet, chargeIdleSheetL, hurtSheet, hurtSheetL, turretBulletSheet;
+let chargeIdleSheet, chargeIdleSheetL, hurtSheet, hurtSheetL, turretBulletSheet, poisonGasSheet;
 let [portalFrames, tpFrames, fireBallExplosionFrames, blockFrames, blockFramesL, critFrames, critFramesL, chargeFrames, chargeFramesL] = [[], [], [], [], [], [], [], [], []];
 let [chargeIdleFrames, chargeIdleFramesL, blockIdleFrames, blockIdleFramesL, hurtFrames, hurtFramesL] = [[], [], [], [], [], []];
 let label, label2, healthLabel, manaLabel, staminaLabel;
 let backBoard, healthBar, manaBar, staminaBar;
-let [RslimeFrames, LslimeFrames, DslimeFrames, turretBEFrames] = [[], [], [], []];
+let [RslimeFrames, LslimeFrames, DslimeFrames, turretBEFrames, poisonGasFrames] = [[], [], [], [], []];
 let castleGate, castleGateImage; 
 
 let backgroundMusic;
 let startingScreen1Sprite, startingScreen2Sprite, startingScreen2Sprite2, startingScreen31Sprite, startingScreen32Sprite, startingScreen1, startingScreen2, startingScreen31, startingScreen32;
 var counterScreen3 = 0;
+
+let debugStuff = true;
 
 function gs(fileName){
     return "/GameSprites/" + fileName;  
@@ -233,6 +236,7 @@ function preload(){
     shadowBox = loadImage(gs("BBox.png"));
     turretImage = loadImage(gs("turret.png"));
     turretBulletSheet = loadImage(gs("turretBulletSheet.png"));
+    poisonGasSheet = loadImage(gs("poisonGasSheet.png"));
 }
 
 function setup(){
@@ -255,6 +259,7 @@ function setup(){
     turretData = [];
     turretBulletGroup = new Group();
     turretBulletData = [];
+    poisonGasData = [];
 
     cloudSetUp();
     speech = new p5.Speech();
@@ -285,18 +290,19 @@ function draw() {
     lavaGroup.forEach(spriteL => { if(spriteL.collides(player)) health = 0; });
     turretBulletData.forEach(spriteTB => {spriteTB.update()});
     turretData.forEach(spriteT => {spriteT.update()});
+    poisonGasData.forEach(spritePG => {spritePG.update()});
 
     //Testing
     textSize(18);
-    text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - canvas.offsetTop) / 0.7 - 40), 400, 100);
-    text("X-velocity: " + player.vel.x, 400, 150);
-    text("Y-velocity: " + player.vel.y, 400, 200);
+    if(debugStuff) text(Math.round((mouseX - canvas.offsetLeft) / 0.7) + "," + Math.round((mouseY - canvas.offsetTop) / 0.7 - 40), 400, 100);
+    if(debugStuff) text("X-velocity: " + player.vel.x, 400, 150);
+    if(debugStuff) text("Y-velocity: " + player.vel.y, 400, 200);
 
     if(stage == -1){
         startingScreenAnimation();
     }
     //This is for resetting the stage
-    if(kb.presses("r") && stage != 10 && stage != -1 && stage != 11) resetStage();
+    if(kb.presses("r") && stage != -1 && stage != bossStage) resetStage();
     
     if(respawned == true){
         player.rotation = 0;
@@ -307,7 +313,7 @@ function draw() {
             direction = true;
         }
     }
-    if(stage >= 0 && stage <= 8 && dead == true) deathAnimation();
+    if(stage >= 0 && stage <= bossStage - 2 && dead == true) deathAnimation();
     
     if(stage == 0){
         portal.x = 1150;
@@ -350,7 +356,6 @@ function draw() {
             player.x = 50;
             player.y = 600;
             normalStageStuff();
-            downPos = true;
             clearEverything();
         }
     }
@@ -397,7 +402,6 @@ function draw() {
     }
     else if(stage == 5){
         hideStartingScreen();
-        downPos = true;
         portal.x = 25;
         portal.y = 150;
         if(dead == false){
@@ -426,7 +430,6 @@ function draw() {
     }
     else if(stage == 6){
         hideStartingScreen();
-        downPos = false;
         portal.x = 1150;
         portal.y = 670;
         if(dead == false){
@@ -445,7 +448,6 @@ function draw() {
         }
     }
     else if(stage == 7){
-        downPos = true;
         if(dead == false){
             lever.x = 40; lever.y = 50;
             lever2.x = 430; lever2.y = 370; 
@@ -477,6 +479,40 @@ function draw() {
             lever.x = -100;
             gearSprite.x = -200;
             player.x = 100;
+            player.y = 100;
+            normalStageStuff();
+            clearEverything();
+        }
+    }
+    else if(stage == 9){
+        portal.x = 990;
+        portal.y = 225;
+        if(dead == false){
+            lever.x = 540; lever.y = 700;
+            level10();
+            normalStuff();
+        }
+        if(player.overlaps(portal)){
+            lever.x = -100;
+            gearSprite.x = -200;
+            player.x = 100;
+            player.y = 600;
+            normalStageStuff();
+            clearEverything();
+        }
+    }
+    else if(stage == 10){
+        portal.x = 1100;
+        portal.y = 100;
+        if(dead == false){
+            lever.x = 540; lever.y = 700;
+            level11();
+            normalStuff();
+        }
+        if(player.overlaps(portal)){
+            lever.x = -100;
+            gearSprite.x = -200;
+            player.x = 100;
             player.y = 600;
             normalStageStuff();
             clearEverything();
@@ -486,7 +522,6 @@ function draw() {
         backgroundMusic.stop();
         castleImage.visible = true;
         resizeCanvas(1100,800);
-        downPos = true;
         if(dead == false){
             Ldoor.x = -100;
             Ldoor2.x = -100;
@@ -508,7 +543,6 @@ function draw() {
         resizeCanvas(1200,1000);
         castleImage.visible = false;
         background("lightblue");
-        downPos = true;
         if(dead == false){
             Ldoor.x = -100;
             ground.visible = true;
@@ -537,10 +571,10 @@ function draw() {
         hideEverything();
     }
 
-    text("Stage: " + stage, 100, 50);
-    text("Blocks: " + blocksGroup.length, 100, 80);
-    text("Slimes: " + slimesGroup.length, 100, 110);
-    text("Bullets: " + turretBulletGroup.length, 100, 130);
+    if(debugStuff) text("Stage: " + stage, 100, 50);
+    if(debugStuff) text("Blocks: " + blocksGroup.length, 100, 80);
+    if(debugStuff) text("Slimes: " + slimesGroup.length, 100, 110);
+    if(debugStuff) text("Bullets: " + turretBulletGroup.length, 100, 130);
 }
 
 function clearEverything(){
@@ -551,6 +585,7 @@ function clearEverything(){
     clearLava();
     clearBox();
     clearDashTrails();
+    clearPoisonGas();
 }
 
 function mousePressed() {
@@ -558,7 +593,7 @@ function mousePressed() {
         userStartAudio(); 
         backgroundMusic.loop();
         backgroundMusic.setVolume(0);
-        stage = 0;
+        stage = 9;
         hideStartingScreen();
     }
 }
@@ -589,10 +624,16 @@ function spriteStuff(){
     castleGate.visible = false;
 
     gearSprite = new Sprite(gear,-550,300,50,50); 
-    gearSprite.debug = false;
+    if(debugStuff) gearSprite.debug = false;
     gearSprite.scale.x = 0.3;
     gearSprite.scale.y = 0.3;
     gearSprite.collider = "static";
+
+    gearSprite2 = new Sprite(gear,-550,300,50,50); 
+    if(debugStuff) gearSprite2.debug = false;
+    gearSprite2.scale.x = 0.3;
+    gearSprite2.scale.y = 0.3;
+    gearSprite2.collider = "static";
 
     swordHitBox = new Sprite(300,300, 40,60);
     swordHitBox.debug = true;
@@ -607,7 +648,7 @@ function spriteStuff(){
     boom.collider = "none";
 
     player = new Sprite(idle, 100,200,50,50);
-    player.debug = true; 
+    if(debugStuff) player.debug = true; 
     player.collider = "dynamic";
 
     boss = new Sprite(bossImage, -100,-100,20,20);
@@ -618,68 +659,68 @@ function spriteStuff(){
 
     ground = new Sprite(dirt, 600,800,1200,100);
     ground.collider = "static";
-    ground.debug = false;
+    if(debugStuff) ground.debug = false;
 
     resizeThings();
     portal = new Sprite(portal2, 200,200,120,120);
-    portal.debug = true;
+    if(debugStuff) portal.debug = true;
     portal.scale = 0.35;
     portal.collider = "none";
 
     healthUp = new Sprite(hpUp, -200,200,750,750);
     healthUp.scale.x = 0.03;
     healthUp.scale.y = 0.03;
-    healthUp.debug = false;
+    if(debugStuff) healthUp.debug = false;
     healthUp.collider = "static";
     healthUp.x = -100;
 
     Ldoor = new Sprite(door, -200,600,200,200);
     Ldoor.scale.x = 0.5;
     Ldoor.scale.y = 0.5;
-    Ldoor.debug = false;
+    if(debugStuff) Ldoor.debug = false;
     Ldoor.collider = "static";
     Ldoor.x = -300;
 
     lever = new Sprite(leverImage, -1100,700,400,400);
     lever.scale.x = 0.1;
     lever.scale.y = 0.1;
-    lever.debug = false;
+    if(debugStuff) lever.debug = false;
     lever.collider = "static";
 
     Ldoor2 = new Sprite(door, -200,600,200,200);
     Ldoor2.scale.x = 0.5;
     Ldoor2.scale.y = 0.5;
-    Ldoor2.debug = false;
+    if(debugStuff) Ldoor2.debug = false;
     Ldoor2.collider = "static";
     Ldoor2.x = -400;
 
     lever2 = new Sprite(leverImage, -1100,700,400,400);
     lever2.scale.x = 0.1;
     lever2.scale.y = 0.1;
-    lever2.debug = false;
+    if(debugStuff) lever2.debug = false;
     lever2.collider = "static";
     
     bossSword = new Sprite(swordImage, -200,200,50,400);
-    bossSword.debug = false;
+    if(debugStuff) bossSword.debug = false;
     bossSword.collider = "static";
     bossSword.visible = false;
 
     bossSwordShadow = new Sprite(swordImageShadow, -1200,200,300,50);
-    bossSwordShadow.debug = false;
+    if(debugStuff) bossSwordShadow.debug = false;
     bossSwordShadow.collider = "dynamic";
     bossSwordShadow.visible = false;
 
     laser = new Sprite(laserImage, -200,200,140,475);
     laser.scale.y = 1.3;
     laser.collider = "static";
-    laser.debug = false;
+    if(debugStuff) laser.debug = false;
     laser.visible = false;
 
     darkbox = new Sprite(shadowBox,-200,200,250,250);
     darkbox.scale.x = 0.2;
     darkbox.scale.y = 0.2;
     darkbox.visible = false;
-    darkbox.debug = false;
+    if(debugStuff) darkbox.debug = false;
     darkbox.collider = "dynamic";
 
     finalAttackSprite = new Sprite(shadowBox,200,200,2500,750);
@@ -690,17 +731,17 @@ function spriteStuff(){
 
     for(let i = 0; i < 6; i++){
         arrowListDown[i] = new Sprite(arrowD, -1000,100,20,275);
-        arrowListDown[i].debug = false;
+        if(debugStuff) arrowListDown[i].debug = false;
         arrowListDown[i].collider = "static";
         arrowListDown[i].visible = false;
 
         arrowListRight[i] = new Sprite(arrowR, 1400,100,275,20);
-        arrowListRight[i].debug = false;
+        if(debugStuff) arrowListRight[i].debug = false;
         arrowListRight[i].collider = "dynamic";
         arrowListRight[i].visible = false;
 
         arrowListLeft[i] = new Sprite(arrowL, 1400,100,275,20);
-        arrowListLeft[i].debug = false;
+        if(debugStuff) arrowListLeft[i].debug = false;
         arrowListLeft[i].collider = "dynamic";
         arrowListLeft[i].visible = false;
     }
@@ -747,7 +788,7 @@ function basicMovement(){
     player.scale.x = 0.2;
     player.scale.y = 0.2;
     
-    handleDash();
+    //handleDash();
     
     if(kb.pressing("ArrowRight") && kb.pressing("ArrowDown") == false && kb.pressing("f") == false && kb.pressing("s") == false){
         player.x = player.x + 10 + speedBuff;
@@ -831,7 +872,7 @@ function basicMovement(){
 }
 
 function resistance(){
-    if(stage != 9){
+    if(stage != bossStage - 1){
         if(player.x > 1175 && sliding == false){
             player.x -= (10 + speedBuff);
         }
@@ -867,7 +908,7 @@ function pjump(){
     if(player.collides(ground)) player.vel.y = 0;
     else if(isHooked == false) player.vel.y = player.vel.y+2;
     
-    if((kb.pressing("s") == false && kb.pressing("f") == false && kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite))) && stamina >= 20){
+    if((kb.pressing("s") == false && kb.pressing("f") == false && kb.pressing("ArrowUp") && (player.collides(ground) || player.collides(gearSprite) || player.collides(gearSprite2))) && stamina >= 20){
         player.vel.y = -20;
         stamina -= 20;
         jumpAni();
@@ -875,6 +916,7 @@ function pjump(){
 
     blocksGroup.forEach(spriteB => {
         //Gotta fix this part
+        /*
         if(player.collides(spriteB) && spriteB.vel.y != 0){
             let playerBottom = player.y + player.height / 2;
             let blockTop = spriteB.y - spriteB.height / 2;
@@ -889,7 +931,8 @@ function pjump(){
     
             }
         }
-        else if(player.collides(spriteB)){
+        */
+        if(player.collides(spriteB)){
             if(kb.pressing("ArrowUp") && stamina >= 20 && blocking == false && charging == false){ 
                 player.vel.y = -20; 
                 jumpAni(); 
@@ -1355,7 +1398,7 @@ function slimeMove2(){
         slimesData[index].update();
         if(slimesData[index].SlimeDead == false){
             
-            text("Y-vel: " + spriteS.vel.y, 150, 100);
+            if(debugStuff) text("Y-vel: " + spriteS.vel.y, 150, 100);
             let d = Math.sqrt(Math.pow(spriteS.x - player.x, 2) + Math.pow(spriteS.y - player.y, 2));
 
             if(spriteS.x < player.x && d < 200 && spriteS.visible == true){
@@ -1426,6 +1469,7 @@ function slimeMove2(){
 
             if(slimesData[index].DeathCounter > 4){
                 spriteS.visible = false;
+                spriteS.remove();
                 slimesGroup.remove(spriteS);
                 slimesData.splice(index, 1);
             }
@@ -1608,7 +1652,7 @@ function level9(){
     else {Ldoor.x = 1060; Ldoor.y = 100;}
     if(lavaPlaced == false){
         spawnLava(390, 570, 1100, 130);
-        spawnLava(680, 240, 1100, 130);
+        spawnLava(680, 240, 1080, 130);
         lavaPlaced = true;
     }
     if(slimesSpawned == false){
@@ -1660,11 +1704,91 @@ function level9(){
 }
 
 function level10(){
+    if(boxPlaced == false){
+        spawnBox(900, 685, 125, 95);
+        boxPlaced = true;
+    }
+    if(open == true) Ldoor.x = -100;
+    else {Ldoor.x = 900; Ldoor.y = 220;}
+    if(lavaPlaced == false){
+
+        spawnLava(250, 770, 500, 130);
+        spawnLava(1230, 770, 200, 130);
+        lavaPlaced = true;
+    }
+    if(slimesSpawned == false){
+        spawnSlime(580, 400, 2.5);
+        spawnSlime(690, 60, 2.5);
+        spawnSlime(930, 60, 2.5);
+        spawnSlime(890, 520, 2.5);
+        spawnSlime(700, 370, 2.5);
+        slimesSpawned = true;
+    }
+    
+    if(blocksPlaced == false){
+        spawnBlock(100, 720, 120, 30, "w", 2); //Moving one
+
+        spawnBlock(60, 240, 40, 30, "None", 0);
+        spawnBlock(100, 110, 90, 30, "None", 0);
+        spawnBlock(190, 340, 70, 50, "None", 0);
+        spawnBlock(35, 440, 70, 50, "None", 0); 
+        spawnBlock(190, 600, 50, 50, "None", 0);
+
+        spawnBlock(250, 300, 70, 600, "None", 0); 
+
+        spawnBlock(390, 600, 70, 20, "None", 0);
+        spawnBlock(400, 500, 50, 20, "None", 0);
+        spawnBlock(410, 400, 40, 20, "None", 0);
+        spawnBlock(310, 350, 70, 20, "None", 0);
+        spawnBlock(300, 250, 50, 20, "None", 0);
+        spawnBlock(290, 150, 40, 20, "None", 0);
+
+        spawnBlock(460, 440, 70, 650, "None", 0);
+
+        spawnBlock(640, 440, 70, 650, "None", 0); 
+
+        spawnBlock(590, 500, 70, 30, "None", 0);
+        
+        spawnBlock(1070, 380, 70, 520, "None", 0);
+        spawnBlock(890, 300, 300, 70, "None", 0);
+        spawnBlock(815, 450, 300, 70, "None", 0);
+        spawnBlock(890, 600, 300, 70, "None", 0);
+        spawnBlock(860, 145, 460, 70, "None", 0);
+
+        spawnBlock(840, 200, 70, 70, "None", 0);
+        
+        blocksPlaced = true;
+    }
+    
+    if(blocksGroup[0].x < 20 || blocksGroup[0].x > 350) blocksGroup[0].vel.x *= -1;
+
+    if(turretPlaced == false){
+        spawnTurret(1200, 690, 80, "w");
+        spawnTurret(359, 0, 80, "s");
+        turretPlaced = true;
+    }
+    
+    if(gasPlaced == false){
+        spawnPoisonGas(855, 370, 500, 100, "s", 1);
+        gasPlaced = true;
+    }
+    if(poisonGasData[0].sprite.y < 200 || poisonGasData[0].sprite.y > 650) poisonGasData[0].sprite.vel.y *= -1;
+}
+
+function level11(){
+    gearSprite.x = 300; 
+    gearSprite.y = 500;
+
+    gearSprite2.x = 500; 
+    gearSprite2.y = 500;
+    hookThing();
+}
+
+function level12(){
     portal.x = 1100;
     castleGate.visible = true;
     lever.x = -300;
 }
-
 
 function castle(){
     castleGate.visible = false;
@@ -2091,12 +2215,7 @@ function resetStage(){
     rCounterDeath = 10;
     respawned = true;
     player.image = gs("d10.png");
-    clearTurretBullet();
-    clearTurret();
-    clearSlimes();
-    clearBlocks();
-    clearBox();
-    clearDashTrails();
+    clearEverything();
     fireballGroup.removeAll();
     fireballData.length = 0;
     player.vel.x = 0;
@@ -2110,19 +2229,21 @@ function resetStage(){
     mana = 100;
     stamina = 100;
     counterDeath = 1;
+    playerIsHurt = false;
     
-    if(downPos == false && stage != 6){
-        player.x = 100;
-        player.y = 300;
-    }
-    else if(stage == 6){
-        player.x = 100;
-        player.y = 100;
-    }
-    else if(downPos == true){
-        player.x = 100;
-        player.y = 600;
-    }
+    if(stage == 0){player.x = 100; player.y = 300;}
+    if(stage == 1){player.x = 100; player.y = 600;}
+    if(stage == 2){player.x = 100; player.y = 100;}
+    if(stage == 3){player.x = 100; player.y = 600;}
+    if(stage == 4){player.x = 100; player.y = 300;}
+    if(stage == 5){player.x = 100; player.y = 600;} 
+    if(stage == 6){player.x = 100; player.y = 0;}
+    if(stage == 7){player.x = 100; player.y = 600;}
+    if(stage == 8){player.x = 100; player.y = 670;}
+    if(stage == 9){player.x = 100; player.y = 100;}
+    if(stage == 10){player.x = 100; player.y = 600;}
+    if(stage == 11){player.x = 100; player.y = 600;}
+
     prevX = player.x;
     prevY = player.y;
     
@@ -2156,6 +2277,14 @@ function resetStage(){
     else if(stage == 8){
         player.x = 100;
         player.y = 670;
+        lever.image = gs("lever.png");
+        open = false;
+    }
+    else if(stage == 9){
+        lever.image = gs("lever.png");
+        open = false;
+    }
+    else if(stage == 10){
         lever.image = gs("lever.png");
         open = false;
     }
@@ -2242,6 +2371,10 @@ function spriteSheetSetup(){
     cols = 4; rows = 1; w = turretBulletSheet.width / cols; h = turretBulletSheet.height / rows;
 
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) turretBEFrames.push(turretBulletSheet.get(c * w, r * h, w, h));
+
+    cols = 4; rows = 1; w = poisonGasSheet.width / cols; h = poisonGasSheet.height / rows;
+
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) poisonGasFrames.push(poisonGasSheet.get(c * w, r * h, w, h));
 }
 
 function barMovement(){
@@ -2278,6 +2411,7 @@ function textSetup(){
 class BlockSprite{
     //Width and height only change hitbox size, not actual image size
     //x and y are the center of the object
+    //d = direction, s = speed
     constructor(x, y, w, h, d, s){
         //This builds each block using smaller blocks so it doesn't look stretched, will look slightly different each time due to random
         let gfx = createGraphics(w, h);
@@ -2301,7 +2435,7 @@ class BlockSprite{
         blockObj.width = w;
         blockObj.height = h;
         blockObj.collider = "kinematic";
-        blockObj.debug = true;
+        if(debugStuff) blockObj.debug = true;
         this.BSpeed = s;
         this.BDirection = d;
         this.sprite = blockObj;
@@ -2337,7 +2471,7 @@ class EnemySlimeSprite{
         slimeObj.width = 40;
         slimeObj.height = 60;
         slimeObj.collider = "dynamic"; 
-        slimeObj.debug = true;
+        if(debugStuff) slimeObj.debug = true;
         slimeObj.offset.y = 10;
     
         this.EHealth = 150;
@@ -2382,7 +2516,7 @@ class EnemySlimeSprite{
             this.sprite.vel.x = 0;
             this.hit = false;
         }
-        this.sprite.text = "Hp: " + this.EHealth;
+        if(debugStuff) this.sprite.text = "Hp: " + this.EHealth;
 
         if(this.canBeHit == false){
             this.hitCooldown--;
@@ -2438,29 +2572,29 @@ class fireballSprite{
     //Width and height only change hitbox size, not actual image size
     //x and y are the center of the object
     constructor(x, y, d, s){
-         let fireballObj = new fireballGroup.Sprite();
-         this.sprite = fireballObj;
-         fireballObj.x = x;
-         fireballObj.y = y;
-         if(d == "r"){ 
-             fireballObj.image = fireballImageDefaultR;
-             fireballObj.vel.x = s;
-         }
-         if(d == "l"){
-             fireballObj.image = fireballImageDefaultL;
-             fireballObj.vel.x = -s;
-         }
-         fireballObj.image.scale.x = 50 / fireballObj.image.width;
-         fireballObj.image.scale.y = 40 / fireballObj.image.height;
-         fireballObj.width = 50;
-         fireballObj.height = 40;
-         fireballObj.collider = "dynamic"; 
-         fireballObj.debug = true;
-         this.direction = d;
-         this.ESpeed = s;
-         this.counterRight = 1;
-         this.counterLeft = 1;
-         this.DeathCounter = 1;
+        let fireballObj = new fireballGroup.Sprite();
+        this.sprite = fireballObj;
+        fireballObj.x = x;
+        fireballObj.y = y;
+        if(d == "r"){ 
+            fireballObj.image = fireballImageDefaultR;
+            fireballObj.vel.x = s;
+        }
+        if(d == "l"){
+            fireballObj.image = fireballImageDefaultL;
+            fireballObj.vel.x = -s;
+        }
+        fireballObj.image.scale.x = 50 / fireballObj.image.width;
+        fireballObj.image.scale.y = 40 / fireballObj.image.height;
+        fireballObj.width = 50;
+        fireballObj.height = 40;
+        fireballObj.collider = "dynamic"; 
+        if(debugStuff) fireballObj.debug = true;
+        this.direction = d;
+        this.ESpeed = s;
+        this.counterRight = 1;
+        this.counterLeft = 1;
+        this.DeathCounter = 1;
     }
  
     updateAnimation(){
@@ -2557,6 +2691,7 @@ function spawnFireball(x, y, d, s){
 function playerHurtAnimation(d){
     if(!playerIsHurt) return;
     counterH += 0.1;
+    
     if(d == "n"){
         if(counterH < 1){
             player.image = hurtFrames[Math.round(counterH)];
@@ -2765,6 +2900,11 @@ function hookThing(){
         ropeLength = dist(position.x, position.y, gearSprite.x, gearSprite.y);
         rope();
     }
+    else if(kb.pressing("space") && dist(player.x, player.y, gearSprite2.x, gearSprite2.y) < 300){
+        origin = createVector(gearSprite2.x, gearSprite2.y);
+        ropeLength = dist(position.x, position.y, gearSprite2.x, gearSprite2.y);
+        rope();
+    }
     else{
         position.x = player.x;
         position.y = player.y;
@@ -2874,7 +3014,7 @@ class LavaSprite{
         lavaObj.width = w;
         lavaObj.height = h - 40;
         lavaObj.collider = "static";
-        lavaObj.debug = true;
+        if(debugStuff) lavaObj.debug = true;
         this.sprite = lavaObj;
         this.gone = false;
     }
@@ -2910,7 +3050,7 @@ class BoxSprite{
         boxObj.width = w;
         boxObj.height = h;
         boxObj.collider = "static";
-        boxObj.debug = true;
+        if(debugStuff) boxObj.debug = true;
         this.gone = false;
     }
     disappear(){
@@ -2942,7 +3082,7 @@ class TurretSprite{
         turretObj.width = s;
         turretObj.height = s;
         turretObj.collider = "static";
-        turretObj.debug = true;
+        if(debugStuff) turretObj.debug = true;
         this.sprite = turretObj;
         this.TDirection = d;
         this.shootCounter = 0;
@@ -2987,7 +3127,7 @@ class TurretBulletSprite{
         turretBullObj.x = x;
         turretBullObj.y = y;
         turretBullObj.collider = "dynamic";
-        turretBullObj.debug = true;
+        if(debugStuff) turretBullObj.debug = true;
         turretBullObj.image = turretBEFrames[0].get();
         this.TBDirection = d;
         this.sprite = turretBullObj;
@@ -3062,7 +3202,7 @@ class TurretBulletSprite{
         this.sprite.overlaps(blocksGroup, () => this.disappear());
 
         slimesGroup.forEach(spriteS => {if(this.sprite.overlaps(spriteS));});
-        if(this.sprite.collides(portal) || this.sprite.collides(gearSprite) || this.sprite.collides(Ldoor) || this.sprite.collides(Ldoor2) || this.sprite.collides(lever) || this.sprite.collides(lever2)) this.disappear();
+        if(this.sprite.collides(portal) || this.sprite.collides(gearSprite) || this.sprite.collides(gearSprite2) || this.sprite.collides(Ldoor) || this.sprite.collides(Ldoor2) || this.sprite.collides(lever) || this.sprite.collides(lever2)) this.disappear();
     }
     disappear(){
         if(this.gone) return;
@@ -3079,4 +3219,62 @@ function spawnTurretBullet(x, y, s, d){
 function clearTurretBullet(){
     turretBulletData.forEach(spriteTB => {spriteTB.disappear()});
     turretBulletData.length = 0;
+}
+
+class PoisonGasSprite{
+    //Width and height only change hitbox size, not actual image size
+    //x and y are the center of the object
+    //d = direction, s = speed
+    constructor(x, y, w, h, d, s){
+        let gfx = createGraphics(w, h);
+ 
+        for(let i = 0; i < w; i += poisonGasFrames[0].width-2){
+            for(let j = 0; j < h; j += poisonGasFrames[0].height-2){
+                gfx.push();
+                gfx.translate(i + poisonGasFrames[0].width / 2, j + poisonGasFrames[0].height / 2);
+                gfx.rotate(random(-0.11, 0.11));
+                let rand = Math.floor(Math.random() * 4);
+                gfx.image(poisonGasFrames[rand], -poisonGasFrames[rand].width / 2, -poisonGasFrames[rand].height / 2, poisonGasFrames[rand].width*1.05, poisonGasFrames[rand].height*1.05);
+                gfx.pop();
+            }
+        }
+ 
+        this.sprite = new Sprite(x, y, w, h);
+        this.sprite.image = gfx;
+        //this.sprite.image.scale.x = w / poisonGasFrames[0].image.width;
+        //this.sprite.image.scale.y = h / poisonGasFrames[0].image.height;
+        this.sprite.collider = "none";
+        if(debugStuff) this.sprite.debug = true;
+        this.BSpeed = s;
+        this.BDirection = d;
+        this.gone = false;
+        this.counterT = 0.5;
+
+        if(d == "n") this.sprite.vel.y = -s;
+        if(d == "s") this.sprite.vel.y = s;
+        if(d == "e") this.sprite.vel.x = s;
+        if(d == "w") this.sprite.vel.x = -s;
+    }
+    disappear(){
+        if(this.gone) return;
+        this.gone = true;
+        this.sprite.remove();
+    }
+    update(){
+        if(this.sprite.overlapping(player) && blocking == false) health -= 2;
+        this.counterT += 0.01;
+        this.sprite.opacity = this.counterT;
+        if(this.counterT >= 1) this.counterT = 0.5;
+    }
+}
+
+function spawnPoisonGas(x, y, w, h, d, s){
+    let newPoisonGas = new PoisonGasSprite(x, y, w, h, d, s);
+    poisonGasData.push(newPoisonGas);
+}
+
+function clearPoisonGas(){
+    poisonGasData.forEach(spritePG => {spritePG.disappear()});
+    gasPlaced = false;
+    poisonGasData.length = 0;
 }
